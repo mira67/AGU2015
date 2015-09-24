@@ -125,9 +125,8 @@ color:#ffffff;text-decoration:none;display:block;padding:12px;text-align:center;
 }
 
 #map {
-    height: 500px; 
-    min-width: 310px; 
-    max-width: 800px; 
+    min-height: 600px; 
+    width: 100%; 
     margin: 0 auto; 
 }
 .loading {

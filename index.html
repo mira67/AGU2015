@@ -40,7 +40,15 @@
      var H = Highcharts,
         map = H.maps['custom/antarctica'],
         chart;
-    var data = [
+    var data_anomaly = [
+        {
+            name: 'Anomaly 1',
+            lat: -83.12,
+            lon: 43.41
+        }
+    ]; 
+
+    var data_hc = [
         {
             "hc-key": "aq-3638",
             "value": 0
@@ -74,6 +82,9 @@
         },
 
         tooltip: {
+            formatter: function () {
+                    return this.point.name + '<br>Lat: ' + this.point.lat + ' Lon: ' + this.point.lon;
+                },
                 crosshairs: [{
                     zIndex: 5,
                     dashStyle: 'dot',
@@ -88,21 +99,33 @@
             },
 
         series : [{
-            data : data,
+            data : data_hc,
             mapData: map,
-            joinBy: 'hc-key',
+            //joinBy: 'hc-key',
             name: 'Test',
-            showInLegend: false
-            // states: {
-            //     hover: {
-            //         color: '#BADA55'
-            //     }
-            // },
-            // dataLabels: {
-            //     enabled: false,
-            //     format: '{point.name}'
-            // }
-        }]
+            showInLegend: false,
+            states: {
+                hover: {
+                    color: '#BADA55'
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                format: '{point.name}'
+            }
+        },
+        {
+                type: 'mapbubble',
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}'
+                },
+                name: 'Anomaly',
+                data: data_anomaly,
+                maxSize: '10%',
+                color: H.getOptions().colors[0]
+            }   
+        ]
     });
 
 chart = $('#map').highcharts();

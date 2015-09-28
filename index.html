@@ -37,7 +37,9 @@
 	<script>
 	$(function () {
 
-    // Prepare demo data
+     var H = Highcharts,
+        map = H.maps['custom/antarctica'],
+        chart;
     var data = [
         {
             "hc-key": "aq-3638",
@@ -87,24 +89,26 @@
 
         series : [{
             data : data,
-            mapData: Highcharts.maps['custom/antarctica'],
+            mapData: map,
             joinBy: 'hc-key',
             name: 'Test',
-            states: {
-                hover: {
-                    color: '#BADA55'
-                }
-            },
-            dataLabels: {
-                enabled: true,
-                format: '{point.name}'
-            }
+            showInLegend: false
+            // states: {
+            //     hover: {
+            //         color: '#BADA55'
+            //     }
+            // },
+            // dataLabels: {
+            //     enabled: false,
+            //     format: '{point.name}'
+            // }
         }]
     });
-});
+
+chart = $('#map').highcharts();
 
     // Display custom label with lat/lon next to crosshairs
-    $('#container').mousemove(function (e) {
+    $('#map').mousemove(function (e) {
         var position;
 
         if (chart) {
@@ -133,12 +137,13 @@
         }
     });
 
-    $('#container').mouseout(function () {
+    $('#map').mouseout(function () {
         if (chart && chart.lab) {
             chart.lab.destroy();
             chart.lab = null;
         }
     });
+});
 
 </script>
 		</div>	

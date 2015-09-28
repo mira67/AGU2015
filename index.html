@@ -12,9 +12,10 @@
         <meta name="viewport" content="width=device-width">
 
 	<script src="js/jquery-2.1.4.min.js"></script>
-	<script src="http://code.highcharts.com/maps/highmaps.js"></script>
-	<script src="http://code.highcharts.com/maps/modules/exporting.js"></script>
-	<script src="http://code.highcharts.com/mapdata/custom/antarctica.js"></script>
+	<script src="js/highmaps.js"></script>
+	<script src="js/exporting.js"></script>
+	<script src="js/antarctica.js"></script>
+    <script src="js/proj4.js"></script>
 	
 	<link rel="stylesheet" href="css/style.css"  />
 
@@ -45,8 +46,8 @@
         {
             "hc-key": "aq-3639",
             "value": 1
-        }
-    ];
+        },
+    ]; 
 
     // Initiate the chart
     $('#map').highcharts('Map', {
@@ -70,11 +71,25 @@
             min: 0
         },
 
+        tooltip: {
+                crosshairs: [{
+                    zIndex: 5,
+                    dashStyle: 'dot',
+                    snap: false,
+                    color: 'gray'
+                }, {
+                    zIndex: 5,
+                    dashStyle: 'dot',
+                    snap: false,
+                    color: 'gray'
+                }]
+            },
+
         series : [{
             data : data,
             mapData: Highcharts.maps['custom/antarctica'],
             joinBy: 'hc-key',
-            name: 'Random data',
+            name: 'Test',
             states: {
                 hover: {
                     color: '#BADA55'
@@ -87,6 +102,44 @@
         }]
     });
 });
+
+    // Display custom label with lat/lon next to crosshairs
+    $('#container').mousemove(function (e) {
+        var position;
+
+        if (chart) {
+            if (!chart.lab) {
+                chart.lab = chart.renderer.text('', 0, 0)
+                    .attr({
+                        zIndex: 5
+                    })
+                    .css({
+                        color: '#505050'
+                    })
+                    .add();
+            }
+
+            e = chart.pointer.normalize(e);
+            position = chart.fromPointToLatLon({
+                x: chart.xAxis[0].toValue(e.chartX),
+                y: chart.yAxis[0].toValue(e.chartY)
+            });
+
+            chart.lab.attr({
+                x: e.chartX + 5,
+                y: e.chartY - 22,
+                text: 'Lat: ' + position.lat.toFixed(2) + '<br>Lon: ' + position.lon.toFixed(2)
+            });
+        }
+    });
+
+    $('#container').mouseout(function () {
+        if (chart && chart.lab) {
+            chart.lab.destroy();
+            chart.lab = null;
+        }
+    });
+
 </script>
 		</div>	
 		</section>

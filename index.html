@@ -17,6 +17,7 @@
 	<script src="js/exporting.js"></script>
 	<script src="js/antarctica.js"></script>
     <script src="js/proj4.js"></script>
+    <script src="js/js.cookie.js"></script>
 	
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -51,6 +52,7 @@
      var H = Highcharts,
         map = H.maps['custom/antarctica'],
         chart;
+    //pass in anomaly data layer
     var data_anomaly = [
         {
             name: 'Anomaly 1',
@@ -126,22 +128,21 @@
             }
         },
         {
-                type: 'mapbubble',
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.name}'
-                },
-                name: 'Anomaly',
-                data: data_anomaly,
-                maxSize: '10%',
-                color: H.getOptions().colors[0]
+            type: 'mapbubble',
+            dataLabels: {
+                enabled: true,
+                format: '{point.name}'
+            },
+            name: 'Anomaly',
+            data: data_anomaly,
+            maxSize: '10%',
+            color: H.getOptions().colors[0]
             }   
         ]
     });
 
-//cross lat/lon display
-chart = $('#map').highcharts();
-
+    //cross lat/lon display
+    chart = $('#map').highcharts();
     // Display custom label with lat/lon next to crosshairs
     $('#map').mousemove(function (e) {
         var position;
@@ -157,7 +158,7 @@ chart = $('#map').highcharts();
                     })
                     .add();
             }
-
+            //convert from point coordination to lat/lon location 
             e = chart.pointer.normalize(e);
             position = chart.fromPointToLatLon({
                 x: chart.xAxis[0].toValue(e.chartX),
@@ -165,7 +166,7 @@ chart = $('#map').highcharts();
             });
 
             chart.lab.attr({
-                x: e.chartX + 5,
+                x: e.chartX + 5,//why offset
                 y: e.chartY - 22,
                 text: 'Lat: ' + position.lat.toFixed(2) + '<br>Lon: ' + position.lon.toFixed(2)
             });
@@ -223,7 +224,11 @@ function initDraw(canvas) {
                 columnClass: 'col-md-4 col-md-offset-4',
                 confirm: function(){
                     //alert('Confirmed!');
-                    var win = window.open("#", '_blank');
+                    var _region = '100,90';
+                   //converts to JSON string the Object Literal
+                   _region = JSON.stringify(_region);
+                   localStorage.setItem('_Region', _region);
+                    var win = window.open("file:///Users/mira67/Google%20Drive/mira67.github.io/anomaly.html", '_blank');
                     win.focus();
                 },
                 cancel: function(){

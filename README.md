@@ -16,5 +16,5 @@ Design:
 References:
 [1]Highmap from highchart: http://www.highcharts.com/docs/maps/getting-started
 [2]Jquery confirmation: http://craftpip.github.io/jquery-confirm/
-
+[3]Jquery cookie: https://github.com/js-cookie/js-cookie
 

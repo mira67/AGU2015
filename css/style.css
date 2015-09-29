@@ -135,3 +135,7 @@ color:#ffffff;text-decoration:none;display:block;padding:12px;text-align:center;
     color: gray;
 }
 
+.rectangle {
+    border: 1px solid #FF0000;
+    position: absolute;
+}

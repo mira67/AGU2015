@@ -12,12 +12,21 @@
         <meta name="viewport" content="width=device-width">
 
 	<script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/jquery-confirm.min.js"></script>
 	<script src="js/highmaps.js"></script>
 	<script src="js/exporting.js"></script>
 	<script src="js/antarctica.js"></script>
     <script src="js/proj4.js"></script>
 	
-	<link rel="stylesheet" href="css/style.css"  />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/jquery-confirm.min.css"/>
 
 </head>
 <body id="index" class="home">
@@ -35,8 +44,10 @@
 		<section id='content'>
 	<div id = 'map'>
 	<script>
-	$(function () {
 
+
+	$(function () {
+    //define map
      var H = Highcharts,
         map = H.maps['custom/antarctica'],
         chart;
@@ -128,6 +139,7 @@
         ]
     });
 
+//cross lat/lon display
 chart = $('#map').highcharts();
 
     // Display custom label with lat/lon next to crosshairs
@@ -199,12 +211,25 @@ function initDraw(canvas) {
             element.style.top = (mouse.y - mouse.startY < 0) ? mouse.y + 'px' : mouse.startY + 'px';
         }
     }
-
     canvas.onclick = function (e) {
         if (element !== null) {
             element = null;
             canvas.style.cursor = "default";
             console.log("finsihed.");
+            //pop-up diaglog, if 'ok', bring user to new page
+            $.confirm({
+                title: 'Proceed?',
+                content: 'Proceed with selected region?',
+                columnClass: 'col-md-4 col-md-offset-4',
+                confirm: function(){
+                    //alert('Confirmed!');
+                    var win = window.open("#", '_blank');
+                    win.focus();
+                },
+                cancel: function(){
+                    //alert('Canceled!')
+                }
+            });
         } else {
             console.log("begun.");
             mouse.startX = mouse.x;

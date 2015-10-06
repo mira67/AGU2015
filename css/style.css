@@ -2,6 +2,7 @@
 *{margin:0px; padding:0px}
 *{margin:0px; padding:0px}
 header, footer,section,nav{display:blocks}
+<<<<<<< HEAD
 body {
 	background:url("img/antarctica.jpg")
 }
@@ -39,6 +40,10 @@ body {
 }
 
 >>>>>>> origin/master
+=======
+body{background:url("img/antarctica.jpg")}
+.container{margin:10px auto; width:96%;font-family:arial;}
+>>>>>>> parent of c94b116... updating the map
 h2 {
     color: #333;
     font-family: Helvetica, Arial;
@@ -102,7 +107,7 @@ h2 a:hover {
 	float:left;
 	width:70%;
 	background-color:#dedede;
-	height: 80vh;
+	min-height:600px;
 	text-align:center;
 	opacity: .8; 
 =======
@@ -125,7 +130,7 @@ h2 a:hover {
 	float:right;
 	width:25%;
 	background-color:#fefefe;
-	height: 80vh;
+	min-height:600px;
 	text-align:center;
 	opacity: .7; 
 =======
@@ -186,7 +191,11 @@ h2 a:hover {
 
 #map {
 <<<<<<< HEAD
+<<<<<<< HEAD
     height: 80vh;
+=======
+    min-height: 600px; 
+>>>>>>> parent of c94b116... updating the map
     width: 100%; 
     margin: 0 auto; 
 =======
@@ -206,6 +215,7 @@ h2 a:hover {
     border: 1px solid #FF0000;
     position: absolute;
 }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 .myButton {
@@ -269,3 +279,5 @@ h2 a:hover {
     top: 1px;
 }
 >>>>>>> origin/master
+=======
+>>>>>>> parent of c94b116... updating the map

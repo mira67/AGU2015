@@ -71,8 +71,7 @@
 	<script>
 		$(function () {
 		//define map
-
-		var H = Highcharts,
+		 var H = Highcharts,
 			map = H.maps['custom/antarctica'],
 			chart;
 		//pass in anomaly data layer
@@ -97,6 +96,7 @@
 
 		// Initiate the chart
 		$('#map').highcharts('Map', {
+<<<<<<< HEAD
 /*
 			series: [
 			{
@@ -122,19 +122,24 @@
 =======
 	*/	
 >>>>>>> origin/master
+=======
+
+>>>>>>> parent of c94b116... updating the map
 			title : {
 				text : 'Antarctica'
 			},
 
 			subtitle : {
-				text : 'Source map: Antarctica'
+				text : 'Source map: <a href="js/antarctica.js">Antarctica</a>'
 			},
+
 			mapNavigation: {
 				enabled: true,
 				buttonOptions: {
 					verticalAlign: 'bottom'
 				}
 			},
+
 			colorAxis: {
 				min: 0
 			},
@@ -156,33 +161,34 @@
 					}]
 				},
 
-				series : [{
-					data : data_hc,
-					mapData: map,
-					//joinBy: 'hc-key',
-					name: 'Test',
-					showInLegend: false,
-					states: {
-						hover: {
-							color: '#BADA55'
-						}
-					},
-						dataLabels: {
-							enabled: true,
-							format: '{point.name}'
-						}
-					},
-					{
-						type: 'mapbubble',
-						dataLabels: {
-							enabled: true,
-							format: '{point.name}'
-					},
-					name: 'Anomaly',
-					data: data_anomaly,
-					maxSize: '10%',
-					color: H.getOptions().colors[0]
-				}]
+			series : [{
+				data : data_hc,
+				mapData: map,
+				//joinBy: 'hc-key',
+				name: 'Test',
+				showInLegend: false,
+				states: {
+					hover: {
+						color: '#BADA55'
+					}
+				},
+				dataLabels: {
+					enabled: true,
+					format: '{point.name}'
+				}
+			},
+			{
+				type: 'mapbubble',
+				dataLabels: {
+					enabled: true,
+					format: '{point.name}'
+				},
+				name: 'Anomaly',
+				data: data_anomaly,
+				maxSize: '10%',
+				color: H.getOptions().colors[0]
+				}   
+			]
 		});
 
 		//cross lat/lon display
@@ -190,7 +196,7 @@
 		// Display custom label with lat/lon next to crosshairs
 		$('#map').mousemove(function (e) {
 			var position;
-			
+
 			if (chart) {
 				if (!chart.lab) {
 					chart.lab = chart.renderer.text('', 0, 0)
@@ -204,20 +210,15 @@
 				}
 				//convert from point coordination to lat/lon location 
 				e = chart.pointer.normalize(e);
-				
-				// this gets the coordinates of the x and y values
-				offsetX = typeof(e.offsetX)==='undefined' ? e.clientX:e.offsetX,
-				offsetY = typeof(e.offsetY)==='undefined' ? e.clientY:e.offsetY;
-				
 				position = chart.fromPointToLatLon({
 					x: chart.xAxis[0].toValue(e.chartX),
 					y: chart.yAxis[0].toValue(e.chartY)
 				});
 
 				chart.lab.attr({
-					x: e.chartX + 5, //offset for printing the numbers to upper-right of cursor
+					x: e.chartX + 5,//why offset
 					y: e.chartY - 22,
-					text: 'X: ' + offsetX.toFixed(2) + '<br>Y: ' + offsetY.toFixed(2)
+					text: 'Lat: ' + position.lat.toFixed(2) + '<br>Lon: ' + position.lon.toFixed(2)
 				});
 			}
 		});
@@ -311,7 +312,7 @@
 		function updateString( ){
 			startDate = "" + document.getElementById('startDate').value;
 			endDate = "" + document.getElementById('endDate').value;
-			sendString = dataSet + "_s" + frequency + polarization + "_" + startDate.replace("-", "").replace("-", "") + "_" + endDate.replace("-", "").replace("-", "");
+			sendString = dataSet + "_s" + frequency + polarization + "_" + startDate + "_" + endDate;
 			console.log("sendString: ", sendString);
 		}
 		function changeDataSet(ds) { dataSet = ds; updateString(); }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *{margin:0px; padding:0px}
 *{margin:0px; padding:0px}
 header, footer,section,nav{display:blocks}
@@ -9,107 +10,192 @@ body {
 	width:96%;
 	font-family:arial;
 }
+=======
+* {
+    margin: 0px;
+    padding: 0px
+}
+
+* {
+    margin: 0px;
+    padding: 0px
+}
+
+header,
+footer,
+section,
+nav {
+    display: blocks
+}
+
+body {
+    background: url("img/antarctica.jpg")
+}
+
+.container {
+    margin: auto;
+    width: auto;
+    font-family: arial;
+}
+
+>>>>>>> origin/master
 h2 {
-	color: #333;
-	font-family: Helvetica,Arial;
-	font-weight: bold;
-	line-height: 1.1em;
-	padding-bottom: 5px;
-	text-shadow: 0 1px 0 #FFF;
-	font-size: 25px;
+    color: #333;
+    font-family: Helvetica, Arial;
+    font-weight: bold;
+    line-height: 1.1em;
+    padding-bottom: 5px;
+    text-shadow: 0 1px 0 #FFF;
+    font-size: 25px;
 }
+
 h1 {
-	font-family: 'Big Caslon', 'Book Antiqua', 'Palatino Linotype', Georgia, serif;
-	font-size: 28px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: bold;
-	line-height: 25px;
-	color:#F5F9FB;
+    font-family: 'Big Caslon', 'Book Antiqua', 'Palatino Linotype', Georgia, serif;
+    font-size: 28px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    line-height: 25px;
+    color: #F5F9FB;
 }
+
 h2 a {
-	color: #333;
-	text-decoration:none;	
+    color: #333;
+    text-decoration: none;
 }
+
 h2 a:hover {
-	color: #333;
-	text-decoration:none;	
-	background-color:#81c3de;
+    color: #333;
+    text-decoration: none;
+    background-color: #81c3de;
 }
+
 .roundEdge {
-	border-radius: 6px;
-	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
 }
-#main, #header, #nav {overflow:auto;}
-#nav{background-color:#162336}
+
+#main,
+#header,
+#nav {
+    overflow: auto;
+}
+
+#nav {
+    background-color: #162336
+}
+
 #footer {
-	height:5px;
-	border-top:2px solid #333333;
+    height: 10px;
+    border-top: 5px solid #333333;
 }
+
 #footer p {
-	padding:2px 0px 0px 0px;
-	font-size:15px;
+    padding: 2px 0px 0px 0px;
+    font-size: 15px;
+    color: #F5F9FB;
 }
+
 #content {
+<<<<<<< HEAD
 	float:left;
 	width:70%;
 	background-color:#dedede;
 	height: 80vh;
 	text-align:center;
 	opacity: .8; 
+=======
+    float: left;
+    width: 79%;
+    background-color: #dedede;
+    min-height: 600px;
+    max-height: auto;
+    text-align: center;
+    opacity: .95;
+>>>>>>> origin/master
 }
+
 #content article {
-	margin-bottom:10px;
+    margin-bottom: 10px;
 }
+
 #sidebar {
+<<<<<<< HEAD
 	float:right;
 	width:25%;
 	background-color:#fefefe;
 	height: 80vh;
 	text-align:center;
 	opacity: .7; 
+=======
+    float: right;
+    width: 20%;
+    background-color: #fefefe;
+    min-height: 600px;
+    max-height:auto;
+    text-align: center;
+    opacity: .95;
+>>>>>>> origin/master
 }
 
 #nav {
-	overflow:auto;
+    overflow: auto;
 }
+
 #nav ul {
-	list-style:none;
-	height:30px;
-	padding:0px;
-	margin:0px;
+    list-style: none;
+    height: 30px;
+    padding: 0px;
+    margin: 0px;
 }
+
 #nav ul li {
-	float:left;
-	font-size:12px;
-	font-weight:bold;
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
 }
+
 #nav ul li a {
-	color:#ffffff;text-decoration:none;display:block;padding:12px;text-align:center;min-width:100px;
+    color: #ffffff;
+    text-decoration: none;
+    display: block;
+    padding: 12px;
+    text-align: center;
+    min-width: 100px;
 }
+
 #nav ul li a:hover {
-	background-color:#81c3de;
-	color:#333333;
+    background-color: #81c3de;
+    color: #333333;
 }
+
 #logo {
-	margin:10px;
+    margin: 10px;
 }
+
 #ads {
-	text-align:center;
+    text-align: center;
 }
 
 .center {
     margin: auto;
-    width: 70%;
+    width: 76%;
     padding: 10px;
 }
 
 #map {
+<<<<<<< HEAD
     height: 80vh;
     width: 100%; 
     margin: 0 auto; 
+=======
+    min-height: 600px;
+    width: 100%;
+    margin: 0 auto;
+>>>>>>> origin/master
 }
+
 .loading {
     margin-top: 10em;
     text-align: center;
@@ -121,6 +207,7 @@ h2 a:hover {
     position: absolute;
 }
 
+<<<<<<< HEAD
 .myButton {
 	background-color: AliceBlue;
 	-moz-border-radius:7px;
@@ -142,3 +229,43 @@ h2 a:hover {
 	position:relative;
 	top:1px;
 }
+=======
+.slider {
+    width: auto;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#image {
+    width: auto;
+    height: 80%;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/*side bar options*/
+.myButton {
+    background-color: AliceBlue;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    border-radius: 7px;
+    border: 1px solid #dcdcdc;
+    display: inline-block;
+    cursor: pointer;
+    color: #666666;
+    font-size: 13px;
+    padding: 2px 20px;
+    margin: 2px 3px 2px 3px;
+    text-decoration: none;
+}
+
+.myButton:hover {
+    background-color: "AliceBlue";
+}
+
+.myButton:active {
+    position: relative;
+    top: 1px;
+}
+>>>>>>> origin/master

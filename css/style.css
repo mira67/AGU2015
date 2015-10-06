@@ -110,7 +110,6 @@ h2 a:hover {
 	min-height:600px;
 	text-align:center;
 	opacity: .8; 
-=======
     float: left;
     width: 79%;
     background-color: #dedede;
@@ -118,7 +117,6 @@ h2 a:hover {
     max-height: auto;
     text-align: center;
     opacity: .95;
->>>>>>> origin/master
 }
 
 #content article {
@@ -132,8 +130,7 @@ h2 a:hover {
 	background-color:#fefefe;
 	min-height:600px;
 	text-align:center;
-	opacity: .7; 
-=======
+	opacity: .7;
     float: right;
     width: 20%;
     background-color: #fefefe;
@@ -141,7 +138,6 @@ h2 a:hover {
     max-height:auto;
     text-align: center;
     opacity: .95;
->>>>>>> origin/master
 }
 
 #nav {
@@ -190,19 +186,9 @@ h2 a:hover {
 }
 
 #map {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    height: 80vh;
-=======
     min-height: 600px; 
->>>>>>> parent of c94b116... updating the map
     width: 100%; 
-    margin: 0 auto; 
-=======
-    min-height: 600px;
-    width: 100%;
     margin: 0 auto;
->>>>>>> origin/master
 }
 
 .loading {

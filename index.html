@@ -11,7 +11,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>AGU2015</title>
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/jquery-confirm.min.js"></script>
     <script src="js/highmaps.js"></script>
@@ -21,49 +21,20 @@
     <script src="js/js.cookie.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-    <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/jquery-confirm.min.css" />
-    <style type="text/css">
-    .myButton {
-        background-color: AliceBlue;
-        -moz-border-radius: 7px;
-        -webkit-border-radius: 7px;
-        border-radius: 7px;
-        border: 1px solid #dcdcdc;
-        display: inline-block;
-        cursor: pointer;
-        color: #666666;
-        font-size: 13px;
-        padding: 2px 20px;
-        margin: 2px 3px 2px 3px;
-        text-decoration: none;
-    }
-    
-    .myButton:hover {
-        background-color: "AliceBlue";
-    }
-    
-    .myButton:active {
-        position: relative;
-        top: 1px;
-    }
-    </style>
 </head>
 
 <body id="index" class="home">
     <header class='container' id='header'>
-        <!--<img src="css/img/logo_nsidc.jpg"> </img>-->
-        <h1 id='project' class='center'>Condensing Massive Satellite Datasets For Rapid Interactive Analysis</h1>
     </header>
-    <!--<nav class='container roundEdge' id='nav'>
-
-	</nav>-->
+    <nav class='container roundEdge' id='nav'>
+        <h1 id='project' class='center'>NSIDC - Condensing Massive Satellite Datasets For Rapid Interactive Analysis</h1>
+    </nav>
     <section class='container' id='main'>
-        <section id='content'>
+        <div id='content'>
             <div id='map'>
                 <script>
                 $(function() {
@@ -325,7 +296,7 @@
                 function enable() {}
                 </script>
             </div>
-        </section>
+        </div>
         <aside id='sidebar' class='roundEdge'>
             <br>
             <br><span id="datasetName"><font color="Black">Data Set</font></span>
@@ -365,7 +336,7 @@
         </aside>
     </section>
     <footer class='container' id='footer'>
-        <p>© 2015 NSIDC and The University of Colorado at Boulder</p>
+        <p>© 2015 NSIDC & University of Colorado at Boulder</p>
     </footer>
 </body>
 

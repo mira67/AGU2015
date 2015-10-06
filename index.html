@@ -2,342 +2,357 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html>
-<!--<![endif]-->
+<!--[if gt IE 8]><!--> 
+<html> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>AGU2015</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>AGU2015</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="js/jquery-2.1.4.min.js"></script>
+	<script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/jquery-confirm.min.js"></script>
-    <script src="js/highmaps.js"></script>
-    <script src="js/exporting.js"></script>
-    <script src="js/antarctica.js"></script>
+	<script src="js/highmaps.js"></script>
+	<script src="js/exporting.js"></script>
+	<script src="js/antarctica.js"></script>
     <script src="js/proj4.js"></script>
     <script src="js/js.cookie.js"></script>
+	
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/jquery-confirm.min.css" />
+
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/jquery-confirm.min.css"/>
+
+	<style type="text/css">	
+		.myButton {
+			background-color: AliceBlue;
+			-moz-border-radius:7px;
+			-webkit-border-radius:7px;
+			border-radius:7px;
+			border:1px solid #dcdcdc;
+			display:inline-block;
+			cursor:pointer;
+			color:#666666;
+			font-size:13px;
+			padding:2px 20px;
+			margin: 2px 3px 2px 3px;
+			text-decoration:none;
+		}
+		.myButton:hover {
+			background-color: "AliceBlue";
+		}
+		.myButton:active {
+			position:relative;
+			top:1px;
+		}
+	</style>
+
 </head>
-
 <body id="index" class="home">
-    <header class='container' id='header'>
-    </header>
-    <nav class='container roundEdge' id='nav'>
-        <h1 id='project' class='center'>NSIDC - Condensing Massive Satellite Datasets For Rapid Interactive Analysis</h1>
-    </nav>
-    <section class='container' id='main'>
-        <div id='content'>
-            <div id='map'>
-                <script>
-                $(function() {
-                    //define map
-                    var H = Highcharts,
-                        map = H.maps['custom/antarctica'],
-                        chart;
-                    //pass in anomaly data layer
-                    var data_anomaly = [{
-                        name: 'Anomaly 1',
-                        x: 5000,
-                        y: -5000
-                    }];
+	
+	<header class='container' id='header'>
+	<!--<img src="css/img/logo_nsidc.jpg"> </img>-->
+	<h1 id='project' class='center'>Condensing Massive Satellite Datasets For Rapid Interactive Analysis</h1>
+	</header>
+	
+	<!--<nav class='container roundEdge' id='nav'>
 
-                    var data_hc = [{
-                        "hc-key": "aq-3638",
-                        "value": 0
-                    }, {
-                        "hc-key": "aq-3639",
-                        "value": 1
-                    }, ];
+	</nav>-->
+	
+	<section class='container' id='main'>
+		<section id='content'>
+	<div id = 'map'>
+	<script>
+		$(function () {
+		//define map
 
-                    // Initiate the chart
-                    $('#map').highcharts('Map', {
+		var H = Highcharts,
+			map = H.maps['custom/antarctica'],
+			chart;
+		//pass in anomaly data layer
+		var data_anomaly = [
+			{
+				name: 'Anomaly 1',
+				lat: -83.12,
+				lon: 43.41
+			}
+		]; 
 
-                        title: {
-                            text: 'Antarctica'
-                        },
+		var data_hc = [
+			{
+				"hc-key": "aq-3638",
+				"value": 0
+			},
+			{
+				"hc-key": "aq-3639",
+				"value": 1
+			},
+		]; 
 
-                        subtitle: {
-                            text: 'Source map: <a href="js/antarctica.js">Antarctica</a>'
-                        },
+		// Initiate the chart
+		$('#map').highcharts('Map', {
+/*
+			series: [
+			{
+				"type": "map",
+				"data": [
+					{
+						"name": "path3348",
+						"path": "M303,-608,317,-596,340,-602,357,-604,356,-617,372,-638,401,-639,423,-662,443,-673,438,-690,450,-698,437,-705,455,-708,455,-734,463,-724,469,-727,466,-738,476,-742,475,-732,485,-734,496,-733,498,-719,508,-736,529,-742,542,-744,552,-737,563,-745,575,-738,578,-748,582,-734,591,-735,586,-728,599,-726,605,-733,606,-722,612,-727,615,-712,645,-713,665,-728,670,-722,664,-717,669,-712,660,-706,671,-704,673,-697,679,-698,683,-712,694,-705,694,-712,726,-710,744,-703,749,-690,759,-694,775,-674,777,-657,771,-654,778,-636,787,-629,786,-617,783,-614,786,-601,782,-594,772,-598,761,-597,752,-601,752,-592,756,-587,734,-585,730,-578,752,-576,766,-578,770,-568,785,-557,794,-558,806,-543,809,-531,819,-529,816,-524,819,-510,832,-502,825,-497,828,-476,858,-465,857,-456,830,-436,819,-422,811,-411,800,-404,797,-399,790,-399,801,-390,809,-392,808,-381,797,-378,777,-379,782,-370,773,-361,757,-347,772,-348,771,-337,762,-337,768,-328,763,-323,753,-328,739,-322,743,-314,739,-308,743,-296,738,-291,732,-300,726,-295,730,-290,722,-290,726,-283,714,-284,717,-275,708,-282,696,-282,697,-277,693,-276,679,-286,689,-272,690,-261,695,-251,676,-242,636,-245,637,-259,623,-265,617,-256,614,-247,606,-255,596,-258,565,-259,556,-247,558,-264,545,-274,540,-289,542,-298,543,-314,551,-329,541,-349,509,-347,490,-351,488,-356,478,-356,475,-345,471,-345,456,-350,442,-320,431,-314,391,-325,356,-338,344,-369,333,-379,324,-388,323,-379,315,-376,314,-389,320,-396,315,-395,311,-391,305,-407,306,-411,300,-414,308,-420,297,-420,301,-428,316,-436,306,-441,306,-453,301,-461,301,-466,289,-468,286,-458,279,-455,279,-469,274,-468,274,-454,266,-452,254,-460,254,-484,266,-497,256,-500,263,-510,267,-517,276,-521,277,-529,281,-534,273,-533,269,-539,277,-545,261,-542,262,-549,271,-556,278,-564,278,-581,270,-587,268,-594,261,-588,263,-579,261,-572,263,-556,254,-561,250,-575,246,-576,247,-564,248,-552,239,-540,239,-552,231,-559,223,-574,228,-577,225,-586,225,-592,232,-595,228,-607,223,-611,210,-611,214,-605,213,-601,204,-604,199,-615,207,-618,198,-629,199,-637,192,-645,188,-662,184,-677,188,-686,194,-686,196,-676,203,-682,201,-668,209,-669,205,-657,211,-649,226,-646,239,-638,254,-635,263,-623,278,-622,283,-615,298,-615z"
+					},
+					{
+						"name": "path4175",
+						"path": "M0,-1000,0,-991,12,-991,12,-1000,0,-1000Z"
+					},
+					{
+						"name": "path4177",
+						"path": "M994,-48,1000,-48,1000,-55,994,-55,994,-48z"	
+					}
+				]
+			}
+			],
+	*/	
+			title : {
+				text : 'Antarctica'
+			},
 
-                        mapNavigation: {
-                            enabled: true,
-                            buttonOptions: {
-                                verticalAlign: 'bottom'
-                            }
-                        },
+			subtitle : {
+				text : 'Source map: Antarctica'
+			},
+			mapNavigation: {
+				enabled: true,
+				buttonOptions: {
+					verticalAlign: 'bottom'
+				}
+			},
 
-                        colorAxis: {
-                            min: 0
-                        },
+			colorAxis: {
+				min: 0
+			},
 
-                        tooltip: {
-                            formatter: function() {
-                                return this.point.name + '<br>X: ' + this.point.x + ' Y: ' + this.point.y;
-                            },
-                            crosshairs: [{
-                                zIndex: 5,
-                                dashStyle: 'dot',
-                                snap: false,
-                                color: 'gray'
-                            }, {
-                                zIndex: 5,
-                                dashStyle: 'dot',
-                                snap: false,
-                                color: 'gray'
-                            }]
-                        },
+			tooltip: {
+				formatter: function () {
+						return this.point.name + '<br>Lat: ' + this.point.lat + ' Lon: ' + this.point.lon;
+					},
+					crosshairs: [{
+						zIndex: 5,
+						dashStyle: 'dot',
+						snap: false,
+						color: 'gray'
+					}, {
+						zIndex: 5,
+						dashStyle: 'dot',
+						snap: false,
+						color: 'gray'
+					}]
+				},
 
-                        series: [{
-                            data: data_hc,
-                            mapData: map,
-                            //joinBy: 'hc-key',
-                            name: 'Test',
-                            showInLegend: false,
-                            states: {
-                                hover: {
-                                    color: '#BADA55'
-                                }
-                            },
-                            dataLabels: {
-                                enabled: true,
-                                format: '{point.name}'
-                            }
-                        }, {
-                            type: 'mapbubble',
-                            dataLabels: {
-                                enabled: true,
-                                format: '{point.name}'
-                            },
-                            name: 'Anomaly',
-                            data: data_anomaly,
-                            maxSize: '10%',
-                            color: H.getOptions().colors[0]
-                        }, {
-                            "type": "mappoint",
-                            "name": "Tests",
-                            "marker": {
-                                "fillColor": "red",
-                                "lineColor": "red",
-                                "lineWidth": 1,
-                                "radius": 5
-                            },
-                            "data": [{
-                                "name": "Test1",
-                                "x": 2000,
-                                "y": -5000
-                            }, {
-                                "name": "Test2",
-                                "x": 3000,
-                                "y": -5000
-                            }]
-                        }]
-                    });
+			series : [{
+				data : data_hc,
+				mapData: map,
+				//joinBy: 'hc-key',
+				name: 'Test',
+				showInLegend: false,
+				states: {
+					hover: {
+						color: '#BADA55'
+					}
+				},
+				dataLabels: {
+					enabled: true,
+					format: '{point.name}'
+				}
+			},
+			{
+				type: 'mapbubble',
+				dataLabels: {
+					enabled: true,
+					format: '{point.name}'
+				},
+				name: 'Anomaly',
+				data: data_anomaly,
+				maxSize: '10%',
+				color: H.getOptions().colors[0]
+				}   
+			]
+		});
 
-                    //cross lat/lon display
-                    chart = $('#map').highcharts();
-                    // Display custom label with lat/lon next to crosshairs
-                    $('#map').mousemove(function(e) {
-                        var position;
+		//cross lat/lon display
+		chart = $('#map').highcharts();
+		// Display custom label with lat/lon next to crosshairs
+		$('#map').mousemove(function (e) {
+			var position;
+			
+			if (chart) {
+				if (!chart.lab) {
+					chart.lab = chart.renderer.text('', 0, 0)
+						.attr({
+							zIndex: 5
+						})
+						.css({
+							color: '#505050'
+						})
+						.add();
+				}
+				//convert from point coordination to lat/lon location 
+				e = chart.pointer.normalize(e);
+				
+				// this gets the coordinates of the x and y values
+				offsetX = typeof(e.offsetX)==='undefined' ? e.clientX:e.offsetX,
+				offsetY = typeof(e.offsetY)==='undefined' ? e.clientY:e.offsetY;
+				
+				position = chart.fromPointToLatLon({
+					x: chart.xAxis[0].toValue(e.chartX),
+					y: chart.yAxis[0].toValue(e.chartY)
+				});
 
-                        if (chart) {
-                            if (!chart.lab) {
-                                chart.lab = chart.renderer.text('', 0, 0)
-                                    .attr({
-                                        zIndex: 5
-                                    })
-                                    .css({
-                                        color: '#505050'
-                                    })
-                                    .add();
-                            }
-                            //convert from point coordination to lat/lon location 
-                            e = chart.pointer.normalize(e);
-                            position = chart.fromPointToLatLon({
-                                x: chart.xAxis[0].toValue(e.chartX),
-                                y: chart.yAxis[0].toValue(e.chartY)
-                            });
+				chart.lab.attr({
+					x: e.chartX + 5, //offset for printing the numbers to upper-right of cursor
+					y: e.chartY - 22,
+					text: 'X: ' + offsetX.toFixed(2) + '<br>Y: ' + offsetY.toFixed(2)
+				});
+			}
+		});
 
-                            chart.lab.attr({
-                                x: e.chartX + 5, //why offset
-                                y: e.chartY - 22,
-                                text: 'Lat: ' + position.lat.toFixed(2) + '<br>Lon: ' + position.lon.toFixed(2)
-                            });
-                        }
-                    });
+		$('#map').mouseout(function () {
+			if (chart && chart.lab) {
+				chart.lab.destroy();
+				chart.lab = null;
+			}
+		});
+		});
 
-                    $('#map').mouseout(function() {
-                        if (chart && chart.lab) {
-                            chart.lab.destroy();
-                            chart.lab = null;
-                        }
-                    });
-                });
+		//user specified region
+		initDraw(document.getElementById('map'));
+		function initDraw(canvas) {
+			function setMousePosition(e) {
+				var ev = e || window.event; //Moz || IE
+				if (ev.pageX) { //Moz
+					mouse.x = ev.pageX + window.pageXOffset;
+					mouse.y = ev.pageY + window.pageYOffset;
+				} else if (ev.clientX) { //IE
+					mouse.x = ev.clientX + document.body.scrollLeft;
+					mouse.y = ev.clientY + document.body.scrollTop;
+				}
+			};
 
-                //user specified region
-                initDraw(document.getElementById('map'));
+			var mouse = {
+				x: 0,
+				y: 0,
+				startX: 0,
+				startY: 0
+			};
+			var element = null;
 
-                function initDraw(canvas) {
-                    function setMousePosition(e) {
-                        var ev = e || window.event; //Moz || IE
-                        if (ev.pageX) { //Moz
-                            mouse.x = ev.pageX + window.pageXOffset;
-                            mouse.y = ev.pageY + window.pageYOffset;
-                        } else if (ev.clientX) { //IE
-                            mouse.x = ev.clientX + document.body.scrollLeft;
-                            mouse.y = ev.clientY + document.body.scrollTop;
-                        }
-                    };
+			canvas.onmousemove = function (e) {
+				setMousePosition();
+				if (element !== null) {
+					element.style.width = Math.abs(mouse.x - mouse.startX) + 'px';
+					element.style.height = Math.abs(mouse.y - mouse.startY) + 'px';
+					element.style.left = (mouse.x - mouse.startX < 0) ? mouse.x + 'px' : mouse.startX + 'px';
+					element.style.top = (mouse.y - mouse.startY < 0) ? mouse.y + 'px' : mouse.startY + 'px';
+				}
+			}
+			canvas.onclick = function (e) {
+				if (element !== null) {
+					element = null;
+					canvas.style.cursor = "default";
+					console.log("finsihed.");
+					//pop-up diaglog, if 'ok', bring user to new page
+					$.confirm({
+						title: 'Proceed?',
+						content: 'Proceed with selected region?',
+						columnClass: 'col-md-4 col-md-offset-4',
+						confirm: function(){
+							//alert('Confirmed!');
+							var _region = '100,90';
+						   //converts to JSON string the Object Literal
+						   _region = JSON.stringify(_region);
+						   localStorage.setItem('_Region', _region);
+							var win = window.open("anomaly.html", '_blank');
+							win.focus();
+						},
+						cancel: function(){
+							//alert('Canceled!')
+						}
+					});
+				} else {
+					console.log("begun.");
+					mouse.startX = mouse.x;
+					mouse.startY = mouse.y;
+					element = document.createElement('div');
+					element.className = 'rectangle'
+					element.style.left = mouse.x + 'px';
+					element.style.top = mouse.y + 'px';
+					canvas.appendChild(element)
+					canvas.style.cursor = "crosshair";
+				}
+			}
+		}
+	</script>
 
-                    var mouse = {
-                        x: 0,
-                        y: 0,
-                        startX: 0,
-                        startY: 0
-                    };
-                    var element = null;
+	<!-- decrement increment the image on canvas -->
+	<script type="text/javascript">//works now, Qi
+		sendString = "";
+		dataSet = "SSMI";
+		frequency = "91";
+		polarization = "h";
+		startDate = "19870101";
+		endDate = "20141231";
 
-                    canvas.onmousemove = function(e) {
-                        setMousePosition();
-                        if (element !== null) {
-                            element.style.width = Math.abs(mouse.x - mouse.startX) + 'px';
-                            element.style.height = Math.abs(mouse.y - mouse.startY) + 'px';
-                            element.style.left = (mouse.x - mouse.startX < 0) ? mouse.x + 'px' : mouse.startX + 'px';
-                            element.style.top = (mouse.y - mouse.startY < 0) ? mouse.y + 'px' : mouse.startY + 'px';
-                        }
-                    }
-                    canvas.onclick = function(e) {
-                        if (element !== null) {
-                            element = null;
-                            canvas.style.cursor = "default";
-                            console.log("finsihed.");
-                            //pop-up diaglog, if 'ok', bring user to new page
-                            $.confirm({
-                                title: 'Proceed?',
-                                content: 'Proceed with selected region?',
-                                columnClass: 'col-md-4 col-md-offset-4',
-                                confirm: function() {
-                                    //alert('Confirmed!');
-                                    var _region = '100,90';
-                                    //converts to JSON string the Object Literal
-                                    _region = JSON.stringify(_region);
-                                    localStorage.setItem('_Region', _region);
-                                    var win = window.open("anomaly.html", '_blank');
-                                    win.focus();
-                                },
-                                cancel: function() {
-                                    //alert('Canceled!')
-                                }
-                            });
-                        } else {
-                            console.log("begun.");
-                            mouse.startX = mouse.x;
-                            mouse.startY = mouse.y;
-                            element = document.createElement('div');
-                            element.className = 'rectangle'
-                            element.style.left = mouse.x + 'px';
-                            element.style.top = mouse.y + 'px';
-                            canvas.appendChild(element)
-                            canvas.style.cursor = "crosshair";
-                        }
-                    }
-                }
-                </script>
-                <!-- decrement increment the image on canvas -->
-                <script type="text/javascript">
-                //works now, Qi
-                sendString = "";
-                dataSet = "SSMI";
-                frequency = "91";
-                polarization = "h";
-                startDate = "19870101";
-                endDate = "20141231";
+		function updateString( ){
+			startDate = "" + document.getElementById('startDate').value;
+			endDate = "" + document.getElementById('endDate').value;
+			sendString = dataSet + "_s" + frequency + polarization + "_" + startDate.replace("-", "").replace("-", "") + "_" + endDate.replace("-", "").replace("-", "");
+			console.log("sendString: ", sendString);
+		}
+		function changeDataSet(ds) { dataSet = ds; updateString(); }
+		function changeFrequency(freq){ frequency = freq; updateString(); }
+		function changePolarization(pol) { polarization = pol; updateString(); }
+		function changeStartDate(sd) { startDate = sd; updateString(); }
+		function changeEndDate(ed) { endDate = ed; updateString(); }
+		//function updatePolyArea(pa) { polyArea = pa; }
+		function enable(){}
+	</script>
 
-                function updateString() {
-                    startDate = "" + document.getElementById('startDate').value;
-                    endDate = "" + document.getElementById('endDate').value;
-                    sendString = dataSet + "_s" + frequency + polarization + "_" + startDate + "_" + endDate;
-                    console.log("sendString: ", sendString);
-                }
+	</div>
+	</section>
+		<aside id='sidebar' class='roundEdge'>
+			<br><br><span id="datasetName"><font color="Black">Data Set</font></span><br>
+			<button id="dataset1" class="myButton" onclick="changeDataSet('AVHRR')">AVHRR</button>
+			<button id="dataset2" class="myButton" onclick="changeDataSet('SSMI')">SSMI</button>
 
-                function changeDataSet(ds) {
-                    dataSet = ds;
-                    updateString();
-                }
+			<br><br><br><span id="datasetFrequency"><font color="Black">Frequency [ SSMI ]</font></span><br>
+			<button class="myButton" onclick="changeFrequency('91')">91.7</button>
+			<button class="myButton" onclick="changeFrequency('85')">85.5</button>
+			<button class="myButton" onclick="changeFrequency('37')">37.0</button>
+			<button class="myButton" onclick="changeFrequency('22')">22.2</button>
+			<button class="myButton" onclick="changeFrequency('19')">19.3</button>
 
-                function changeFrequency(freq) {
-                    frequency = freq;
-                    updateString();
-                }
+			<br><br><br><span id="datasetFrequency"><font color="Black">Polarization [ SSMI ]</font></span><br>
+			<button id="vertical" class="myButton" onclick="changePolarization('v')">vertical</button>
+			<button id="horizontal" class="myButton" onclick="changePolarization('h')">horizontal</button>
 
-                function changePolarization(pol) {
-                    polarization = pol;
-                    updateString();
-                }
+			<br><br><br><span id="datasetField"><font color="Black">Start Date</font></span><br>
+			<input id="startDate" name="startDate" value="1987-01-01" type="date" min="1987-01-01" max="2014-12-31"/>
 
-                function changeStartDate(sd) {
-                    startDate = sd;
-                    updateString();
-                }
+			<br><br><br><span id="datasetField"><font color="Black">End Date</font></span><br>
+			<input id="endDate" name="endDate" value="2014-12-31" type="date" min="1987-01-01" max="2014-12-31" />
 
-                function changeEndDate(ed) {
-                    endDate = ed;
-                    updateString();
-                }
-                //function updatePolyArea(pa) { polyArea = pa; }
-                function enable() {}
-                </script>
-            </div>
-        </div>
-        <aside id='sidebar' class='roundEdge'>
-            <br>
-            <br><span id="datasetName"><font color="Black">Data Set</font></span>
-            <br>
-            <button id="dataset1" class="myButton" onclick="changeDataSet('AVHRR')">AVHRR</button>
-            <button id="dataset2" class="myButton" onclick="changeDataSet('SSMI')">SSMI</button>
-            <br>
-            <br>
-            <br><span id="datasetFrequency"><font color="Black">Frequency [ SSMI ]</font></span>
-            <br>
-            <button class="myButton" onclick="changeFrequency('91')">91.7</button>
-            <button class="myButton" onclick="changeFrequency('85')">85.5</button>
-            <button class="myButton" onclick="changeFrequency('37')">37.0</button>
-            <button class="myButton" onclick="changeFrequency('22')">22.2</button>
-            <button class="myButton" onclick="changeFrequency('19')">19.3</button>
-            <br>
-            <br>
-            <br><span id="datasetFrequency"><font color="Black">Polarization [ SSMI ]</font></span>
-            <br>
-            <button id="vertical" class="myButton" onclick="changePolarization('v')">vertical</button>
-            <button id="horizontal" class="myButton" onclick="changePolarization('h')">horizontal</button>
-            <br>
-            <br>
-            <br><span id="datasetField"><font color="Black">Start Date</font></span>
-            <br>
-            <input id="startDate" name="startDate" value="1987-01-01" type="date" min="1987-01-01" max="2014-12-31" />
-            <br>
-            <br>
-            <br><span id="datasetField"><font color="Black">End Date</font></span>
-            <br>
-            <input id="endDate" name="endDate" value="2014-12-31" type="date" min="1987-01-01" max="2014-12-31" />
-            <br>
-            <br>
-            <br><span id="datasetField"><font color="Black">Search Polygon Location</font></span>
-            <br>
-            <button id="searchButtonToggle" class="myButton" onclick="enablePolygonSearch()">Enable</button>
-        </aside>
-    </section>
-    <footer class='container' id='footer'>
-        <p>© 2015 NSIDC & University of Colorado at Boulder</p>
-    </footer>
+			<br><br><br><span id="datasetField"><font color="Black">Search Polygon Location</font></span><br>
+			<button id="searchButtonToggle" class="myButton" onclick="enablePolygonSearch()">Enable</button>
+		</aside>
+	</section>
+		
+	<footer class='container' id='footer'>
+		<p>© 2015 NSIDC and The University of Colorado at Boulder</p>
+	</footer>	
+
 </body>
-
-</html>
+</html>	

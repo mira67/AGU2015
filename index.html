@@ -2,351 +2,371 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> 
-<html> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>AGU2015</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
+<!--[if gt IE 8]><!-->
+<html>
+<!--<![endif]-->
 
-	<script src="js/jquery-2.1.4.min.js"></script>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>AGU2015</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/jquery-confirm.min.js"></script>
-	<script src="js/highmaps.js"></script>
-	<script src="js/exporting.js"></script>
-	<script src="js/antarctica.js"></script>
+    <script src="js/highmaps.js"></script>
+    <script src="js/exporting.js"></script>
+    <script src="js/antarctica.js"></script>
     <script src="js/proj4.js"></script>
     <script src="js/js.cookie.js"></script>
-	
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" href="css/style.css"/>
-    <link rel="stylesheet" href="css/jquery-confirm.min.css"/>
-
-	<style type="text/css">	
-		.myButton {
-			background-color: AliceBlue;
-			-moz-border-radius:7px;
-			-webkit-border-radius:7px;
-			border-radius:7px;
-			border:1px solid #dcdcdc;
-			display:inline-block;
-			cursor:pointer;
-			color:#666666;
-			font-size:13px;
-			padding:2px 20px;
-			margin: 2px 3px 2px 3px;
-			text-decoration:none;
-		}
-		.myButton:hover {
-			background-color: "AliceBlue";
-		}
-		.myButton:active {
-			position:relative;
-			top:1px;
-		}
-	</style>
-
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/jquery-confirm.min.css" />
+    <style type="text/css">
+    .myButton {
+        background-color: AliceBlue;
+        -moz-border-radius: 7px;
+        -webkit-border-radius: 7px;
+        border-radius: 7px;
+        border: 1px solid #dcdcdc;
+        display: inline-block;
+        cursor: pointer;
+        color: #666666;
+        font-size: 13px;
+        padding: 2px 20px;
+        margin: 2px 3px 2px 3px;
+        text-decoration: none;
+    }
+    
+    .myButton:hover {
+        background-color: "AliceBlue";
+    }
+    
+    .myButton:active {
+        position: relative;
+        top: 1px;
+    }
+    </style>
 </head>
+
 <body id="index" class="home">
-	
-	<header class='container' id='header'>
-	<!--<img src="css/img/logo_nsidc.jpg"> </img>-->
-	<h1 id='project' class='center'>Condensing Massive Satellite Datasets For Rapid Interactive Analysis</h1>
-	</header>
-	
-	<!--<nav class='container roundEdge' id='nav'>
+    <header class='container' id='header'>
+        <!--<img src="css/img/logo_nsidc.jpg"> </img>-->
+        <h1 id='project' class='center'>Condensing Massive Satellite Datasets For Rapid Interactive Analysis</h1>
+    </header>
+    <!--<nav class='container roundEdge' id='nav'>
 
 	</nav>-->
-	
-	<section class='container' id='main'>
-		<section id='content'>
-	<div id = 'map'>
-	<script>
-		$(function () {
-		//define map
-		 var H = Highcharts,
-			map = H.maps['custom/antarctica'],
-			chart;
-		//pass in anomaly data layer
-		var data_anomaly = [
-			{
-				name: 'Anomaly 1',
-				x: 5000,
-				y: -5000
-			}
-		]; 
+    <section class='container' id='main'>
+        <section id='content'>
+            <div id='map'>
+                <script>
+                $(function() {
+                    //define map
+                    var H = Highcharts,
+                        map = H.maps['custom/antarctica'],
+                        chart;
+                    //pass in anomaly data layer
+                    var data_anomaly = [{
+                        name: 'Anomaly 1',
+                        x: 5000,
+                        y: -5000
+                    }];
 
-		var data_hc = [
-			{
-				"hc-key": "aq-3638",
-				"value": 0
-			},
-			{
-				"hc-key": "aq-3639",
-				"value": 1
-			},
-		]; 
+                    var data_hc = [{
+                        "hc-key": "aq-3638",
+                        "value": 0
+                    }, {
+                        "hc-key": "aq-3639",
+                        "value": 1
+                    }, ];
 
-		// Initiate the chart
-		$('#map').highcharts('Map', {
+                    // Initiate the chart
+                    $('#map').highcharts('Map', {
 
-			title : {
-				text : 'Antarctica'
-			},
+                        title: {
+                            text: 'Antarctica'
+                        },
 
-			subtitle : {
-				text : 'Source map: <a href="js/antarctica.js">Antarctica</a>'
-			},
+                        subtitle: {
+                            text: 'Source map: <a href="js/antarctica.js">Antarctica</a>'
+                        },
 
-			mapNavigation: {
-				enabled: true,
-				buttonOptions: {
-					verticalAlign: 'bottom'
-				}
-			},
+                        mapNavigation: {
+                            enabled: true,
+                            buttonOptions: {
+                                verticalAlign: 'bottom'
+                            }
+                        },
 
-			colorAxis: {
-				min: 0
-			},
+                        colorAxis: {
+                            min: 0
+                        },
 
-			tooltip: {
-				formatter: function () {
-						return this.point.name + '<br>X: ' + this.point.x + ' Y: ' + this.point.y;
-					},
-					crosshairs: [{
-						zIndex: 5,
-						dashStyle: 'dot',
-						snap: false,
-						color: 'gray'
-					}, {
-						zIndex: 5,
-						dashStyle: 'dot',
-						snap: false,
-						color: 'gray'
-					}]
-				},
+                        tooltip: {
+                            formatter: function() {
+                                return this.point.name + '<br>X: ' + this.point.x + ' Y: ' + this.point.y;
+                            },
+                            crosshairs: [{
+                                zIndex: 5,
+                                dashStyle: 'dot',
+                                snap: false,
+                                color: 'gray'
+                            }, {
+                                zIndex: 5,
+                                dashStyle: 'dot',
+                                snap: false,
+                                color: 'gray'
+                            }]
+                        },
 
-			series : [{
-				data : data_hc,
-				mapData: map,
-				//joinBy: 'hc-key',
-				name: 'Test',
-				showInLegend: false,
-				states: {
-					hover: {
-						color: '#BADA55'
-					}
-				},
-				dataLabels: {
-					enabled: true,
-					format: '{point.name}'
-				}
-			},
-			{
-				type: 'mapbubble',
-				dataLabels: {
-					enabled: true,
-					format: '{point.name}'
-				},
-				name: 'Anomaly',
-				data: data_anomaly,
-				maxSize: '10%',
-				color: H.getOptions().colors[0]
-				},
-				 {
-			        "type": "mappoint",
-			        "name": "Tests",
-			        "marker": {
-			            "fillColor": "red",
-			            "lineColor": "red",
-			            "lineWidth": 1,
-			            "radius": 5
-			        },
-			        "data": [{
-			            "name": "Test1",
-			            "x": 2000,
-			            "y": -5000
-			        }, {
-			            "name": "Test2",
-			            "x": 3000,
-			            "y": -5000
-			        }]
-			    }   
-			]
-		});
+                        series: [{
+                            data: data_hc,
+                            mapData: map,
+                            //joinBy: 'hc-key',
+                            name: 'Test',
+                            showInLegend: false,
+                            states: {
+                                hover: {
+                                    color: '#BADA55'
+                                }
+                            },
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.name}'
+                            }
+                        }, {
+                            type: 'mapbubble',
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.name}'
+                            },
+                            name: 'Anomaly',
+                            data: data_anomaly,
+                            maxSize: '10%',
+                            color: H.getOptions().colors[0]
+                        }, {
+                            "type": "mappoint",
+                            "name": "Tests",
+                            "marker": {
+                                "fillColor": "red",
+                                "lineColor": "red",
+                                "lineWidth": 1,
+                                "radius": 5
+                            },
+                            "data": [{
+                                "name": "Test1",
+                                "x": 2000,
+                                "y": -5000
+                            }, {
+                                "name": "Test2",
+                                "x": 3000,
+                                "y": -5000
+                            }]
+                        }]
+                    });
 
-		//cross lat/lon display
-		chart = $('#map').highcharts();
-		// Display custom label with lat/lon next to crosshairs
-		$('#map').mousemove(function (e) {
-			var position;
+                    //cross lat/lon display
+                    chart = $('#map').highcharts();
+                    // Display custom label with lat/lon next to crosshairs
+                    $('#map').mousemove(function(e) {
+                        var position;
 
-			if (chart) {
-				if (!chart.lab) {
-					chart.lab = chart.renderer.text('', 0, 0)
-						.attr({
-							zIndex: 5
-						})
-						.css({
-							color: '#505050'
-						})
-						.add();
-				}
-				//convert from point coordination to lat/lon location 
-				e = chart.pointer.normalize(e);
-				position = chart.fromPointToLatLon({
-					x: chart.xAxis[0].toValue(e.chartX),
-					y: chart.yAxis[0].toValue(e.chartY)
-				});
+                        if (chart) {
+                            if (!chart.lab) {
+                                chart.lab = chart.renderer.text('', 0, 0)
+                                    .attr({
+                                        zIndex: 5
+                                    })
+                                    .css({
+                                        color: '#505050'
+                                    })
+                                    .add();
+                            }
+                            //convert from point coordination to lat/lon location 
+                            e = chart.pointer.normalize(e);
+                            position = chart.fromPointToLatLon({
+                                x: chart.xAxis[0].toValue(e.chartX),
+                                y: chart.yAxis[0].toValue(e.chartY)
+                            });
 
-				chart.lab.attr({
-					x: e.chartX + 5,//why offset
-					y: e.chartY - 22,
-					text: 'Lat: ' + position.lat.toFixed(2) + '<br>Lon: ' + position.lon.toFixed(2)
-				});
-			}
-		});
+                            chart.lab.attr({
+                                x: e.chartX + 5, //why offset
+                                y: e.chartY - 22,
+                                text: 'Lat: ' + position.lat.toFixed(2) + '<br>Lon: ' + position.lon.toFixed(2)
+                            });
+                        }
+                    });
 
-		$('#map').mouseout(function () {
-			if (chart && chart.lab) {
-				chart.lab.destroy();
-				chart.lab = null;
-			}
-		});
-		});
+                    $('#map').mouseout(function() {
+                        if (chart && chart.lab) {
+                            chart.lab.destroy();
+                            chart.lab = null;
+                        }
+                    });
+                });
 
-		//user specified region
-		initDraw(document.getElementById('map'));
-		function initDraw(canvas) {
-			function setMousePosition(e) {
-				var ev = e || window.event; //Moz || IE
-				if (ev.pageX) { //Moz
-					mouse.x = ev.pageX + window.pageXOffset;
-					mouse.y = ev.pageY + window.pageYOffset;
-				} else if (ev.clientX) { //IE
-					mouse.x = ev.clientX + document.body.scrollLeft;
-					mouse.y = ev.clientY + document.body.scrollTop;
-				}
-			};
+                //user specified region
+                initDraw(document.getElementById('map'));
 
-			var mouse = {
-				x: 0,
-				y: 0,
-				startX: 0,
-				startY: 0
-			};
-			var element = null;
+                function initDraw(canvas) {
+                    function setMousePosition(e) {
+                        var ev = e || window.event; //Moz || IE
+                        if (ev.pageX) { //Moz
+                            mouse.x = ev.pageX + window.pageXOffset;
+                            mouse.y = ev.pageY + window.pageYOffset;
+                        } else if (ev.clientX) { //IE
+                            mouse.x = ev.clientX + document.body.scrollLeft;
+                            mouse.y = ev.clientY + document.body.scrollTop;
+                        }
+                    };
 
-			canvas.onmousemove = function (e) {
-				setMousePosition();
-				if (element !== null) {
-					element.style.width = Math.abs(mouse.x - mouse.startX) + 'px';
-					element.style.height = Math.abs(mouse.y - mouse.startY) + 'px';
-					element.style.left = (mouse.x - mouse.startX < 0) ? mouse.x + 'px' : mouse.startX + 'px';
-					element.style.top = (mouse.y - mouse.startY < 0) ? mouse.y + 'px' : mouse.startY + 'px';
-				}
-			}
-			canvas.onclick = function (e) {
-				if (element !== null) {
-					element = null;
-					canvas.style.cursor = "default";
-					console.log("finsihed.");
-					//pop-up diaglog, if 'ok', bring user to new page
-					$.confirm({
-						title: 'Proceed?',
-						content: 'Proceed with selected region?',
-						columnClass: 'col-md-4 col-md-offset-4',
-						confirm: function(){
-							//alert('Confirmed!');
-							var _region = '100,90';
-						   //converts to JSON string the Object Literal
-						   _region = JSON.stringify(_region);
-						   localStorage.setItem('_Region', _region);
-							var win = window.open("anomaly.html", '_blank');
-							win.focus();
-						},
-						cancel: function(){
-							//alert('Canceled!')
-						}
-					});
-				} else {
-					console.log("begun.");
-					mouse.startX = mouse.x;
-					mouse.startY = mouse.y;
-					element = document.createElement('div');
-					element.className = 'rectangle'
-					element.style.left = mouse.x + 'px';
-					element.style.top = mouse.y + 'px';
-					canvas.appendChild(element)
-					canvas.style.cursor = "crosshair";
-				}
-			}
-		}
-	</script>
+                    var mouse = {
+                        x: 0,
+                        y: 0,
+                        startX: 0,
+                        startY: 0
+                    };
+                    var element = null;
 
-	<!-- decrement increment the image on canvas -->
-	<script type="text/javascript">//works now, Qi
-		sendString = "";
-		dataSet = "SSMI";
-		frequency = "91";
-		polarization = "h";
-		startDate = "19870101";
-		endDate = "20141231";
+                    canvas.onmousemove = function(e) {
+                        setMousePosition();
+                        if (element !== null) {
+                            element.style.width = Math.abs(mouse.x - mouse.startX) + 'px';
+                            element.style.height = Math.abs(mouse.y - mouse.startY) + 'px';
+                            element.style.left = (mouse.x - mouse.startX < 0) ? mouse.x + 'px' : mouse.startX + 'px';
+                            element.style.top = (mouse.y - mouse.startY < 0) ? mouse.y + 'px' : mouse.startY + 'px';
+                        }
+                    }
+                    canvas.onclick = function(e) {
+                        if (element !== null) {
+                            element = null;
+                            canvas.style.cursor = "default";
+                            console.log("finsihed.");
+                            //pop-up diaglog, if 'ok', bring user to new page
+                            $.confirm({
+                                title: 'Proceed?',
+                                content: 'Proceed with selected region?',
+                                columnClass: 'col-md-4 col-md-offset-4',
+                                confirm: function() {
+                                    //alert('Confirmed!');
+                                    var _region = '100,90';
+                                    //converts to JSON string the Object Literal
+                                    _region = JSON.stringify(_region);
+                                    localStorage.setItem('_Region', _region);
+                                    var win = window.open("anomaly.html", '_blank');
+                                    win.focus();
+                                },
+                                cancel: function() {
+                                    //alert('Canceled!')
+                                }
+                            });
+                        } else {
+                            console.log("begun.");
+                            mouse.startX = mouse.x;
+                            mouse.startY = mouse.y;
+                            element = document.createElement('div');
+                            element.className = 'rectangle'
+                            element.style.left = mouse.x + 'px';
+                            element.style.top = mouse.y + 'px';
+                            canvas.appendChild(element)
+                            canvas.style.cursor = "crosshair";
+                        }
+                    }
+                }
+                </script>
+                <!-- decrement increment the image on canvas -->
+                <script type="text/javascript">
+                //works now, Qi
+                sendString = "";
+                dataSet = "SSMI";
+                frequency = "91";
+                polarization = "h";
+                startDate = "19870101";
+                endDate = "20141231";
 
-		function updateString( ){
-			startDate = "" + document.getElementById('startDate').value;
-			endDate = "" + document.getElementById('endDate').value;
-			sendString = dataSet + "_s" + frequency + polarization + "_" + startDate + "_" + endDate;
-			console.log("sendString: ", sendString);
-		}
-		function changeDataSet(ds) { dataSet = ds; updateString(); }
-		function changeFrequency(freq){ frequency = freq; updateString(); }
-		function changePolarization(pol) { polarization = pol; updateString(); }
-		function changeStartDate(sd) { startDate = sd; updateString(); }
-		function changeEndDate(ed) { endDate = ed; updateString(); }
-		//function updatePolyArea(pa) { polyArea = pa; }
-		function enable(){}
-	</script>
+                function updateString() {
+                    startDate = "" + document.getElementById('startDate').value;
+                    endDate = "" + document.getElementById('endDate').value;
+                    sendString = dataSet + "_s" + frequency + polarization + "_" + startDate + "_" + endDate;
+                    console.log("sendString: ", sendString);
+                }
 
-	</div>
-	</section>
-		<aside id='sidebar' class='roundEdge'>
-			<br><br><span id="datasetName"><font color="Black">Data Set</font></span><br>
-			<button id="dataset1" class="myButton" onclick="changeDataSet('AVHRR')">AVHRR</button>
-			<button id="dataset2" class="myButton" onclick="changeDataSet('SSMI')">SSMI</button>
+                function changeDataSet(ds) {
+                    dataSet = ds;
+                    updateString();
+                }
 
-			<br><br><br><span id="datasetFrequency"><font color="Black">Frequency [ SSMI ]</font></span><br>
-			<button class="myButton" onclick="changeFrequency('91')">91.7</button>
-			<button class="myButton" onclick="changeFrequency('85')">85.5</button>
-			<button class="myButton" onclick="changeFrequency('37')">37.0</button>
-			<button class="myButton" onclick="changeFrequency('22')">22.2</button>
-			<button class="myButton" onclick="changeFrequency('19')">19.3</button>
+                function changeFrequency(freq) {
+                    frequency = freq;
+                    updateString();
+                }
 
-			<br><br><br><span id="datasetFrequency"><font color="Black">Polarization [ SSMI ]</font></span><br>
-			<button id="vertical" class="myButton" onclick="changePolarization('v')">vertical</button>
-			<button id="horizontal" class="myButton" onclick="changePolarization('h')">horizontal</button>
+                function changePolarization(pol) {
+                    polarization = pol;
+                    updateString();
+                }
 
-			<br><br><br><span id="datasetField"><font color="Black">Start Date</font></span><br>
-			<input id="startDate" name="startDate" value="1987-01-01" type="date" min="1987-01-01" max="2014-12-31"/>
+                function changeStartDate(sd) {
+                    startDate = sd;
+                    updateString();
+                }
 
-			<br><br><br><span id="datasetField"><font color="Black">End Date</font></span><br>
-			<input id="endDate" name="endDate" value="2014-12-31" type="date" min="1987-01-01" max="2014-12-31" />
-
-			<br><br><br><span id="datasetField"><font color="Black">Search Polygon Location</font></span><br>
-			<button id="searchButtonToggle" class="myButton" onclick="enablePolygonSearch()">Enable</button>
-		</aside>
-	</section>
-		
-	<footer class='container' id='footer'>
-		<p>© 2015 NSIDC and The University of Colorado at Boulder</p>
-	</footer>	
-
+                function changeEndDate(ed) {
+                    endDate = ed;
+                    updateString();
+                }
+                //function updatePolyArea(pa) { polyArea = pa; }
+                function enable() {}
+                </script>
+            </div>
+        </section>
+        <aside id='sidebar' class='roundEdge'>
+            <br>
+            <br><span id="datasetName"><font color="Black">Data Set</font></span>
+            <br>
+            <button id="dataset1" class="myButton" onclick="changeDataSet('AVHRR')">AVHRR</button>
+            <button id="dataset2" class="myButton" onclick="changeDataSet('SSMI')">SSMI</button>
+            <br>
+            <br>
+            <br><span id="datasetFrequency"><font color="Black">Frequency [ SSMI ]</font></span>
+            <br>
+            <button class="myButton" onclick="changeFrequency('91')">91.7</button>
+            <button class="myButton" onclick="changeFrequency('85')">85.5</button>
+            <button class="myButton" onclick="changeFrequency('37')">37.0</button>
+            <button class="myButton" onclick="changeFrequency('22')">22.2</button>
+            <button class="myButton" onclick="changeFrequency('19')">19.3</button>
+            <br>
+            <br>
+            <br><span id="datasetFrequency"><font color="Black">Polarization [ SSMI ]</font></span>
+            <br>
+            <button id="vertical" class="myButton" onclick="changePolarization('v')">vertical</button>
+            <button id="horizontal" class="myButton" onclick="changePolarization('h')">horizontal</button>
+            <br>
+            <br>
+            <br><span id="datasetField"><font color="Black">Start Date</font></span>
+            <br>
+            <input id="startDate" name="startDate" value="1987-01-01" type="date" min="1987-01-01" max="2014-12-31" />
+            <br>
+            <br>
+            <br><span id="datasetField"><font color="Black">End Date</font></span>
+            <br>
+            <input id="endDate" name="endDate" value="2014-12-31" type="date" min="1987-01-01" max="2014-12-31" />
+            <br>
+            <br>
+            <br><span id="datasetField"><font color="Black">Search Polygon Location</font></span>
+            <br>
+            <button id="searchButtonToggle" class="myButton" onclick="enablePolygonSearch()">Enable</button>
+        </aside>
+    </section>
+    <footer class='container' id='footer'>
+        <p>© 2015 NSIDC and The University of Colorado at Boulder</p>
+    </footer>
 </body>
-</html>	
+
+</html>

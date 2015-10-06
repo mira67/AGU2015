@@ -1,15 +1,16 @@
+<!-- test -->
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> 
 <html> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>AGU2015</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>AGU2015</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
 
 	<script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/jquery-confirm.min.js"></script>
@@ -71,10 +72,10 @@
 	<script>
 		$(function () {
 		//define map
+		var $report = $('#report');
 		var rectangle;
 		var H = Highcharts, map = H.maps['custom/antarctica'];
-		
-		var	chart;
+		var chart;
 		
 		//pass in anomaly data layer
 		var data_anomaly = [
@@ -95,29 +96,30 @@
 				"value": 1
 			},
 		];
-		//cross lat/lon display
-		chart = $('#map').highcharts();
 
 		// Initiate the chart
 		$('#map').highcharts('Map', {
 			chart : {
 				renderTo: 'map',
 				events: {
-													//// x: chart.xAxis[0].toValue(e.chartX),
 					selection: function(event) {
-						var xMin = chart.xAxis[0].translate((event.xAxis[0]||chart.xAxis[0]).min),
-							xMax = chart.xAxis[0].translate((event.xAxis[0]||chart.xAxis[0]).max),
-							yMin = chart.yAxis[0].translate((event.yAxis[0]||chart.yAxis[0]).min),
-							yMax = chart.yAxis[0].translate((event.yAxis[0]||chart.yAxis[0]).max);
+						if (event.xAxis) {
+							$report.html('minX: '+ event.xAxis[0].min.toFixed(2) +', maxX: '+ event.xAxis[0].max.toFixed(2) + ', minY: '+ event.yAxis[0].min.toFixed(2) +', maxY: '+ event.yAxis[0].max.toFixed(2));
 
-						rectangle.attr({
-							x: xMin + chart.plotLeft,
-							y: chart.plotHeight + chart.plotTop - yMax,
-							width: xMax - xMin,
-							height: yMax - yMin
-						});
-						
-						return false;
+							var xMin = chart.xAxis[0].translate((event.xAxis[0]||chart.xAxis[0]).min),
+								xMax = chart.xAxis[0].translate((event.xAxis[0]||chart.xAxis[0]).max),
+								yMin = chart.yAxis[0].translate((event.yAxis[0]||chart.yAxis[0]).min),
+								yMax = chart.yAxis[0].translate((event.yAxis[0]||chart.yAxis[0]).max);
+
+							rectangle.attr({
+								x: xMin + chart.plotLeft + 500,
+								y: chart.plotHeight + chart.plotTop - yMax + 500,
+								width: xMax - xMin,
+								height: yMax - yMin
+							});
+							
+							return false;
+						}
 					}
 				},
 				zoomType: 'xy'
@@ -130,7 +132,7 @@
 			},
 
 			subtitle : {
-				text : 'Source map: <a href="js/antarctica.js">Antarctica</a>'
+				text : 'click rectangle to select region...'
 			},
 
 			mapNavigation: {
@@ -142,6 +144,24 @@
 
 			colorAxis: {
 				min: 0
+			},
+
+			
+			tooltip: {
+				formatter: function () {
+					return this.point.name + '<br>Lat: ' + this.point.lat + ' Lon: ' + this.point.lon;
+				},
+				crosshairs: [{
+					zIndex: 5,
+					dashStyle: 'dot',
+					snap: false,
+					color: 'gray'
+				}, {
+					zIndex: 5,
+					dashStyle: 'dot',
+					snap: false,
+					color: 'gray'
+				}]
 			},
 			
 			series : [{
@@ -171,6 +191,10 @@
 					color: H.getOptions().colors[0]
 			}]
 		});
+
+
+		//cross lat/lon display
+		chart = $('#map').highcharts();
 		
 		// draw rectangle to the chart
 		rectangle = chart.renderer.rect(0,0,0,0,0).css({
@@ -179,7 +203,7 @@
 			fill: 'black',
 			fillOpacity: '.1'
 		}).add();
-		
+
 		// Display custom label with lat/lon next to crosshairs
 		$('#map').mousemove(function (e) {
 			var position;
@@ -206,6 +230,7 @@
 					x: chart.xAxis[0].toValue(e.chartX),
 					y: chart.yAxis[0].toValue(e.chartY)
 				});
+
 				chart.lab.attr({
 					x: e.chartX + 5, //offset for printing the numbers to upper-right of cursor
 					y: e.chartY - 22,
@@ -222,6 +247,7 @@
 		});
 		});
 
+		
 		//user specified region
 		initDraw(document.getElementById('map'));
 		function initDraw(canvas) {
@@ -344,6 +370,7 @@
 
 			<br><br><br><span id="datasetField"><font color="Black">Search Polygon Location</font></span><br>
 			<button id="searchButtonToggle" class="myButton" onclick="enablePolygonSearch()">Enable</button>
+			<br><br><div id="report"></div>
 		</aside>
 	</section>
 		

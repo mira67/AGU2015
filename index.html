@@ -71,7 +71,8 @@
 	<script>
 		$(function () {
 		//define map
-		 var H = Highcharts,
+
+		var H = Highcharts,
 			map = H.maps['custom/antarctica'],
 			chart;
 		//pass in anomaly data layer
@@ -96,22 +97,40 @@
 
 		// Initiate the chart
 		$('#map').highcharts('Map', {
-
+/*
+			series: [
+			{
+				"type": "map",
+				"data": [
+					{
+						"name": "path3348",
+						"path": "M303,-608,317,-596,340,-602,357,-604,356,-617,372,-638,401,-639,423,-662,443,-673,438,-690,450,-698,437,-705,455,-708,455,-734,463,-724,469,-727,466,-738,476,-742,475,-732,485,-734,496,-733,498,-719,508,-736,529,-742,542,-744,552,-737,563,-745,575,-738,578,-748,582,-734,591,-735,586,-728,599,-726,605,-733,606,-722,612,-727,615,-712,645,-713,665,-728,670,-722,664,-717,669,-712,660,-706,671,-704,673,-697,679,-698,683,-712,694,-705,694,-712,726,-710,744,-703,749,-690,759,-694,775,-674,777,-657,771,-654,778,-636,787,-629,786,-617,783,-614,786,-601,782,-594,772,-598,761,-597,752,-601,752,-592,756,-587,734,-585,730,-578,752,-576,766,-578,770,-568,785,-557,794,-558,806,-543,809,-531,819,-529,816,-524,819,-510,832,-502,825,-497,828,-476,858,-465,857,-456,830,-436,819,-422,811,-411,800,-404,797,-399,790,-399,801,-390,809,-392,808,-381,797,-378,777,-379,782,-370,773,-361,757,-347,772,-348,771,-337,762,-337,768,-328,763,-323,753,-328,739,-322,743,-314,739,-308,743,-296,738,-291,732,-300,726,-295,730,-290,722,-290,726,-283,714,-284,717,-275,708,-282,696,-282,697,-277,693,-276,679,-286,689,-272,690,-261,695,-251,676,-242,636,-245,637,-259,623,-265,617,-256,614,-247,606,-255,596,-258,565,-259,556,-247,558,-264,545,-274,540,-289,542,-298,543,-314,551,-329,541,-349,509,-347,490,-351,488,-356,478,-356,475,-345,471,-345,456,-350,442,-320,431,-314,391,-325,356,-338,344,-369,333,-379,324,-388,323,-379,315,-376,314,-389,320,-396,315,-395,311,-391,305,-407,306,-411,300,-414,308,-420,297,-420,301,-428,316,-436,306,-441,306,-453,301,-461,301,-466,289,-468,286,-458,279,-455,279,-469,274,-468,274,-454,266,-452,254,-460,254,-484,266,-497,256,-500,263,-510,267,-517,276,-521,277,-529,281,-534,273,-533,269,-539,277,-545,261,-542,262,-549,271,-556,278,-564,278,-581,270,-587,268,-594,261,-588,263,-579,261,-572,263,-556,254,-561,250,-575,246,-576,247,-564,248,-552,239,-540,239,-552,231,-559,223,-574,228,-577,225,-586,225,-592,232,-595,228,-607,223,-611,210,-611,214,-605,213,-601,204,-604,199,-615,207,-618,198,-629,199,-637,192,-645,188,-662,184,-677,188,-686,194,-686,196,-676,203,-682,201,-668,209,-669,205,-657,211,-649,226,-646,239,-638,254,-635,263,-623,278,-622,283,-615,298,-615z"
+					},
+					{
+						"name": "path4175",
+						"path": "M0,-1000,0,-991,12,-991,12,-1000,0,-1000Z"
+					},
+					{
+						"name": "path4177",
+						"path": "M994,-48,1000,-48,1000,-55,994,-55,994,-48z"	
+					}
+				]
+			}
+			],
+*/	
 			title : {
 				text : 'Antarctica'
 			},
 
 			subtitle : {
-				text : 'Source map: <a href="js/antarctica.js">Antarctica</a>'
+				text : 'Source map: Antarctica'
 			},
-
 			mapNavigation: {
 				enabled: true,
 				buttonOptions: {
 					verticalAlign: 'bottom'
 				}
 			},
-
 			colorAxis: {
 				min: 0
 			},
@@ -133,34 +152,33 @@
 					}]
 				},
 
-			series : [{
-				data : data_hc,
-				mapData: map,
-				//joinBy: 'hc-key',
-				name: 'Test',
-				showInLegend: false,
-				states: {
-					hover: {
-						color: '#BADA55'
-					}
-				},
-				dataLabels: {
-					enabled: true,
-					format: '{point.name}'
-				}
-			},
-			{
-				type: 'mapbubble',
-				dataLabels: {
-					enabled: true,
-					format: '{point.name}'
-				},
-				name: 'Anomaly',
-				data: data_anomaly,
-				maxSize: '10%',
-				color: H.getOptions().colors[0]
-				}   
-			]
+				series : [{
+					data : data_hc,
+					mapData: map,
+					//joinBy: 'hc-key',
+					name: 'Test',
+					showInLegend: false,
+					states: {
+						hover: {
+							color: '#BADA55'
+						}
+					},
+						dataLabels: {
+							enabled: true,
+							format: '{point.name}'
+						}
+					},
+					{
+						type: 'mapbubble',
+						dataLabels: {
+							enabled: true,
+							format: '{point.name}'
+					},
+					name: 'Anomaly',
+					data: data_anomaly,
+					maxSize: '10%',
+					color: H.getOptions().colors[0]
+				}]
 		});
 
 		//cross lat/lon display
@@ -168,7 +186,7 @@
 		// Display custom label with lat/lon next to crosshairs
 		$('#map').mousemove(function (e) {
 			var position;
-
+			
 			if (chart) {
 				if (!chart.lab) {
 					chart.lab = chart.renderer.text('', 0, 0)
@@ -182,15 +200,20 @@
 				}
 				//convert from point coordination to lat/lon location 
 				e = chart.pointer.normalize(e);
+				
+				// this gets the coordinates of the x and y values
+				offsetX = typeof(e.offsetX)==='undefined' ? e.clientX:e.offsetX,
+				offsetY = typeof(e.offsetY)==='undefined' ? e.clientY:e.offsetY;
+				
 				position = chart.fromPointToLatLon({
 					x: chart.xAxis[0].toValue(e.chartX),
 					y: chart.yAxis[0].toValue(e.chartY)
 				});
 
 				chart.lab.attr({
-					x: e.chartX + 5,//why offset
+					x: e.chartX + 5, //offset for printing the numbers to upper-right of cursor
 					y: e.chartY - 22,
-					text: 'Lat: ' + position.lat.toFixed(2) + '<br>Lon: ' + position.lon.toFixed(2)
+					text: 'X: ' + offsetX.toFixed(2) + '<br>Y: ' + offsetY.toFixed(2)
 				});
 			}
 		});
@@ -284,7 +307,7 @@
 		function updateString( ){
 			startDate = "" + document.getElementById('startDate').value;
 			endDate = "" + document.getElementById('endDate').value;
-			sendString = dataSet + "_s" + frequency + polarization + "_" + startDate + "_" + endDate;
+			sendString = dataSet + "_s" + frequency + polarization + "_" + startDate.replace("-", "").replace("-", "") + "_" + endDate.replace("-", "").replace("-", "");
 			console.log("sendString: ", sendString);
 		}
 		function changeDataSet(ds) { dataSet = ds; updateString(); }

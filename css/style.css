@@ -1,8 +1,14 @@
 *{margin:0px; padding:0px}
 *{margin:0px; padding:0px}
 header, footer,section,nav{display:blocks}
-body{background:url("img/antarctica.jpg")}
-.container{margin:10px auto; width:96%;font-family:arial;}
+body {
+	background:url("img/antarctica.jpg")
+}
+.container{
+	margin: 10px auto;
+	width:96%;
+	font-family:arial;
+}
 h2 {
 	color: #333;
 	font-family: Helvetica,Arial;
@@ -49,7 +55,7 @@ h2 a:hover {
 	float:left;
 	width:70%;
 	background-color:#dedede;
-	min-height:600px;
+	height: 80vh;
 	text-align:center;
 	opacity: .8; 
 }
@@ -60,7 +66,7 @@ h2 a:hover {
 	float:right;
 	width:25%;
 	background-color:#fefefe;
-	min-height:600px;
+	height: 80vh;
 	text-align:center;
 	opacity: .7; 
 }
@@ -100,7 +106,7 @@ h2 a:hover {
 }
 
 #map {
-    min-height: 600px; 
+    height: 80vh;
     width: 100%; 
     margin: 0 auto; 
 }
@@ -113,4 +119,26 @@ h2 a:hover {
 .rectangle {
     border: 1px solid #FF0000;
     position: absolute;
+}
+
+.myButton {
+	background-color: AliceBlue;
+	-moz-border-radius:7px;
+	-webkit-border-radius:7px;
+	border-radius:7px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	cursor:pointer;
+	color:#666666;
+	font-size:13px;
+	padding:2px 20px;
+	margin: 2px 3px 2px 3px;
+	text-decoration:none;
+}
+.myButton:hover {
+	background-color: "AliceBlue";
+}
+.myButton:active {
+	position:relative;
+	top:1px;
 }

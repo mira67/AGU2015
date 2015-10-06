@@ -182,6 +182,21 @@
                     });
                 });
 
+                //user request function
+                function sendRequest(anomalyRequest) {
+                    var ajaxHandle = $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "anomaly/ajaxRetrv.do",
+                        data: JSON.stringify(anomalyRequest),
+                        dataType: 'jsonp',
+                        async: false,
+                        success: function(response) {
+                            var win = window.open("anomaly.html", '_blank');
+                            win.focus();
+                        }
+                    });
+                }
                 //user specified region
                 initDraw(document.getElementById('map'));
 
@@ -225,13 +240,28 @@
                                 content: 'Proceed with selected region?',
                                 columnClass: 'col-md-4 col-md-offset-4',
                                 confirm: function() {
-                                    //alert('Confirmed!');
-                                    var _region = '100,90';
-                                    //converts to JSON string the Object Literal
-                                    _region = JSON.stringify(_region);
-                                    localStorage.setItem('_Region', _region);
-                                    var win = window.open("anomaly.html", '_blank');
-                                    win.focus();
+                                    var loctnArray = Array();
+                                    loctnArray[0] = {
+                                        "longitude": 100,
+                                        "latitude": 100
+                                    }
+                                    loctnArray[1] = {
+                                        "longitude": 200,
+                                        "latitude": 200
+                                    }
+                                    var anomalyRequest = {
+                                        "dsName": "SSMI",
+                                        "dsFreq": "s19h",
+                                        "sDate": "20120101",
+                                        "eDate": "20130101",
+                                        "locations": loctnArray
+                                    }
+                                    sendRequest(anomalyRequest);
+                                    // //alert('Confirmed!');
+                                    // var _region = '100,90';
+                                    // //converts to JSON string the Object Literal
+                                    // _region = JSON.stringify(_region);
+                                    // localStorage.setItem('_Region', _region);
                                 },
                                 cancel: function() {
                                     //alert('Canceled!')

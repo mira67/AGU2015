@@ -78,8 +78,8 @@
 		var data_anomaly = [
 			{
 				name: 'Anomaly 1',
-				lat: -83.12,
-				lon: 43.41
+				x: 5000,
+				y: -5000
 			}
 		]; 
 
@@ -118,7 +118,7 @@
 
 			tooltip: {
 				formatter: function () {
-						return this.point.name + '<br>Lat: ' + this.point.lat + ' Lon: ' + this.point.lon;
+						return this.point.name + '<br>X: ' + this.point.x + ' Y: ' + this.point.y;
 					},
 					crosshairs: [{
 						zIndex: 5,
@@ -159,7 +159,26 @@
 				data: data_anomaly,
 				maxSize: '10%',
 				color: H.getOptions().colors[0]
-				}   
+				},
+				 {
+			        "type": "mappoint",
+			        "name": "Tests",
+			        "marker": {
+			            "fillColor": "red",
+			            "lineColor": "red",
+			            "lineWidth": 1,
+			            "radius": 5
+			        },
+			        "data": [{
+			            "name": "Test1",
+			            "x": 2000,
+			            "y": -5000
+			        }, {
+			            "name": "Test2",
+			            "x": 3000,
+			            "y": -5000
+			        }]
+			    }   
 			]
 		});
 

@@ -114,3 +114,17 @@ h2 a:hover {
     border: 1px solid #FF0000;
     position: absolute;
 }
+
+.slider {
+	width: auto;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+#image {
+	width: auto;
+	height: 80%;
+	margin-bottom: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+}

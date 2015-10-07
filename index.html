@@ -87,20 +87,26 @@
                     function enablePolygonSearch() {};
 
                     function sendRequest(anomalyRequest) {
-						updateDate();
-                        var ajaxHandle = $.ajax({
-                            type: "POST",
-                            contentType: "application/json; charset=utf-8",
-                            url: "anomaly/ajaxRetrv.do",
-                            data: JSON.stringify(anomalyRequest),
-                            dataType: 'jsonp',
-                            async: false,
-                            success: function(response) {
-                                var win = window.open("anomaly.html", '_blank');
-                                win.focus();
-                            }
-                        });
+                        updateDate();
+                        var ajaxHandle = $
+                            .ajax({
+                                type: "POST",
+                                contentType: "application/json; charset=utf-8",
+                                url: "anomaly/ajaxRetrvImage.do",
+                                data: JSON.stringify(anomalyRequest),
+                                dataType: 'jsonp',
+                                async: false,
+                                success: function(response) {
+                                    var win = window.open("anomaly.html",
+                                        '_blank');
+                                    win.focus();
+                                }
+                            });
+                        var w = window.open("anomaly/ajaxRetrvImage.do");
+                        w.document.write(ajaxHandle.responseText);
+                        w.document.close();
                     };
+                    
                     </script>
                     <script>
                     $(function() {
@@ -152,12 +158,12 @@
 
                                             //update rectangle coordination to request
                                             loctnArray[0] = {
-                                                "row": yMin,
-                                                "col": xMin
+                                                "longitude": yMin,
+                                                "latitude": xMin
                                             }
                                             loctnArray[1] = {
-                                                "row": yMax,
-                                                "col": xMax
+                                                "longitude": yMax,
+                                                "latitude": xMax
                                             }
 
                                             // fix this!

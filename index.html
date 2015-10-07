@@ -1,13 +1,5 @@
-<!-- test -->
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <html>
-<!--<![endif]-->
-
-<head>
-
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -17,7 +9,7 @@
         <script src="js/jquery-2.1.4.min.js"></script>
         <script src="js/jquery-confirm.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-        <script src="js/highmaps.js"></script>
+        <script src="http://code.highcharts.com/maps/highmaps.js"></script>
         <!--<script src="js/proj4.js"></script>-->
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -39,10 +31,10 @@
                     /*User Request Configuration*/
                     var sendString = "",
                         dataSet = "SSMI",
-                        frequency = "37",
-                        polarization = "v",
-                        startDate = "19870101",
-                        endDate = "20141231";
+                        frequency = "19",
+                        polarization = "h",
+                        startDate = "2012-08-08",
+                        endDate = "2012-08-10";
 
                     var loctnArray = Array();
 
@@ -321,12 +313,12 @@
                 <br>
                 <br><span id="datasetField"><font color="Black">Start Date</font></span>
                 <br>
-                <input id="startDate" name="startDate" value="1987-01-01" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
+                <input id="startDate" name="startDate" value="2012-08-08" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
                 <br>
                 <br>
                 <br><span id="datasetField"><font color="Black">End Date</font></span>
                 <br>
-                <input id="endDate" name="endDate" value="2014-12-31" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
+                <input id="endDate" name="endDate" value="2012-08-20" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
                 <br>
                 <br>
                 <br><span id="datasetField"><font color="Black">Search Polygon Location</font></span>

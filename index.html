@@ -49,7 +49,7 @@
                     /*user request function*/
                     var anomalyRequest = {
                         "dsName": dataSet,
-                        "dsFreq": frequency,
+                        "dsFreq": 's'+frequency+polarization,
                         "dsPolar": polarization,
                         "sDate": startDate,
                         "eDate": endDate,
@@ -106,7 +106,7 @@
                         w.document.write(ajaxHandle.responseText);
                         w.document.close();
                     };
-                    
+
                     </script>
                     <script>
                     $(function() {

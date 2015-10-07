@@ -49,7 +49,7 @@
                     /*user request function*/
                     var anomalyRequest = {
                         "dsName": dataSet,
-                        "dsFreq": 's'+frequency+polarization,
+                        "dsFreq": frequency,
                         "dsPolar": polarization,
                         "sDate": startDate,
                         "eDate": endDate,
@@ -88,6 +88,7 @@
 
                     function sendRequest(anomalyRequest) {
                         updateDate();
+                        anomalyRequest["dsFreq"] = 's'+frequency+polarization;
                         var ajaxHandle = $
                             .ajax({
                                 type: "POST",
@@ -143,11 +144,10 @@
                                         if (event.xAxis) {
                                             $report.html('X: ' + (event.xAxis[0].min / 1000 * 632).toFixed(0) + ', ' + (event.xAxis[0].max / 1000 * 632).toFixed(0) + ', Y: ' + ((1000+event.yAxis[0].max) / 1000 * 664).toFixed(0) + ', ' + ((1000+event.yAxis[0].min) / 1000 * 664).toFixed(0));
 
-
-                                            var xMin = (event.xAxis[0].min / 1000 * 632).toFixed(0),//chart.xAxis[0].translate((event.xAxis[0] || chart.xAxis[0]).min),
-                                                xMax = (event.xAxis[0].max / 1000 * 632).toFixed(0),//chart.xAxis[0].translate((event.xAxis[0] || chart.xAxis[0]).max),
-                                                yMin = ((1000+event.yAxis[0].min) / 1000 * 664).toFixed(0),//chart.yAxis[0].translate((event.yAxis[0] || chart.yAxis[0]).min),
-                                                yMax = ((1000+event.yAxis[0].max) / 1000 * 664).toFixed(0);//chart.yAxis[0].translate((event.yAxis[0] || chart.yAxis[0]).max);
+                                            var xMin = (event.xAxis[0].min / 1000 * 632).toFixed(0),
+                                                xMax = (event.xAxis[0].max / 1000 * 632).toFixed(0),
+                                                yMin = ((1000+event.yAxis[0].min) / 1000 * 664).toFixed(0),
+                                                yMax = ((1000+event.yAxis[0].max) / 1000 * 664).toFixed(0);
 
                                             if ((frequency != "91") && (frequency != "85")) {
                                                 xMin = Math.floor(xMin / 2);
@@ -156,7 +156,6 @@
                                                 yMax = Math.floor(yMax / 2);
                                             };
 
-                                            alert([yMin,xMin,yMax,xMax]);
                                             //update rectangle coordination to request
                                             loctnArray[0] = {
                                                 "longitude": yMin,

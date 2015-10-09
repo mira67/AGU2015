@@ -60,6 +60,14 @@
                         updateDate();
                         //update dataSet
                         anomalyRequest["dsName"] = ds;
+
+			if( ds == "AVHRR" ){
+				document.getElementById("dataset1").style.color = "black";
+				document.getElementById("dataset2").style.color = "#B6B6B4";
+			} else {
+				document.getElementById("dataset2").style.color = "black";
+				document.getElementById("dataset1").style.color = "#B6B6B4";
+			}
                     };
 
                     function changeFrequency(freq) {
@@ -67,12 +75,53 @@
                         updateDate();
                         //update Frequency
                         anomalyRequest["dsFreq"] = freq;
+
+			if( freq == '91' ){
+				document.getElementById("freq91").style.color = "black";
+				document.getElementById("freq85").style.color = "#B6B6B4";
+				document.getElementById("freq37").style.color = "#B6B6B4";
+				document.getElementById("freq22").style.color = "#B6B6B4";
+				document.getElementById("freq19").style.color = "#B6B6B4";
+			} else if( freq == '85' ){
+			
+				document.getElementById("freq91").style.color = "#B6B6B4";
+				document.getElementById("freq85").style.color = "black";
+				document.getElementById("freq37").style.color = "#B6B6B4";
+				document.getElementById("freq22").style.color = "#B6B6B4";
+				document.getElementById("freq19").style.color = "#B6B6B4";
+			} else if( freq == '37' ){
+				document.getElementById("freq91").style.color = "#B6B6B4";
+				document.getElementById("freq85").style.color = "#B6B6B4";
+				document.getElementById("freq37").style.color = "black";
+				document.getElementById("freq22").style.color = "#B6B6B4";
+				document.getElementById("freq19").style.color = "#B6B6B4";
+			} else if( freq == '22' ){
+				document.getElementById("freq91").style.color = "#B6B6B4";
+				document.getElementById("freq85").style.color = "#B6B6B4";
+				document.getElementById("freq37").style.color = "#B6B6B4";
+				document.getElementById("freq22").style.color = "black";
+				document.getElementById("freq19").style.color = "#B6B6B4";
+			} else {
+				document.getElementById("freq91").style.color = "#B6B6B4";
+				document.getElementById("freq85").style.color = "#B6B6B4";
+				document.getElementById("freq37").style.color = "#B6B6B4";
+				document.getElementById("freq22").style.color = "#B6B6B4";
+				document.getElementById("freq19").style.color = "black";
+			}
                     };
 
                     function changePolarization(pol) {
                         polarization = pol;
                         updateDate();
                         anomalyRequest["dsPolar"] = pol;
+
+			if( pol == 'v' ){
+				document.getElementById("vertical").style.color = "black";
+				document.getElementById("horizontal").style.color = "#B6B6B4";
+			} else {
+				document.getElementById("horizontal").style.color = "black";
+				document.getElementById("vertical").style.color = "#B6B6B4";
+			}
                     }
 
                     //function updatePolyArea(pa) { polyArea = pa; }
@@ -298,11 +347,11 @@
                 <br>
                 <br><span id="datasetFrequency"><font color="Black">Frequency [ SSMI ]</font></span>
                 <br>
-                <button class="myButton" onclick="changeFrequency('91')">91.7</button>
-                <button class="myButton" onclick="changeFrequency('85')">85.5</button>
-                <button class="myButton" onclick="changeFrequency('37')">37.0</button>
-                <button class="myButton" onclick="changeFrequency('22')">22.2</button>
-                <button class="myButton" onclick="changeFrequency('19')">19.3</button>
+                <button id="freq91" class="myButton" onclick="changeFrequency('91')">91.7</button>
+                <button id="freq85" class="myButton" onclick="changeFrequency('85')">85.5</button>
+                <button id="freq37" class="myButton" onclick="changeFrequency('37')">37.0</button>
+                <button id="freq22" class="myButton" onclick="changeFrequency('22')">22.2</button>
+                <button id="freq19" class="myButton" onclick="changeFrequency('19')">19.3</button>
                 <br>
                 <br>
                 <br><span id="datasetFrequency"><font color="Black">Polarization [ SSMI ]</font></span>

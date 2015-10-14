@@ -165,6 +165,14 @@ h2 a:hover {
     margin-right: 20px;
 }
 
+#image {
+    width: auto;
+    height: 80%;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 /*side bar options*/
 .myButton {
     background-color: AliceBlue;

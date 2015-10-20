@@ -13,11 +13,9 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <script src="js/jquery-2.1.4.min.js"></script>
-    <script src="js/jquery-confirm.min.js"></script>
     <script src="js/highmaps.js"></script>
     <script src="js/exporting.js"></script>
     <script src="js/antarctica.js"></script>
-    <script src="js/proj4.js"></script>
     <!-- include the jQuery and jQuery UI scripts -->
     <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
     <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
@@ -66,6 +64,12 @@
                 //display corresponding images based on selected date
                 $("#image").attr("src", "css/img/" + ui.value + ".jpg");
             });
+            </script>
+            <script>
+            window.onload = function() {
+                var query = JSON.parse(localStorage["userQuery"]);
+                console.log(query);
+            };
             </script>
             <!-- <script>
             //test data for UI rendering

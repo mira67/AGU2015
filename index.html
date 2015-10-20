@@ -1,311 +1,287 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>AGU2015</title>
-	<meta name="description" content="">
-	<!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>AGU2015</title>
+    <meta name="description" content="">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!-- openlayers needs to compile sooner or error is raised -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
+    <script language="javascript" type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+    <script language="javascript" type="text/javascript" src="js/jquery-confirm.min.js"></script>
+    <script language="javascript" type="text/javascript" src="js/ol.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery-confirm.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <style type="text/css">
+    #content {
+        height: 90vh;
+    }
+    
+    #sidebar {
+        height: 90vh;
+    }
+    /* start css for maps */
+    
+    #map {
+        height: 100%;
+        width: 100%;
+        margin: 0px;
+        padding: 0px;
+        background: #000;
+    }
+    
+    .olImageLoadError {
+        display: none !important;
+    }
+    
+    #map .olControlAttribution {
+        right: 2px;
+        bottom: 2px;
+        color: #ccc;
+        font-family: arial;
+    }
+    
+    #map .olControlAttribution a {
+        color: #ffc;
+    }
+    /* end css for maps */
+    
+    body {
+        background-image: url("images/background.jpg");
+    }
+    </style>
+    <script>
+    function setupmap() {
+        Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lon_0=0 +lat_ts=-71 +ellps=WGS84 +datum=WGS84 +units=m";
+        var sourceProj = new OpenLayers.Projection("EPSG:4326");
+        var destProj = new OpenLayers.Projection("EPSG:3031");
+        var ginaLayer = new OpenLayers.Layer.WMS(
+            "GINA WMS", //layer label
+            "http://wms.alaskamapped.org/bdl/", {
+                layers: 'BestDataAvailableLayer' //layer wms name
+            }, {
+                animationEnabled: true,
+                isBaseLayer: true,
+                transitionEffect: 'resize',
+                attribution: 'Best Data Layer provided by <a href="http://www.gina.alaska.edu">GINA</a>'
+            }
+        );
+        var extent = new OpenLayers.Bounds(-12400000, -12400000, 12400000, 12400000);
 
-	<!-- openlayers needs to compile sooner or error is raised -->
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
-	
-	<script language="javascript" type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
-	<script language="javascript" type="text/javascript" src="js/jquery-confirm.min.js"></script>
-	<script language="javascript" type="text/javascript" src="js/ol.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        var map = new OpenLayers.Map('map', {
+            maxExtent: extent,
+            //restrictedExtent:extent,
+            units: 'm',
+            wrapDateLine: false,
+            projection: destProj,
 
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" >
-	<link rel="stylesheet" type="text/css" href="css/style.css" >
-	<link rel="stylesheet" type="text/css" href="css/jquery-confirm.min.css" >
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" >
-	
-	<style type="text/css">
-		#content {
-			height: 90vh;
-		}
-		#sidebar {
-			height: 90vh;
-		}
-		/* start css for maps */
-		#map {
-			height:100%;
-			width:100%;
-			margin:0px;
-			padding:0px;
-			background:#000;
-		}
-		.olImageLoadError {
-			display: none !important;
-		}
-		#map .olControlAttribution {
-			right: 2px;
-			bottom: 2px;
-			color: #ccc;
-			font-family: arial;
-		}
-		#map .olControlAttribution a {
-			color:#ffc;
-		}
-		/* end css for maps */
-		body {
-			background-image: url("images/background.jpg");
-		}
-	</style>
-	
-	<script>
-		function setupmap(){
-			Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lon_0=0 +lat_ts=-71 +ellps=WGS84 +datum=WGS84 +units=m";
-			var sourceProj = new OpenLayers.Projection("EPSG:4326");
-			var destProj = new OpenLayers.Projection("EPSG:3031");
-			var ginaLayer = new OpenLayers.Layer.WMS(
-				"GINA WMS",//layer label
-				"http://wms.alaskamapped.org/bdl/",
-				{
-					layers: 'BestDataAvailableLayer' //layer wms name
-				},
-				{
-					animationEnabled:true,
-					isBaseLayer:true,
-					transitionEffect: 'resize',
-					attribution: 'Best Data Layer provided by <a href="http://www.gina.alaska.edu">GINA</a>'
-				}
-			);
-			var extent = new OpenLayers.Bounds(-12400000,-12400000, 12400000, 12400000);
-			
-			var map = new OpenLayers.Map('map',{
-				maxExtent:extent,
-				//restrictedExtent:extent,
-				units:'m',
-				wrapDateLine:false,
-				projection:destProj,
-				
-			});
-			map.addLayer(ginaLayer);
-			
-			var antarcticLayer = new OpenLayers.Layer.WMS(
-				"Antarctic 100m Balanced Mosaic (8-bit)",
-				"http://mapserver.daac.asf.alaska.edu/wms/amm",
-				{
-					layers: '8bit',//AMM-1 Mosaics
-					transparent:true,
-					version:'1.1.1'
-				},
-				{
-					isBaseLayer:false,
-					//transitionEffect: 'resize',
-					attribution: 'Antarctic mosaic: <a href="http://www.asf.alaska.edu/">ASF</a>'
-				}
-			);
-			map.addLayer(antarcticLayer);
-			map.setCenter(new OpenLayers.LonLat(90,90),3);
-		}
-	</script>
+        });
+        map.addLayer(ginaLayer);
 
-	<script>
-		/*User Request Configuration*/
-		var sendString = "",
-			dataSet = "SSMI",
-			frequency = "19",
-			polarization = "h",
-			startDate = "2012-08-08",
-			endDate = "2012-08-10";
+        var antarcticLayer = new OpenLayers.Layer.WMS(
+            "Antarctic 100m Balanced Mosaic (8-bit)",
+            "http://mapserver.daac.asf.alaska.edu/wms/amm", {
+                layers: '8bit', //AMM-1 Mosaics
+                transparent: true,
+                version: '1.1.1'
+            }, {
+                isBaseLayer: false,
+                //transitionEffect: 'resize',
+                attribution: 'Antarctic mosaic: <a href="http://www.asf.alaska.edu/">ASF</a>'
+            }
+        );
+        map.addLayer(antarcticLayer);
+        map.setCenter(new OpenLayers.LonLat(90, 90), 3);
+    }
+    </script>
+    <script>
 
-		var loctnArray = Array();
+    /*User Request Configuration*/
+    var sendString = "",
+        dataSet = "SSMI",
+        frequency = "19",
+        polarization = "h",
+        startDate = "2012-08-08",
+        endDate = "2012-08-10";
 
-		/*user request function*/
-		var anomalyRequest = {
-			"dsName": dataSet,
-			"dsFreq": frequency,
-			"dsPolar": polarization,
-			"sDate": startDate,
-			"eDate": endDate,
-			"locations": loctnArray
-		};
+    var loctnArray = Array();
 
-		function updateDate() {
-			startDate = "" + document.getElementById('startDate').value;
-			endDate = "" + document.getElementById('endDate').value;
-			anomalyRequest["sDate"] = startDate;
-			anomalyRequest["eDate"] = endDate;
-		}
+    /*user request function*/
+    var anomalyRequest = {
+        "dsName": dataSet,
+        "dsFreq": frequency,
+        "dsPolar": polarization,
+        "sDate": startDate,
+        "eDate": endDate,
+        "locations": loctnArray
+    };
 
-		function changeDataSet(ds) {
-			dataSet = ds;
-			updateDate();
-			//update dataSet
-			anomalyRequest["dsName"] = ds;
+    function updateDate() {
+        startDate = "" + document.getElementById('startDate').value;
+        endDate = "" + document.getElementById('endDate').value;
+        anomalyRequest["sDate"] = startDate;
+        anomalyRequest["eDate"] = endDate;
+    }
 
-			if( ds == "AVHRR" ){
-				document.getElementById("dataset1").style.color = "black";
-				document.getElementById("dataset2").style.color = "#B6B6B4";
-			} else {
-				document.getElementById("dataset2").style.color = "black";
-				document.getElementById("dataset1").style.color = "#B6B6B4";
-			}
-		};
+    function changeDataSet(ds) {
+        dataSet = ds;
+        updateDate();
+        //update dataSet
+        anomalyRequest["dsName"] = ds;
 
-		function changeFrequency(freq) {
-			frequency = freq;
-			updateDate();
-			//update Frequency
-			anomalyRequest["dsFreq"] = freq;
+        if (ds == "AVHRR") {
+            document.getElementById("dataset1").style.color = "black";
+            document.getElementById("dataset2").style.color = "#B6B6B4";
+        } else {
+            document.getElementById("dataset2").style.color = "black";
+            document.getElementById("dataset1").style.color = "#B6B6B4";
+        }
+    };
 
-			if( freq == '91' ){
-				document.getElementById("freq91").style.color = "black";
-				document.getElementById("freq85").style.color = "#B6B6B4";
-				document.getElementById("freq37").style.color = "#B6B6B4";
-				document.getElementById("freq22").style.color = "#B6B6B4";
-				document.getElementById("freq19").style.color = "#B6B6B4";
-			} else if( freq == '85' ){
-			
-				document.getElementById("freq91").style.color = "#B6B6B4";
-				document.getElementById("freq85").style.color = "black";
-				document.getElementById("freq37").style.color = "#B6B6B4";
-				document.getElementById("freq22").style.color = "#B6B6B4";
-				document.getElementById("freq19").style.color = "#B6B6B4";
-			} else if( freq == '37' ){
-				document.getElementById("freq91").style.color = "#B6B6B4";
-				document.getElementById("freq85").style.color = "#B6B6B4";
-				document.getElementById("freq37").style.color = "black";
-				document.getElementById("freq22").style.color = "#B6B6B4";
-				document.getElementById("freq19").style.color = "#B6B6B4";
-			} else if( freq == '22' ){
-				document.getElementById("freq91").style.color = "#B6B6B4";
-				document.getElementById("freq85").style.color = "#B6B6B4";
-				document.getElementById("freq37").style.color = "#B6B6B4";
-				document.getElementById("freq22").style.color = "black";
-				document.getElementById("freq19").style.color = "#B6B6B4";
-			} else {
-				document.getElementById("freq91").style.color = "#B6B6B4";
-				document.getElementById("freq85").style.color = "#B6B6B4";
-				document.getElementById("freq37").style.color = "#B6B6B4";
-				document.getElementById("freq22").style.color = "#B6B6B4";
-				document.getElementById("freq19").style.color = "black";
-			}
-		};
+    function changeFrequency(freq) {
+        frequency = freq;
+        updateDate();
+        //update Frequency
+        anomalyRequest["dsFreq"] = freq;
 
-		function changePolarization(pol) {
-			polarization = pol;
-			updateDate();
-			anomalyRequest["dsPolar"] = pol;
+        if (freq == '91') {
+            document.getElementById("freq91").style.color = "black";
+            document.getElementById("freq85").style.color = "#B6B6B4";
+            document.getElementById("freq37").style.color = "#B6B6B4";
+            document.getElementById("freq22").style.color = "#B6B6B4";
+            document.getElementById("freq19").style.color = "#B6B6B4";
+        } else if (freq == '85') {
 
-			if( pol == 'v' ){
-				document.getElementById("vertical").style.color = "black";
-				document.getElementById("horizontal").style.color = "#B6B6B4";
-			} else {
-				document.getElementById("horizontal").style.color = "black";
-				document.getElementById("vertical").style.color = "#B6B6B4";
-			}
-		}
+            document.getElementById("freq91").style.color = "#B6B6B4";
+            document.getElementById("freq85").style.color = "black";
+            document.getElementById("freq37").style.color = "#B6B6B4";
+            document.getElementById("freq22").style.color = "#B6B6B4";
+            document.getElementById("freq19").style.color = "#B6B6B4";
+        } else if (freq == '37') {
+            document.getElementById("freq91").style.color = "#B6B6B4";
+            document.getElementById("freq85").style.color = "#B6B6B4";
+            document.getElementById("freq37").style.color = "black";
+            document.getElementById("freq22").style.color = "#B6B6B4";
+            document.getElementById("freq19").style.color = "#B6B6B4";
+        } else if (freq == '22') {
+            document.getElementById("freq91").style.color = "#B6B6B4";
+            document.getElementById("freq85").style.color = "#B6B6B4";
+            document.getElementById("freq37").style.color = "#B6B6B4";
+            document.getElementById("freq22").style.color = "black";
+            document.getElementById("freq19").style.color = "#B6B6B4";
+        } else {
+            document.getElementById("freq91").style.color = "#B6B6B4";
+            document.getElementById("freq85").style.color = "#B6B6B4";
+            document.getElementById("freq37").style.color = "#B6B6B4";
+            document.getElementById("freq22").style.color = "#B6B6B4";
+            document.getElementById("freq19").style.color = "black";
+        }
+    };
 
-		//function updatePolyArea(pa) { polyArea = pa; }
-		function enablePolygonSearch() {};
+    function changePolarization(pol) {
+        polarization = pol;
+        updateDate();
+        anomalyRequest["dsPolar"] = pol;
 
-		function sendRequest(anomalyRequest) {
-			updateDate();
-			anomalyRequest["dsFreq"] = 's'+frequency+polarization;
-			var ajaxHandle = $
-				.ajax({
-					type: "POST",
-					contentType: "application/json; charset=utf-8",
-					url: "anomaly/ajaxRetrvImage.do",
-					data: JSON.stringify(anomalyRequest),
-					dataType: 'jsonp',
-					async: false,
-					success: function(response) {
-						var win = window.open("anomaly.html",
-							'_blank');
-						win.focus();
-					}
-				});
-			var w = window.open("anomaly/ajaxRetrvImage.do");
-			w.document.write(ajaxHandle.responseText);
-			w.document.close();
-		};
-		
-	</script>		
+        if (pol == 'v') {
+            document.getElementById("vertical").style.color = "black";
+            document.getElementById("horizontal").style.color = "#B6B6B4";
+        } else {
+            document.getElementById("horizontal").style.color = "black";
+            document.getElementById("vertical").style.color = "#B6B6B4";
+        }
+    }
 
+    //function updatePolyArea(pa) { polyArea = pa; }
+    function enablePolygonSearch() {};
+
+    //pass full request to a new page, in localStorage
+    function sendRequest(anomalyRequest) {
+        updateDate();
+        anomalyRequest["dsFreq"] = 's' + frequency + polarization;
+        //transfer request to result page
+        localStorage['userQuery'] = JSON.stringify(anomalyRequest);
+        var win = window.open("anomaly.html",'_blank');
+        win.focus();
+    };
+    </script>
 </head>
 
 <body id="index" class="home" onload="setupmap()">
-	<header class='container' id='header'>
-	</header>
-	<nav class='container roundEdge' id='nav'>
-		<h1 id='project' class='center'>NSIDC - Condensing Massive Satellite Datasets For Rapid Interactive Analysis</h1>
-	</nav>
-
-	<section class='container' id='main'>
-		<div id='content'>
-			<div id='map'>
-			</div>
-		</div>
-		
-		<aside id='sidebar' class='roundEdge'>
-			<br>
-			<span id="datasetName"><font color="Black">Data Set</font></span>
-			<br>
-			
-			<button id="dataset2" class="myButton" onclick="changeDataSet('SSMI')">SSMI</button>
-			<br><br>
-			
-			<span id="datasetFrequency"><font color="Black">Frequency [ SSMI ]</font></span>
-			<br>
-			
-			<button id="freq91" class="myButton" onclick="changeFrequency('91')">91.7</button>
-			<button id="freq85" class="myButton" onclick="changeFrequency('85')">85.5</button>
-			<button id="freq37" class="myButton" onclick="changeFrequency('37')">37.0</button>
-			<br>
-			<button id="freq22" class="myButton" onclick="changeFrequency('22')">22.2</button>
-			<button id="freq19" class="myButton" onclick="changeFrequency('19')">19.3</button>
-			<br><br>
-			
-			<span id="datasetFrequency"><font color="Black">Polarization [ SSMI ]</font></span>
-			<br>
-			
-			<button id="vertical" class="myButton" onclick="changePolarization('v')">vertical</button>
-			<button id="horizontal" class="myButton" onclick="changePolarization('h')">horizontal</button>
-			<br><br>
-			
-			<span id="datasetField"><font color="Black">Start Date</font></span>
-			<br>
-			
-			<input id="startDate" name="startDate" value="2012-08-08" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
-			<br>
-			
-			<span id="datasetField"><font color="Black">End Date</font></span>
-			<br>
-			
-			<input id="endDate" name="endDate" value="2012-08-20" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
-			<br>
-		
-		<!--
+    <header class='container' id='header'>
+    </header>
+    <nav class='container roundEdge' id='nav'>
+        <h1 id='project' class='center'>NSIDC - Condensing Massive Satellite Datasets For Rapid Interactive Analysis</h1>
+    </nav>
+    <section class='container' id='main'>
+        <div id='content'>
+            <div id='map'>
+            </div>
+        </div>
+        <aside id='sidebar' class='roundEdge'>
+            <br>
+            <span id="datasetName"><font color="Black">Data Set</font></span>
+            <br>
+            <button id="dataset2" class="myButton" onclick="changeDataSet('SSMI')">SSMI</button>
+            <br>
+            <span id="datasetFrequency"><font color="Black">Frequency [ SSMI ]</font></span>
+            <br>
+            <button id="freq91" class="myButton" onclick="changeFrequency('91')">91.7</button>
+            <button id="freq85" class="myButton" onclick="changeFrequency('85')">85.5</button>
+            <button id="freq37" class="myButton" onclick="changeFrequency('37')">37.0</button>
+            <button id="freq22" class="myButton" onclick="changeFrequency('22')">22.2</button>
+            <button id="freq19" class="myButton" onclick="changeFrequency('19')">19.3</button>
+            <br>
+            <span id="datasetFrequency"><font color="Black">Polarization [ SSMI ]</font></span>
+            <br>
+            <button id="vertical" class="myButton" onclick="changePolarization('v')">vertical</button>
+            <button id="horizontal" class="myButton" onclick="changePolarization('h')">horizontal</button>
+            <br>
+            <span id="datasetField"><font color="Black">Start Date</font></span>
+            <br>
+            <input id="startDate" name="startDate" value="2012-08-08" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
+            <br>
+            <span id="datasetField"><font color="Black">End Date</font></span>
+            <br>
+            <input id="endDate" name="endDate" value="2012-08-20" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
+            <br>
+            <!--
 			<span id="datasetField"><font color="Black">Search Polygon Location</font></span>
 			<br><br>
 			<button id="searchButtonToggle" class="myButton" onclick="enablePolygonSearch()"><strike>| Enable |</strike></button>
 		-->
-			<br>
-			
-			<div class="geospatialInputFieldsNsew" id="spatialInput_nsew">
-				<input class="myButton" value="Reset Map &amp; Selection" onclick="searchMapObject.resetMap();" type="button">
-				<br><br>
-				<span class="northInput">N <input id="nsew_northId" size="7" value="90.00" onchange="searchMapObject.changeLatLonBoundary('north', this.value, 'search');" type="text"></span>
-				<br><br>
-				<span class="westInput">W <input id="nsew_westId" size="7" value="-180.00" onchange="searchMapObject.changeLatLonBoundary('west', this.value, 'search');" type="text"></span>
-				<span class="eastInput"> E <input id="nsew_eastId" size="7" value="180.00" onchange="searchMapObject.changeLatLonBoundary('east',this.value, 'search');" type="text"></span>
-				<br><br>
-				<span class="southInput">S <input id="nsew_southId" size="7" value="-90.00" onchange="searchMapObject.changeLatLonBoundary('south',this.value, 'search');" type="text"></span>
-			</div>
-			<br>
-			<p><underline>Controls:</underline></p>
-			<p>[shift] + [click/drag] to draw rectangle</p>
-			<p>[click/drag] to move map</p>
-		</aside>
-	</section>
-	
-	<footer class='container' id='footer'>
-		<p>© 2015 NSIDC & University of Colorado at Boulder</p>
-	</footer>
+            <br>
+            <div class="geospatialInputFieldsNsew" id="spatialInput_nsew">
+                <input class="myButton" value="Reset Map &amp; Selection" onclick="searchMapObject.resetMap();" type="button">
+                <br>
+                <br>
+                <span class="northInput">N <input id="nsew_northId" size="7" value="90.00" onchange="searchMapObject.changeLatLonBoundary('north', this.value, 'search');" type="text"></span>
+                <br>
+                <br>
+                <span class="westInput">W <input id="nsew_westId" size="7" value="-180.00" onchange="searchMapObject.changeLatLonBoundary('west', this.value, 'search');" type="text"></span>
+                <span class="eastInput"> E <input id="nsew_eastId" size="7" value="180.00" onchange="searchMapObject.changeLatLonBoundary('east',this.value, 'search');" type="text"></span>
+                <br>
+                <br>
+                <span class="southInput">S <input id="nsew_southId" size="7" value="-90.00" onchange="searchMapObject.changeLatLonBoundary('south',this.value, 'search');" type="text"></span>
+            </div>
+            <br>
+            <p>
+                <underline>Controls:</underline>
+            </p>
+            <p>[shift] + [click/drag] to draw rectangle</p>
+            <p>[click/drag] to move map</p>
+            <input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest);" type="button">
+        </aside>
+    </section>
+    <footer class='container' id='footer'>
+        <p>© 2015 NSIDC & University of Colorado at Boulder</p>
+    </footer>
 </body>
+
 </html>

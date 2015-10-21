@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>AGU2015</title>
-    <meta name="description" content="">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
     <!-- openlayers needs to compile sooner or error is raised -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.js"></script>
@@ -18,6 +17,11 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/jquery-confirm.min.css">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.js"></script>
+
+	
     <style type="text/css">
     #content {
         height: 90vh;
@@ -58,46 +62,70 @@
     </style>
     <script>
     function setupmap() {
-        Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lon_0=0 +lat_ts=-71 +ellps=WGS84 +datum=WGS84 +units=m";
-        var sourceProj = new OpenLayers.Projection("EPSG:4326");
-        var destProj = new OpenLayers.Projection("EPSG:3031");
-        var ginaLayer = new OpenLayers.Layer.WMS(
-            "GINA WMS", //layer label
-            "http://wms.alaskamapped.org/bdl/", {
-                layers: 'BestDataAvailableLayer' //layer wms name
-            }, {
-                animationEnabled: true,
-                isBaseLayer: true,
-                transitionEffect: 'resize',
-                attribution: 'Best Data Layer provided by <a href="http://www.gina.alaska.edu">GINA</a>'
-            }
-        );
-        var extent = new OpenLayers.Bounds(-12400000, -12400000, 12400000, 12400000);
+		Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+		Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+		Proj4js.defs["EPSG:900913"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
 
-        var map = new OpenLayers.Map('map', {
-            maxExtent: extent,
-            //restrictedExtent:extent,
-            units: 'm',
-            wrapDateLine: false,
-            projection: destProj,
+		var map = new OpenLayers.Map('map', {
+			controls: [
+				new OpenLayers.Control.Navigation(),
+				new OpenLayers.Control.PanZoomBar(),
+				new OpenLayers.Control.Attribution(),
+				new OpenLayers.Control.LayerSwitcher(),
+				new OpenLayers.Control.ScaleLine(),
+				new OpenLayers.Control.Permalink({
+					anchor: true
+				})
+			],
 
-        });
-        map.addLayer(ginaLayer);
+			projection: "EPSG:3031",
+			displayProjection: "EPSG:4326"
+		});
 
-        var antarcticLayer = new OpenLayers.Layer.WMS(
-            "Antarctic 100m Balanced Mosaic (8-bit)",
-            "http://mapserver.daac.asf.alaska.edu/wms/amm", {
-                layers: '8bit', //AMM-1 Mosaics
-                transparent: true,
-                version: '1.1.1'
-            }, {
-                isBaseLayer: false,
-                //transitionEffect: 'resize',
-                attribution: 'Antarctic mosaic: <a href="http://www.asf.alaska.edu/">ASF</a>'
-            }
-        );
-        map.addLayer(antarcticLayer);
-        map.setCenter(new OpenLayers.LonLat(90, 90), 3);
+		var tiles = new OpenLayers.Layer.XYZ(
+			'Polar XYZ',
+			'http://polar.openstreetmap.de/tiles/${z}/${x}/${y}.png',
+			{
+				projection: 'EPSG:3031',
+				maxExtent: [-3000000,-3000000,3000000,3000000],
+				attribution: '© <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+				numZoomLevels: 19,
+				transitionEffect: 'resize'
+			}
+		)
+		map.addLayer(tiles);
+
+	
+		var markers = new OpenLayers.Layer.Vector("Markers", {
+			projection: 'EPSG:4326',
+			strategies: [new OpenLayers.Strategy.Fixed()],
+				protocol: new OpenLayers.Protocol.HTTP({
+				url: "interesting.json",
+				format: new OpenLayers.Format.GeoJSON()
+			})
+		});
+		map.addLayer(markers);
+	
+	
+		var featctl = new OpenLayers.Control.SelectFeature(markers);
+		map.addControl(featctl);
+		featctl.activate();
+
+		featctl.events.register('featurehighlighted', this, function(e) {
+			var
+				pt = e.feature.geometry,
+				ll = new OpenLayers.LonLat(pt.x, pt.y);
+
+			map.setCenter(ll, 11);
+		});
+
+		map.events.register('zoomend', this, function() {
+			markers.setVisibility(map.zoom < 8);
+		});
+
+		if(!map.getCenter())
+			map.setCenter(new OpenLayers.LonLat(0, 0)/* despite the class name, these are in EPSG:3031, so 0/0 is actually the pole */, 1);
+		
     }
     </script>
     <script>
@@ -222,6 +250,7 @@
     <section class='container' id='main'>
         <div id='content'>
             <div id='map'>
+				<div class="time">Last Update (of all Tiles): 21.10.2015 20:22:44</div>
             </div>
         </div>
         <aside id='sidebar' class='roundEdge'>

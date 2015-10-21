@@ -60,6 +60,7 @@
         background-image: url("images/background.jpg");
     }
     </style>
+<!--  ///////////////////////////////////////////////////// -->
     <script>
     function setupmap() {
 		Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
@@ -77,11 +78,47 @@
 					anchor: true
 				})
 			],
-
+			
 			projection: "EPSG:3031",
 			displayProjection: "EPSG:4326"
 		});
 
+	// begin rectangle addition
+
+		var pointLayer = new OpenLayers.Layer.Vector("Point Layer");
+		var lineLayer = new OpenLayers.Layer.Vector("Line Layer");
+		var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
+		var boxLayer = new OpenLayers.Layer.Vector("Box layer");
+		
+		map.addLayers([pointLayer, lineLayer, polygonLayer, boxLayer]);
+		map.addControl(new OpenLayers.Control.LayerSwitcher());
+		map.addControl(new OpenLayers.Control.MousePosition())
+		
+		drawControls = {
+			point: new OpenLayers.Control.DrawFeature(pointLayer,
+				OpenLayers.Handler.Point),
+			line: new OpenLayers.Control.DrawFeature(lineLayer,
+				OpenLayers.Handler.Path),
+			polygon: new OpenLayers.Control.DrawFeature(polygonLayer,
+				OpenLayers.Handler.Polygon),
+			box: new OpenLayers.Control.DrawFeature(boxLayer,
+				OpenLayers.Handler.RegularPolygon, {
+					handlerOptions: {
+						sides: 4,
+						irregular: true
+					}
+				}
+			)
+		};
+
+		for(var key in drawControls) {
+			map.addControl(drawControls[key]);
+		}
+		
+		document.getElementById('noneToggle').checked = true;
+	// end rectangle addition
+		
+		
 		var tiles = new OpenLayers.Layer.XYZ(
 			'Polar XYZ',
 			'http://polar.openstreetmap.de/tiles/${z}/${x}/${y}.png',
@@ -106,7 +143,6 @@
 		});
 		map.addLayer(markers);
 	
-	
 		var featctl = new OpenLayers.Control.SelectFeature(markers);
 		map.addControl(featctl);
 		featctl.activate();
@@ -128,6 +164,28 @@
 		
     }
     </script>
+<!--  ///////////////////////////////////////////////////// -->	
+	<script>
+		function toggleControl(element) {
+			for(key in drawControls) {
+				var control = drawControls[key];
+				if(element.value == key && element.checked) {
+					control.activate();
+				} else {
+					control.deactivate();
+				}
+			}
+		}
+
+		function allowPan(element) {
+			var stop = !element.checked;
+			for(var key in drawControls) {
+				drawControls[key].handler.stopDown = stop;
+				drawControls[key].handler.stopUp = stop;
+			}
+		}
+	</script>
+<!--  ///////////////////////////////////////////////////// -->	
     <script>
 
     /*User Request Configuration*/
@@ -306,7 +364,43 @@
             <p>[shift] + [click/drag] to draw rectangle</p>
             <p>[click/drag] to move map</p>
             <input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest);" type="button">
-        </aside>
+<!-- -->
+		<div id="drawElements">
+			<ul id="controlToggle">
+				<li>
+					<input type="radio" name="type" value="none" id="noneToggle"
+						   onclick="toggleControl(this);" checked="checked" />
+					<label for="noneToggle">navigate</label>
+				</li>
+				<li>
+					<input type="radio" name="type" value="point" id="pointToggle" onclick="toggleControl(this);" />
+					<label for="pointToggle">draw point</label>
+				</li>
+	<!--
+				<li>
+					<input type="radio" name="type" value="line" id="lineToggle" onclick="toggleControl(this);" />
+					<label for="lineToggle">draw line</label>
+				</li>
+				<li>
+					<input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleControl(this);" />
+					<label for="polygonToggle">draw polygon</label>
+				</li>
+	-->
+				<li>
+					<input type="radio" name="type" value="box" id="boxToggle" onclick="toggleControl(this);" />
+					<label for="boxToggle">draw box</label>
+				</li>
+	<!--
+				<li>
+					<input type="checkbox" name="allow-pan" value="allow-pan" id="allowPanCheckbox" checked=true onclick="allowPan(this);" />
+					<label for="allowPanCheckbox">allow pan while drawing</label>
+				</li>
+	-->
+			</ul>
+		</div> <!-- end drawElements -->
+<!-- -->
+
+		</aside>
     </section>
     <footer class='container' id='footer'>
         <p>© 2015 NSIDC & University of Colorado at Boulder</p>

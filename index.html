@@ -18,6 +18,7 @@
     <link rel="stylesheet" type="text/css" href="css/jquery-confirm.min.css">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 	
+	
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.js"></script>
 
@@ -55,13 +56,82 @@
         color: #ffc;
     }
     /* end css for maps */
-    
     body {
         background-image: url("images/background.jpg");
     }
+	/*
+	#drawElements {
+		outline: 2px solid black;
+	}
+	*/
     </style>
 <!--  ///////////////////////////////////////////////////// -->
     <script>
+	
+<!-- start box drag -->	
+
+	var vectors;
+	var box;
+	var transform;
+	
+	function endDrag(bbox) {
+		var bounds = bbox.getBounds();
+		setBounds(bounds);
+		drawBox(bounds);
+		box.deactivate();
+
+		document.getElementById("bbox_drag_instruction").style.display = 'none';
+		document.getElementById("bbox_adjust_instruction").style.display = 'block';        
+	}
+
+	function dragNewBox() {
+		box.activate();
+		transform.deactivate(); //The remove the box with handles
+		vectors.destroyFeatures();
+
+		document.getElementById("bbox_drag_instruction").style.display = 'block';
+		document.getElementById("bbox_adjust_instruction").style.display = 'none';
+
+		setBounds(null); 
+	}
+
+	function boxResize(event) {
+		setBounds(event.feature.geometry.bounds);
+	}
+
+	function drawBox(bounds) {
+		var feature = new OpenLayers.Feature.Vector(bounds.toGeometry());
+
+		vectors.addFeatures(feature);
+		transform.setFeature(feature);
+	}
+
+	function toPrecision(zoom, value) {
+		var decimals = Math.pow(10, Math.floor(zoom/3));
+		return Math.round(value * decimals) / decimals;
+	}
+
+	function setBounds(bounds) {
+		if (bounds == null) {
+			document.getElementById("bbox_result").innerHTML = "";
+		} else {
+			b = bounds.clone().transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"))
+			minlon = toPrecision(map.getZoom(), b.left);
+			minlat = toPrecision(map.getZoom(), b.bottom);    
+			maxlon = toPrecision(map.getZoom(), b.right);
+			maxlat = toPrecision(map.getZoom(), b.top);  
+				 
+			document.getElementById("bbox_result").innerHTML =
+						  "minlon=" + minlon + ", " +
+						  "minlat=" + minlat + ", " +
+						  "maxlon=" + maxlon + ", " +
+						  "maxlat=" + maxlat;  
+		}
+	}
+
+<!-- end box drag -->	
+
+	
     function setupmap() {
 		Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 		Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
@@ -78,13 +148,11 @@
 					anchor: true
 				})
 			],
-			
 			projection: "EPSG:3031",
 			displayProjection: "EPSG:4326"
 		});
 
-	// begin rectangle addition
-
+		// begin rectangle addition
 		var pointLayer = new OpenLayers.Layer.Vector("Point Layer");
 		var lineLayer = new OpenLayers.Layer.Vector("Line Layer");
 		var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
@@ -95,14 +163,10 @@
 		map.addControl(new OpenLayers.Control.MousePosition())
 		
 		drawControls = {
-			point: new OpenLayers.Control.DrawFeature(pointLayer,
-				OpenLayers.Handler.Point),
-			line: new OpenLayers.Control.DrawFeature(lineLayer,
-				OpenLayers.Handler.Path),
-			polygon: new OpenLayers.Control.DrawFeature(polygonLayer,
-				OpenLayers.Handler.Polygon),
-			box: new OpenLayers.Control.DrawFeature(boxLayer,
-				OpenLayers.Handler.RegularPolygon, {
+			point: new OpenLayers.Control.DrawFeature(pointLayer, OpenLayers.Handler.Point),
+			line: new OpenLayers.Control.DrawFeature(lineLayer,	OpenLayers.Handler.Path),
+			polygon: new OpenLayers.Control.DrawFeature(polygonLayer, OpenLayers.Handler.Polygon),
+			box: new OpenLayers.Control.DrawFeature(boxLayer, OpenLayers.Handler.RegularPolygon, {
 					handlerOptions: {
 						sides: 4,
 						irregular: true
@@ -116,7 +180,7 @@
 		}
 		
 		document.getElementById('noneToggle').checked = true;
-	// end rectangle addition
+		// end rectangle addition
 		
 		
 		var tiles = new OpenLayers.Layer.XYZ(
@@ -126,7 +190,7 @@
 				projection: 'EPSG:3031',
 				maxExtent: [-3000000,-3000000,3000000,3000000],
 				attribution: '© <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-				numZoomLevels: 19,
+				numZoomLevels: 20,
 				transitionEffect: 'resize'
 			}
 		)
@@ -358,14 +422,16 @@
                 <span class="southInput">S <input id="nsew_southId" size="7" value="-90.00" onchange="searchMapObject.changeLatLonBoundary('south',this.value, 'search');" type="text"></span>
             </div>
             <br>
-            <p>
+            
+<!-- -->
+		<hr />
+		<div id="drawElements">
+			<p>
                 <underline>Controls:</underline>
             </p>
             <p>[shift] + [click/drag] to draw rectangle</p>
             <p>[click/drag] to move map</p>
-            <input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest);" type="button">
-<!-- -->
-		<div id="drawElements">
+			
 			<ul id="controlToggle">
 				<li>
 					<input type="radio" name="type" value="none" id="noneToggle"
@@ -398,8 +464,9 @@
 	-->
 			</ul>
 		</div> <!-- end drawElements -->
+		<hr />
 <!-- -->
-
+			<input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest);" type="button">
 		</aside>
     </section>
     <footer class='container' id='footer'>
@@ -408,3 +475,17 @@
 </body>
 
 </html>
+
+
+<!--
+Resources:
+
+	SSMI Page:
+	<http://nsidc.org/data/docs/daac/nsidc0001_ssmi_tbs.gd.html>
+
+	<http://dev.openlayers.org/examples/draw-feature.html>
+	<http://harrywood.co.uk/maps/examples/openlayers/bbox-selector.view.html>
+
+
+
+-->

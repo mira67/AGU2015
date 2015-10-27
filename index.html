@@ -19,8 +19,8 @@
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 	
 	
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.js"></script>
 
 	
     <style type="text/css">
@@ -66,7 +66,8 @@
 	*/
     </style>
 <!--  ///////////////////////////////////////////////////// -->
-    <script>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+	<script>
 	
 <!-- start box drag -->	
 
@@ -129,8 +130,7 @@
 		}
 	}
 
-<!-- end box drag -->	
-
+<!-- end box drag -->
 	
     function setupmap() {
 		Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
@@ -152,7 +152,39 @@
 			displayProjection: "EPSG:4326"
 		});
 
+		var lonlat = new OpenLayers.LonLat(-1.788, 53.571).transform(
+			new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+			new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
+		);
+
+		vectors = new OpenLayers.Layer.Vector("Vector Layer", {
+			displayInLayerSwitcher: false
+		});
+		map.addLayer(vectors);
+
+        box = new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.RegularPolygon, {
+          handlerOptions: {
+            sides: 4,
+            snapAngle: 90,
+            irregular: true,
+            persist: true
+          }
+        });
+        box.handler.callbacks.done = endDrag;
+        map.addControl(box);
+
+        transform = new OpenLayers.Control.TransformFeature(vectors, {
+          rotate: false,
+          irregular: true
+        });
+        transform.events.register("transformcomplete", transform, boxResize);
+        map.addControl(transform);
+        map.addControl(box);
+        box.activate();
+		
+		
 		// begin rectangle addition
+/*
 		var pointLayer = new OpenLayers.Layer.Vector("Point Layer");
 		var lineLayer = new OpenLayers.Layer.Vector("Line Layer");
 		var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
@@ -178,7 +210,7 @@
 		for(var key in drawControls) {
 			map.addControl(drawControls[key]);
 		}
-		
+	*/	
 		document.getElementById('noneToggle').checked = true;
 		// end rectangle addition
 		
@@ -431,7 +463,8 @@
             </p>
             <p>[shift] + [click/drag] to draw rectangle</p>
             <p>[click/drag] to move map</p>
-			
+	
+<!--	
 			<ul id="controlToggle">
 				<li>
 					<input type="radio" name="type" value="none" id="noneToggle"
@@ -442,7 +475,7 @@
 					<input type="radio" name="type" value="point" id="pointToggle" onclick="toggleControl(this);" />
 					<label for="pointToggle">draw point</label>
 				</li>
-	<!--
+	
 				<li>
 					<input type="radio" name="type" value="line" id="lineToggle" onclick="toggleControl(this);" />
 					<label for="lineToggle">draw line</label>
@@ -451,18 +484,23 @@
 					<input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleControl(this);" />
 					<label for="polygonToggle">draw polygon</label>
 				</li>
-	-->
+	
 				<li>
 					<input type="radio" name="type" value="box" id="boxToggle" onclick="toggleControl(this);" />
 					<label for="boxToggle">draw box</label>
 				</li>
-	<!--
+	
 				<li>
 					<input type="checkbox" name="allow-pan" value="allow-pan" id="allowPanCheckbox" checked=true onclick="allowPan(this);" />
 					<label for="allowPanCheckbox">allow pan while drawing</label>
 				</li>
 	-->
 			</ul>
+
+			<div id="bbox_drag_instruction">Drag a box:</div>
+			<div id="bbox_adjust_instruction">Adjust the box ...or <input type="button" value="drag new box" onclick="dragNewBox();"></div>
+			<p id="bbox_result"> </p>
+
 		</div> <!-- end drawElements -->
 		<hr />
 <!-- -->

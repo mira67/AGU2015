@@ -36,11 +36,11 @@
   </nav>-->
     <section class='container' id='main'>
         <section id='content'>
-            <img id="image" src="css/img/1.jpg" />
+            <img id="image" src="images/jan.png" />
             <div class="slider"></div>
             <script>
             // set up an array to hold the months
-            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
             // lets be fancy for the demo and select the current month.
             var activeMonth = new Date().getMonth();
 
@@ -62,16 +62,19 @@
             .on("slidechange", function(e, ui) {
                 $("#labels-months-output").text("You selected " + months[ui.value] + " (" + ui.value + ")");
                 //display corresponding images based on selected date
-                $("#image").attr("src", "css/img/" + ui.value + ".jpg");
+                $("#image").attr("src", "images/" + months[ui.value] + ".png");
+				console.log("images/" + months[ui.value] + ".png");
             });
             </script>
+			
             <script>
             window.onload = function() {
                 var query = JSON.parse(localStorage["userQuery"]);
                 console.log(query);
             };
             </script>
-            <!-- <script>
+            
+			<!-- <script>
             //test data for UI rendering
             testData = [{"date":1350885600000,"val":222.1,"longi":100.0,"lati":100.0},{"date":1375336800000,"val":209.8,"longi":100.0,"lati":100.0},{"date":1375423200000,"val":209.4,"longi":100.0,"lati":100.0},{"date":1375509600000,"val":209.4,"longi":100.0,"lati":100.0},{"date":1375596000000,"val":210.6,"longi":100.0,"lati":100.0},{"date":1375682400000,"val":212.1,"longi":100.0,"lati":100.0}];
 

@@ -73,13 +73,15 @@
         map.addLayer(openstreetmap);
     
 
-        var lonlat = new OpenLayers.LonLat(-1.788, 53.571).transform(
+
+        var zoom = 13;
+
+        var lonlat = new OpenLayers.LonLat(-135, -41.45).transform(
             new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
             new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
           );
 
-        var zoom = 13;
-
+		
         vectors = new OpenLayers.Layer.Vector("Vector Layer", {
           displayInLayerSwitcher: false
         });

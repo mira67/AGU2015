@@ -22,17 +22,17 @@
 	<div id="map" class="map"></div>
 	
 	<script>
-/*	
+	
 		proj4.defs(["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
 		proj4.defs(["EPSG:3031"], "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
 		proj4.defs(["EPSG:900913"], "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs");
-*/
+
 		var proj_4326 = new ol.proj.Projection({
-		  code: 'EPSG:4326'
+			code: 'EPSG:4326',
+			extent: [-3000000,-3000000,3000000,3000000]
 		});	
 		var proj_3031 = new ol.proj.Projection({
-		  code: 'EPSG:3031'/*,
-		  extent: [-3000000,-3000000,3000000,3000000]*/
+			code: 'EPSG:3031'
 		});	
 
 		var extent = [-3000000,-3000000,3000000,3000000];
@@ -42,8 +42,10 @@
 
 		var layers = [ new ol.layer.Tile({
 				source: new ol.source.XYZ({
+					projection: proj_3031,
 					url: 'http://polar.openstreetmap.de/tiles/${z}/${x}/${y}.png',
-					extent: extent
+					attributions: '© <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+					maxZoom: 19
 				})
 			})
 		];
@@ -56,15 +58,14 @@
 				new ol.control.ScaleLine()
 			]),
 			view: new ol.View({
-				projection: proj_3031,
-				center: ol.proj.fromLonLat([0, 0], proj_3031),
+				projection: proj_4326,
+				center: ol.proj.fromLonLat([0, 0], proj_4326),
 				extent: extent,
 				zoom: 10
-			})
-			/*
-			projection: proj_3031,
+			}),
+			fromProjection: proj_3031,
 			displayProjection: proj_4326
-			*/
+			
 		});
 
 		/*

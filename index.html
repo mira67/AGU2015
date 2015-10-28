@@ -7,8 +7,6 @@
     <title>AGU2015</title>
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
     <!-- openlayers needs to compile sooner or error is raised -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
     <script language="javascript" type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
     <script language="javascript" type="text/javascript" src="js/jquery-confirm.min.js"></script>
     <script language="javascript" type="text/javascript" src="js/ol.js"></script>
@@ -20,115 +18,52 @@
 	
 	
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
+<!--
 <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.js"></script>
-
+-->
 	
     <style type="text/css">
-    #content {
-        height: 90vh;
-    }
-    
-    #sidebar {
-        height: 90vh;
-    }
-    /* start css for maps */
-    
-    #map {
-        height: 100%;
-        width: 100%;
-        margin: 0px;
-        padding: 0px;
-        background: #000;
-    }
-    
-    .olImageLoadError {
-        display: none !important;
-    }
-    
-    #map .olControlAttribution {
-        right: 2px;
-        bottom: 2px;
-        color: #ccc;
-        font-family: arial;
-    }
-    
-    #map .olControlAttribution a {
-        color: #ffc;
-    }
-    /* end css for maps */
-    body {
-        background-image: url("images/background.jpg");
-    }
-	/*
-	#drawElements {
-		outline: 2px solid black;
-	}
-	*/
+		#content {
+			height: 90vh;
+		}
+		#sidebar {
+			height: 90vh;
+		}
+		/* start css for maps */
+		#map {
+			height: 100%;
+			width: 100%;
+			margin: 0px;
+			padding: 0px;
+			background: #000;
+		}
+		.olImageLoadError {
+			display: none !important;
+		}
+		#map .olControlAttribution {
+			right: 2px;
+			bottom: 2px;
+			color: #ccc;
+			font-family: arial;
+		}
+		#map .olControlAttribution a {
+			color: #ffc;
+		}
+		/* end css for maps */
+		body {
+			background-image: url("images/background.jpg");
+		}
+		/*
+		#drawElements {
+			outline: 2px solid black;
+		}
+		*/
     </style>
-<!--  ///////////////////////////////////////////////////// -->
-    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+
 	<script>
 	
-<!-- start box drag -->	
-
-	var vectors;
-	var box;
-	var transform;
-	
-	function endDrag(bbox) {
-		var bounds = bbox.getBounds();
-		setBounds(bounds);
-		drawBox(bounds);
-		box.deactivate();
-
-		document.getElementById("bbox_drag_instruction").style.display = 'none';
-		document.getElementById("bbox_adjust_instruction").style.display = 'block';        
-	}
-
-	function dragNewBox() {
-		box.activate();
-		transform.deactivate(); //The remove the box with handles
-		vectors.destroyFeatures();
-
-		document.getElementById("bbox_drag_instruction").style.display = 'block';
-		document.getElementById("bbox_adjust_instruction").style.display = 'none';
-
-		setBounds(null); 
-	}
-
-	function boxResize(event) {
-		setBounds(event.feature.geometry.bounds);
-	}
-
-	function drawBox(bounds) {
-		var feature = new OpenLayers.Feature.Vector(bounds.toGeometry());
-
-		vectors.addFeatures(feature);
-		transform.setFeature(feature);
-	}
-
-	function toPrecision(zoom, value) {
-		var decimals = Math.pow(10, Math.floor(zoom/3));
-		return Math.round(value * decimals) / decimals;
-	}
-
-	function setBounds(bounds) {
-		if (bounds == null) {
-			document.getElementById("bbox_result").innerHTML = "";
-		} else {
-			b = bounds.clone().transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"))
-			minlon = toPrecision(map.getZoom(), b.left);
-			minlat = toPrecision(map.getZoom(), b.bottom);    
-			maxlon = toPrecision(map.getZoom(), b.right);
-			maxlat = toPrecision(map.getZoom(), b.top);  
-				 
-			document.getElementById("bbox_result").innerHTML =
-						  "minlon=" + minlon + ", " +
-						  "minlat=" + minlat + ", " +
-						  "maxlon=" + maxlon + ", " +
-						  "maxlat=" + maxlat;  
-		}
-	}
+	//Make sure your bounding box interaction variable is global
+	var boundingBox;
 
 <!-- end box drag -->
 	
@@ -137,14 +72,14 @@
 		Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
 		Proj4js.defs["EPSG:900913"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
 
-		var map = new OpenLayers.Map('map', {
+		var map = new ol.Map('map', {
 			controls: [
-				new OpenLayers.Control.Navigation(),
-				new OpenLayers.Control.PanZoomBar(),
-				new OpenLayers.Control.Attribution(),
-				new OpenLayers.Control.LayerSwitcher(),
-				new OpenLayers.Control.ScaleLine(),
-				new OpenLayers.Control.Permalink({
+				new ol.Control.Navigation(),
+				new ol.Control.PanZoomBar(),
+				new ol.Control.Attribution(),
+				new ol.Control.LayerSwitcher(),
+				new ol.Control.ScaleLine(),
+				new ol.Control.Permalink({
 					anchor: true
 				})
 			],
@@ -152,70 +87,14 @@
 			displayProjection: "EPSG:4326"
 		});
 
-		var lonlat = new OpenLayers.LonLat(-1.788, 53.571).transform(
-			new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-			new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
+		var lonlat = new ol.LonLat(-1.788, 53.571).transform(
+			new ol.Projection("EPSG:4326"), // transform from WGS 1984
+			new ol.Projection("EPSG:900913") // to Spherical Mercator
 		);
-
-		vectors = new OpenLayers.Layer.Vector("Vector Layer", {
-			displayInLayerSwitcher: false
-		});
-		map.addLayer(vectors);
-
-        box = new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.RegularPolygon, {
-          handlerOptions: {
-            sides: 4,
-            snapAngle: 90,
-            irregular: true,
-            persist: true
-          }
-        });
-        box.handler.callbacks.done = endDrag;
-        map.addControl(box);
-
-        transform = new OpenLayers.Control.TransformFeature(vectors, {
-          rotate: false,
-          irregular: true
-        });
-        transform.events.register("transformcomplete", transform, boxResize);
-        map.addControl(transform);
-        map.addControl(box);
-        box.activate();
 		
+		<!-- -->
 		
-		// begin rectangle addition
-/*
-		var pointLayer = new OpenLayers.Layer.Vector("Point Layer");
-		var lineLayer = new OpenLayers.Layer.Vector("Line Layer");
-		var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
-		var boxLayer = new OpenLayers.Layer.Vector("Box layer");
-		
-		map.addLayers([pointLayer, lineLayer, polygonLayer, boxLayer]);
-		map.addControl(new OpenLayers.Control.LayerSwitcher());
-		map.addControl(new OpenLayers.Control.MousePosition())
-		
-		drawControls = {
-			point: new OpenLayers.Control.DrawFeature(pointLayer, OpenLayers.Handler.Point),
-			line: new OpenLayers.Control.DrawFeature(lineLayer,	OpenLayers.Handler.Path),
-			polygon: new OpenLayers.Control.DrawFeature(polygonLayer, OpenLayers.Handler.Polygon),
-			box: new OpenLayers.Control.DrawFeature(boxLayer, OpenLayers.Handler.RegularPolygon, {
-					handlerOptions: {
-						sides: 4,
-						irregular: true
-					}
-				}
-			)
-		};
-
-		for(var key in drawControls) {
-			map.addControl(drawControls[key]);
-		}
-	*/	
-		document.getElementById('noneToggle').checked = true;
-		// end rectangle addition
-		
-		
-		var tiles = new OpenLayers.Layer.XYZ(
+		var tiles = new ol.Layer.XYZ(
 			'Polar XYZ',
 			'http://polar.openstreetmap.de/tiles/${z}/${x}/${y}.png',
 			{
@@ -244,9 +123,7 @@
 		featctl.activate();
 
 		featctl.events.register('featurehighlighted', this, function(e) {
-			var
-				pt = e.feature.geometry,
-				ll = new OpenLayers.LonLat(pt.x, pt.y);
+			var pt = e.feature.geometry, ll = new OpenLayers.LonLat(pt.x, pt.y);
 
 			map.setCenter(ll, 11);
 		});
@@ -259,6 +136,69 @@
 			map.setCenter(new OpenLayers.LonLat(0, 0)/* despite the class name, these are in EPSG:3031, so 0/0 is actually the pole */, 1);
 		
     }
+
+	<!-- --                 --->
+	
+	//Place this after your map is instantiated
+	boundingBox = new ol.interaction.DragBox({
+		condition: ol.events.condition.always,
+		style: new ol.style.Style({
+			stroke: new ol.style.Stroke({
+				color: [0,0,255,1]
+			})
+		})
+	});
+
+	map.addInteraction(boundingBox);
+
+	map.on('boxend', function(e){
+		map.removeInteraction(boundingBox);
+		
+		catchments_url = 'http://felek.cns.umass.edu:8080/geoserver/Streams/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Streams%3ANHD_Local&outputformat=json&bbox=' + boundingBox.getGeometry().getExtent();
+
+		$.getJSON(catchments_url, function(d) {
+			var vectorSource = new ol.source.GeoJSON(
+				/** @type {olx.source.GeoJSONOptions} */( {
+				object : d
+			}
+			));
+
+			wfs_layer = new ol.layer.Vector({
+				source : vectorSource,
+				style : function(feature, resolution) {
+					var text = resolution < 5000 ? feature.get('name') : '';
+					if (!styleCache[text]) {
+						styleCache[text] = [new ol.style.Style({
+							fill : new ol.style.Fill({
+								color : 'rgba(255, 255, 255, 0.1)'
+							}),
+							stroke : new ol.style.Stroke({
+								color : '#319FD3',
+								width : 1
+							}),
+							text : new ol.style.Text({
+								font : '12px Calibri,sans-serif',
+								text : text,
+								fill : new ol.style.Fill({
+									color : '#000'
+								}),
+								stroke : new ol.style.Stroke({
+									color : '#fff',
+									width : 3
+								})
+							}),
+							zIndex : 999
+						})];
+					}
+					return styleCache[text];
+				}
+			});
+
+			map.addLayer(wfs_layer);
+	})
+	})
+	
+	
     </script>
 <!--  ///////////////////////////////////////////////////// -->	
 	<script>
@@ -453,57 +393,19 @@
                 <br>
                 <span class="southInput">S <input id="nsew_southId" size="7" value="-90.00" onchange="searchMapObject.changeLatLonBoundary('south',this.value, 'search');" type="text"></span>
             </div>
+
             <br>
-            
-<!-- -->
-		<hr />
-		<div id="drawElements">
-			<p>
-                <underline>Controls:</underline>
-            </p>
-            <p>[shift] + [click/drag] to draw rectangle</p>
-            <p>[click/drag] to move map</p>
-	
-<!--	
-			<ul id="controlToggle">
-				<li>
-					<input type="radio" name="type" value="none" id="noneToggle"
-						   onclick="toggleControl(this);" checked="checked" />
-					<label for="noneToggle">navigate</label>
-				</li>
-				<li>
-					<input type="radio" name="type" value="point" id="pointToggle" onclick="toggleControl(this);" />
-					<label for="pointToggle">draw point</label>
-				</li>
-	
-				<li>
-					<input type="radio" name="type" value="line" id="lineToggle" onclick="toggleControl(this);" />
-					<label for="lineToggle">draw line</label>
-				</li>
-				<li>
-					<input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleControl(this);" />
-					<label for="polygonToggle">draw polygon</label>
-				</li>
-	
-				<li>
-					<input type="radio" name="type" value="box" id="boxToggle" onclick="toggleControl(this);" />
-					<label for="boxToggle">draw box</label>
-				</li>
-	
-				<li>
-					<input type="checkbox" name="allow-pan" value="allow-pan" id="allowPanCheckbox" checked=true onclick="allowPan(this);" />
-					<label for="allowPanCheckbox">allow pan while drawing</label>
-				</li>
-	-->
-			</ul>
-
-			<div id="bbox_drag_instruction">Drag a box:</div>
-			<div id="bbox_adjust_instruction">Adjust the box ...or <input type="button" value="drag new box" onclick="dragNewBox();"></div>
-			<p id="bbox_result"> </p>
-
-		</div> <!-- end drawElements -->
-		<hr />
-<!-- -->
+			<hr />
+			<div id="drawElements">
+				<div id="bbox_drag_instruction">Drag a box:</div>
+				<div id="bbox_adjust_instruction">Adjust the box ...or
+				<br>
+				<input type="button" value="drag new box" onclick="dragNewBox();"></div>
+				<br>
+				<p id="bbox_result"></p>
+			</div> <!-- end drawElements -->
+			<hr />
+			
 			<input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest);" type="button">
 		</aside>
     </section>

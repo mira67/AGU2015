@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>AGU2015</title>
+	
+	<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="css/ol.css">
+	<script src="js/ol.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.12/proj4.js"></script> <!-- needed for reporjectioin -->
+    
+	<style type="text/css">
+	
+	</style>
+
+</head>
+<body>
+
+	<div id="map" class="map"></div>
+	
+	<script>
+/*	
+		proj4.defs(["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
+		proj4.defs(["EPSG:3031"], "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
+		proj4.defs(["EPSG:900913"], "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs");
+*/
+		var proj_4326 = new ol.proj.Projection({
+		  code: 'EPSG:4326'
+		});	
+		var proj_3031 = new ol.proj.Projection({
+		  code: 'EPSG:3031'/*,
+		  extent: [-3000000,-3000000,3000000,3000000]*/
+		});	
+
+		var extent = [-3000000,-3000000,3000000,3000000];
+		
+		var interactions = ol.interaction.defaults();
+		var controls = ol.control.defaults();
+
+		var layers = [ new ol.layer.Tile({
+				source: new ol.source.XYZ({
+					url: 'http://polar.openstreetmap.de/tiles/${z}/${x}/${y}.png',
+					extent: extent
+				})
+			})
+		];
+		
+		var map = new ol.Map({
+			target: 'map',
+			layers: layers,
+			interactions: interactions,
+			controls: ol.control.defaults().extend([
+				new ol.control.ScaleLine()
+			]),
+			view: new ol.View({
+				projection: proj_3031,
+				center: ol.proj.fromLonLat([0, 0], proj_3031),
+				extent: extent,
+				zoom: 10
+			})
+			/*
+			projection: proj_3031,
+			displayProjection: proj_4326
+			*/
+		});
+
+		/*
+		var lonlat = new ol.LonLat(-1.788, 53.571).transform(
+			ol.proj.get('EPSG:4326'), // transform from WGS 1984
+			ol.proj.get('EPSG:900913') // to Spherical Mercator
+		);
+		*/
+		
+    </script>
+	
+</body>
+</html>

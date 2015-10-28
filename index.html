@@ -50,246 +50,294 @@
 		body {
 			background-image: url("images/background.jpg");
 		}
+		/* controls box */
+		div.olControlAttribution { bottom:3px; }    
+		#bbox_drag_instruction { height:1.5em; }
+		#bbox_adjust_instruction { height:1.5em; display:none;  }
+		/* end controls box */
     </style>
 	
 	<script>
+		// function for box
+		var vectors;
+		var box;
+		var transform;
+
+		function endDrag( bbox ){
+			var bounds = bbox.getBounds();
+			setBounds(bounds);
+			drawBox(bounds);
+			box.deactivate();
+			document.getElementById("bbox_drag_instruction").style.display = 'none';
+			document.getElementById("bbox_adjust_instruction").style.display = 'block';        
+		}
+
+		function dragNewBox(){
+			box.activate();
+			transform.deactivate(); //The remove the box with handles
+			vectors.destroyFeatures();
+			document.getElementById("bbox_drag_instruction").style.display = 'block';
+			document.getElementById("bbox_adjust_instruction").style.display = 'none';
+			setBounds(null);
+		}
+
+		function boxResize( event ){
+			setBounds(event.feature.geometry.bounds);
+		}
+
+		function drawBox( bounds ){
+			var feature = new OpenLayers.Feature.Vector(bounds.toGeometry());
+			vectors.addFeatures(feature);
+			transform.setFeature(feature);
+		}
+
+		function toPrecision( zoom, value ){
+			var decimals = Math.pow(10, Math.floor(zoom/3));
+			return Math.round(value * decimals) / decimals;
+		}
+		
+		function setBounds( bounds ){
+			if( bounds == null ){
+				document.getElementById("bbox_result").innerHTML = "";		  
+			} else {
+				console.log("here");
+				b = bounds.clone().transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"))
+				minlon = toPrecision(map.getZoom(), b.left);
+				minlat = toPrecision(map.getZoom(), b.bottom);
+				maxlon = toPrecision(map.getZoom(), b.right);
+				maxlat = toPrecision(map.getZoom(), b.top);
+
+				console.log("values: " + minlon + maxlon + minlat + maxlat);
+				document.getElementById("bbox_result").innerHTML =
+				"minlon=" + minlon + ", " +
+				"minlat=" + minlat + ", " +
+				"maxlon=" + maxlon + ", " +
+				"maxlat=" + maxlat;  
+			}
+		}
 	
-    function setupmap() {
-		Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
-		Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
-		Proj4js.defs["EPSG:900913"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
+		function setupmap() {
+			Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+			Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+			Proj4js.defs["EPSG:900913"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
 
-		var map = new OpenLayers.Map('map', {
-			controls: [
-				new OpenLayers.Control.Navigation(),
-				new OpenLayers.Control.PanZoomBar(),
-				new OpenLayers.Control.Attribution(),
-				new OpenLayers.Control.LayerSwitcher(),
-				new OpenLayers.Control.ScaleLine(),
-				new OpenLayers.Control.Permalink({
-					anchor: true
-				})
-			],
-			projection: "EPSG:3031",
-			displayProjection: "EPSG:4326"
-		});
+			var map = new OpenLayers.Map('map', {
+				controls: [
+					new OpenLayers.Control.Navigation(),
+					new OpenLayers.Control.PanZoomBar(),
+					new OpenLayers.Control.Attribution(),
+					//new OpenLayers.Control.LayerSwitcher(),
+					new OpenLayers.Control.ScaleLine(),
+					new OpenLayers.Control.Permalink({
+						anchor: true
+					})
+				],
+				projection: "EPSG:3031",
+				displayProjection: "EPSG:4326"
+			});
 
-		var lonlat = new OpenLayers.LonLat(-1.788, 53.571).transform(
-			new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-			new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
-		);
+			var lonlat = new OpenLayers.LonLat(-1.788, 53.571).transform(
+				new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+				new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
+			);
 
-		vectors = new OpenLayers.Layer.Vector("Vector Layer", {
-			displayInLayerSwitcher: false
-		});
-		
-/*
-		var pointLayer = new OpenLayers.Layer.Vector("Point Layer");
-		var lineLayer = new OpenLayers.Layer.Vector("Line Layer");
-		var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
-		var boxLayer = new OpenLayers.Layer.Vector("Box layer");
-		
-		map.addLayers([pointLayer, lineLayer, polygonLayer, boxLayer]);
-		map.addControl(new OpenLayers.Control.LayerSwitcher());
-		map.addControl(new OpenLayers.Control.MousePosition())
-		
-		drawControls = {
-			point: new OpenLayers.Control.DrawFeature(pointLayer, OpenLayers.Handler.Point),
-			line: new OpenLayers.Control.DrawFeature(lineLayer,	OpenLayers.Handler.Path),
-			polygon: new OpenLayers.Control.DrawFeature(polygonLayer, OpenLayers.Handler.Polygon),
-			box: new OpenLayers.Control.DrawFeature(boxLayer, OpenLayers.Handler.RegularPolygon, {
-					handlerOptions: {
-						sides: 4,
-						irregular: true
-					}
+			vectors = new OpenLayers.Layer.Vector("Vector Layer", {
+				displayInLayerSwitcher: false
+			});
+					
+			var tiles = new OpenLayers.Layer.XYZ(
+				'Polar XYZ',
+				'http://polar.openstreetmap.de/tiles/${z}/${x}/${y}.png',
+				{
+					projection: 'EPSG:3031',
+					maxExtent: [-3000000,-3000000,3000000,3000000],
+					attribution: '© <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+					numZoomLevels: 20,
+					transitionEffect: 'resize'
 				}
 			)
+			map.addLayer(tiles);
+		
+			var markers = new OpenLayers.Layer.Vector("Markers", {
+				projection: 'EPSG:4326',
+				strategies: [new OpenLayers.Strategy.Fixed()],
+					protocol: new OpenLayers.Protocol.HTTP({
+					url: "interesting.json",
+					format: new OpenLayers.Format.GeoJSON()
+				})
+			});
+
+			map.addLayer(markers);
+		
+			var featctl = new OpenLayers.Control.SelectFeature(markers);
+			map.addControl(featctl);
+			featctl.activate();
+
+			featctl.events.register('featurehighlighted', this, function(e) {
+				var	pt = e.feature.geometry,
+					ll = new OpenLayers.LonLat(pt.x, pt.y);
+				map.setCenter(0, 0);
+			});
+
+			map.events.register('zoomend', this, function() {
+				markers.setVisibility(map.zoom < 8);
+			});
+
+			if( !map.getCenter() ){
+				map.setCenter(new OpenLayers.LonLat(0, 0)/* despite the class name, these are in EPSG:3031, so 0/0 is actually the pole */, 1);
+			}
+			
+			// begin draw box
+			var zoom = 1;
+			vectors = new OpenLayers.Layer.Vector("Vector Layer", {
+				displayInLayerSwitcher: false
+			});
+
+			map.addLayer(vectors);
+
+			box = new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.RegularPolygon, {
+				handlerOptions: {
+					sides: 4,
+					snapAngle: 90,
+					irregular: true,
+					persist: true
+				}
+			});
+			box.handler.callbacks.done = endDrag;
+			map.addControl(box);
+
+			transform = new OpenLayers.Control.TransformFeature(vectors, {
+				rotate: false,
+				irregular: true
+			});
+			
+			transform.events.register("transformcomplete", transform, boxResize);
+			map.addControl(transform);
+			map.addControl(box);
+			box.activate();
+			map.setCenter(lonlat, zoom);
+			// end draw box
+			
+		}
+		</script>
+	<!--  ///////////////////////////////////////////////////// -->	
+		<script>
+
+				
+			
+		</script>
+
+<!-- ///////////////////////////////////////////////////// -->	
+		<script>
+
+		/*User Request Configuration*/
+		var sendString = "",
+			dataSet = "SSMI",
+			frequency = "19",
+			polarization = "h",
+			startDate = "2012-08-08",
+			endDate = "2012-08-10";
+
+		var loctnArray = Array();
+
+		/*user request function*/
+		var anomalyRequest = {
+			"dsName": dataSet,
+			"dsFreq": frequency,
+			"dsPolar": polarization,
+			"sDate": startDate,
+			"eDate": endDate,
+			"locations": loctnArray
 		};
 
-		for(var key in drawControls) {
-			map.addControl(drawControls[key]);
+		function updateDate() {
+			startDate = "" + document.getElementById('startDate').value;
+			endDate = "" + document.getElementById('endDate').value;
+			anomalyRequest["sDate"] = startDate;
+			anomalyRequest["eDate"] = endDate;
 		}
-	*/	
-//		document.getElementById('noneToggle').checked = true;
-		// end rectangle addition
-		
-		
-		var tiles = new OpenLayers.Layer.XYZ(
-			'Polar XYZ',
-			'http://polar.openstreetmap.de/tiles/${z}/${x}/${y}.png',
-			{
-				projection: 'EPSG:3031',
-				maxExtent: [-3000000,-3000000,3000000,3000000],
-				attribution: '© <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-				numZoomLevels: 20,
-				transitionEffect: 'resize'
+
+		function changeDataSet(ds) {
+			dataSet = ds;
+			updateDate();
+			//update dataSet
+			anomalyRequest["dsName"] = ds;
+
+			if (ds == "AVHRR") {
+				document.getElementById("dataset1").style.color = "black";
+				document.getElementById("dataset2").style.color = "#B6B6B4";
+			} else {
+				document.getElementById("dataset2").style.color = "black";
+				document.getElementById("dataset1").style.color = "#B6B6B4";
 			}
-		)
-		map.addLayer(tiles);
+		};
 
-	
-		var markers = new OpenLayers.Layer.Vector("Markers", {
-			projection: 'EPSG:4326',
-			strategies: [new OpenLayers.Strategy.Fixed()],
-				protocol: new OpenLayers.Protocol.HTTP({
-				url: "interesting.json",
-				format: new OpenLayers.Format.GeoJSON()
-			})
-		});
-		map.addLayer(markers);
-	
-		var featctl = new OpenLayers.Control.SelectFeature(markers);
-		map.addControl(featctl);
-		featctl.activate();
+		function changeFrequency(freq) {
+			frequency = freq;
+			updateDate();
+			//update Frequency
+			anomalyRequest["dsFreq"] = freq;
 
-		featctl.events.register('featurehighlighted', this, function(e) {
-			var	pt = e.feature.geometry,
-				ll = new OpenLayers.LonLat(pt.x, pt.y);
-			map.setCenter(0, 0);
-		});
+			if (freq == '91') {
+				document.getElementById("freq91").style.color = "black";
+				document.getElementById("freq85").style.color = "#B6B6B4";
+				document.getElementById("freq37").style.color = "#B6B6B4";
+				document.getElementById("freq22").style.color = "#B6B6B4";
+				document.getElementById("freq19").style.color = "#B6B6B4";
+			} else if (freq == '85') {
 
-		map.events.register('zoomend', this, function() {
-			markers.setVisibility(map.zoom < 8);
-		});
+				document.getElementById("freq91").style.color = "#B6B6B4";
+				document.getElementById("freq85").style.color = "black";
+				document.getElementById("freq37").style.color = "#B6B6B4";
+				document.getElementById("freq22").style.color = "#B6B6B4";
+				document.getElementById("freq19").style.color = "#B6B6B4";
+			} else if (freq == '37') {
+				document.getElementById("freq91").style.color = "#B6B6B4";
+				document.getElementById("freq85").style.color = "#B6B6B4";
+				document.getElementById("freq37").style.color = "black";
+				document.getElementById("freq22").style.color = "#B6B6B4";
+				document.getElementById("freq19").style.color = "#B6B6B4";
+			} else if (freq == '22') {
+				document.getElementById("freq91").style.color = "#B6B6B4";
+				document.getElementById("freq85").style.color = "#B6B6B4";
+				document.getElementById("freq37").style.color = "#B6B6B4";
+				document.getElementById("freq22").style.color = "black";
+				document.getElementById("freq19").style.color = "#B6B6B4";
+			} else {
+				document.getElementById("freq91").style.color = "#B6B6B4";
+				document.getElementById("freq85").style.color = "#B6B6B4";
+				document.getElementById("freq37").style.color = "#B6B6B4";
+				document.getElementById("freq22").style.color = "#B6B6B4";
+				document.getElementById("freq19").style.color = "black";
+			}
+		};
 
-		if( !map.getCenter() ){
-			map.setCenter(new OpenLayers.LonLat(0, 0)/* despite the class name, these are in EPSG:3031, so 0/0 is actually the pole */, 1);
-		}
-		
-    }
-    </script>
-<!--  ///////////////////////////////////////////////////// -->	
-	<script>
-		function toggleControl(element) {
-			for(key in drawControls) {
-				var control = drawControls[key];
-				if(element.value == key && element.checked) {
-					control.activate();
-				} else {
-					control.deactivate();
-				}
+		function changePolarization(pol) {
+			polarization = pol;
+			updateDate();
+			anomalyRequest["dsPolar"] = pol;
+
+			if (pol == 'v') {
+				document.getElementById("vertical").style.color = "black";
+				document.getElementById("horizontal").style.color = "#B6B6B4";
+			} else {
+				document.getElementById("horizontal").style.color = "black";
+				document.getElementById("vertical").style.color = "#B6B6B4";
 			}
 		}
 
-		function allowPan(element) {
-			var stop = !element.checked;
-			for(var key in drawControls) {
-				drawControls[key].handler.stopDown = stop;
-				drawControls[key].handler.stopUp = stop;
-			}
-		}
-	</script>
-<!--  ///////////////////////////////////////////////////// -->	
-    <script>
+		//function updatePolyArea(pa) { polyArea = pa; }
+		function enablePolygonSearch() {};
 
-    /*User Request Configuration*/
-    var sendString = "",
-        dataSet = "SSMI",
-        frequency = "19",
-        polarization = "h",
-        startDate = "2012-08-08",
-        endDate = "2012-08-10";
-
-    var loctnArray = Array();
-
-    /*user request function*/
-    var anomalyRequest = {
-        "dsName": dataSet,
-        "dsFreq": frequency,
-        "dsPolar": polarization,
-        "sDate": startDate,
-        "eDate": endDate,
-        "locations": loctnArray
-    };
-
-    function updateDate() {
-        startDate = "" + document.getElementById('startDate').value;
-        endDate = "" + document.getElementById('endDate').value;
-        anomalyRequest["sDate"] = startDate;
-        anomalyRequest["eDate"] = endDate;
-    }
-
-    function changeDataSet(ds) {
-        dataSet = ds;
-        updateDate();
-        //update dataSet
-        anomalyRequest["dsName"] = ds;
-
-        if (ds == "AVHRR") {
-            document.getElementById("dataset1").style.color = "black";
-            document.getElementById("dataset2").style.color = "#B6B6B4";
-        } else {
-            document.getElementById("dataset2").style.color = "black";
-            document.getElementById("dataset1").style.color = "#B6B6B4";
-        }
-    };
-
-    function changeFrequency(freq) {
-        frequency = freq;
-        updateDate();
-        //update Frequency
-        anomalyRequest["dsFreq"] = freq;
-
-        if (freq == '91') {
-            document.getElementById("freq91").style.color = "black";
-            document.getElementById("freq85").style.color = "#B6B6B4";
-            document.getElementById("freq37").style.color = "#B6B6B4";
-            document.getElementById("freq22").style.color = "#B6B6B4";
-            document.getElementById("freq19").style.color = "#B6B6B4";
-        } else if (freq == '85') {
-
-            document.getElementById("freq91").style.color = "#B6B6B4";
-            document.getElementById("freq85").style.color = "black";
-            document.getElementById("freq37").style.color = "#B6B6B4";
-            document.getElementById("freq22").style.color = "#B6B6B4";
-            document.getElementById("freq19").style.color = "#B6B6B4";
-        } else if (freq == '37') {
-            document.getElementById("freq91").style.color = "#B6B6B4";
-            document.getElementById("freq85").style.color = "#B6B6B4";
-            document.getElementById("freq37").style.color = "black";
-            document.getElementById("freq22").style.color = "#B6B6B4";
-            document.getElementById("freq19").style.color = "#B6B6B4";
-        } else if (freq == '22') {
-            document.getElementById("freq91").style.color = "#B6B6B4";
-            document.getElementById("freq85").style.color = "#B6B6B4";
-            document.getElementById("freq37").style.color = "#B6B6B4";
-            document.getElementById("freq22").style.color = "black";
-            document.getElementById("freq19").style.color = "#B6B6B4";
-        } else {
-            document.getElementById("freq91").style.color = "#B6B6B4";
-            document.getElementById("freq85").style.color = "#B6B6B4";
-            document.getElementById("freq37").style.color = "#B6B6B4";
-            document.getElementById("freq22").style.color = "#B6B6B4";
-            document.getElementById("freq19").style.color = "black";
-        }
-    };
-
-    function changePolarization(pol) {
-        polarization = pol;
-        updateDate();
-        anomalyRequest["dsPolar"] = pol;
-
-        if (pol == 'v') {
-            document.getElementById("vertical").style.color = "black";
-            document.getElementById("horizontal").style.color = "#B6B6B4";
-        } else {
-            document.getElementById("horizontal").style.color = "black";
-            document.getElementById("vertical").style.color = "#B6B6B4";
-        }
-    }
-
-    //function updatePolyArea(pa) { polyArea = pa; }
-    function enablePolygonSearch() {};
-
-    //pass full request to a new page, in localStorage
-    function sendRequest(anomalyRequest) {
-        updateDate();
-        anomalyRequest["dsFreq"] = 's' + frequency + polarization;
-        //transfer request to result page
-        localStorage['userQuery'] = JSON.stringify(anomalyRequest);
-        var win = window.open("anomaly.html",'_blank');
-        win.focus();
-    };
+		//pass full request to a new page, in localStorage
+		function sendRequest(anomalyRequest) {
+			updateDate();
+			anomalyRequest["dsFreq"] = 's' + frequency + polarization;
+			//transfer request to result page
+			localStorage['userQuery'] = JSON.stringify(anomalyRequest);
+			var win = window.open("anomaly.html",'_blank');
+			win.focus();
+		};
     </script>
 </head>
 
@@ -302,15 +350,16 @@
     <section class='container' id='main'>
         <div id='content'>
             <div id='map'>
-				<div class="time">Last Update (of all Tiles): 21.10.2015 20:22:44</div>
+				<div class="time"></div>
             </div>
         </div>
+		
         <aside id='sidebar' class='roundEdge'>
             <br>
             <span id="datasetName"><font color="Black">Data Set</font></span>
             <br>
             <button id="dataset2" class="myButton" onclick="changeDataSet('SSMI')">SSMI</button>
-            <br>
+            <br><br>
             <span id="datasetFrequency"><font color="Black">Frequency [ SSMI ]</font></span>
             <br>
             <button id="freq91" class="myButton" onclick="changeFrequency('91')">91.7</button>
@@ -318,16 +367,16 @@
             <button id="freq37" class="myButton" onclick="changeFrequency('37')">37.0</button>
             <button id="freq22" class="myButton" onclick="changeFrequency('22')">22.2</button>
             <button id="freq19" class="myButton" onclick="changeFrequency('19')">19.3</button>
-            <br>
+            <br><br>
             <span id="datasetFrequency"><font color="Black">Polarization [ SSMI ]</font></span>
             <br>
             <button id="vertical" class="myButton" onclick="changePolarization('v')">vertical</button>
             <button id="horizontal" class="myButton" onclick="changePolarization('h')">horizontal</button>
-            <br>
+            <br><br>
             <span id="datasetField"><font color="Black">Start Date</font></span>
             <br>
             <input id="startDate" name="startDate" value="2012-08-08" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
-            <br>
+            <br><br>
             <span id="datasetField"><font color="Black">End Date</font></span>
             <br>
             <input id="endDate" name="endDate" value="2012-08-20" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
@@ -356,47 +405,11 @@
 <!-- -->
 		<hr />
 		<div id="drawElements">
-			<p>
-                <underline>Controls:</underline>
-            </p>
+			<p><underline>Controls:</underline></p>
             <p>[shift] + [click/drag] to draw rectangle</p>
             <p>[click/drag] to move map</p>
-	
-<!--	
-			<ul id="controlToggle">
-				<li>
-					<input type="radio" name="type" value="none" id="noneToggle"
-						   onclick="toggleControl(this);" checked="checked" />
-					<label for="noneToggle">navigate</label>
-				</li>
-				<li>
-					<input type="radio" name="type" value="point" id="pointToggle" onclick="toggleControl(this);" />
-					<label for="pointToggle">draw point</label>
-				</li>
-	
-				<li>
-					<input type="radio" name="type" value="line" id="lineToggle" onclick="toggleControl(this);" />
-					<label for="lineToggle">draw line</label>
-				</li>
-				<li>
-					<input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleControl(this);" />
-					<label for="polygonToggle">draw polygon</label>
-				</li>
-	
-				<li>
-					<input type="radio" name="type" value="box" id="boxToggle" onclick="toggleControl(this);" />
-					<label for="boxToggle">draw box</label>
-				</li>
-	
-				<li>
-					<input type="checkbox" name="allow-pan" value="allow-pan" id="allowPanCheckbox" checked=true onclick="allowPan(this);" />
-					<label for="allowPanCheckbox">allow pan while drawing</label>
-				</li>
-	-->
-			</ul>
-
 			<div id="bbox_drag_instruction">Drag a box:</div>
-			<div id="bbox_adjust_instruction">Adjust the box ...or <input type="button" value="drag new box" onclick="dragNewBox();"></div>
+			<div id="bbox_adjust_instruction">Adjust the box ...or<input type="button" value="drag new box" onclick="dragNewBox();"></div>
 			<p id="bbox_result"> </p>
 
 		</div> <!-- end drawElements -->

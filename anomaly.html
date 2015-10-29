@@ -5,11 +5,10 @@
 <!--[if gt IE 8]><!-->
 <html>
 <!--<![endif]-->
-
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>AGU2015-Anomaly</title>
+	<title>AGU 2015</title>
 
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
@@ -26,16 +25,20 @@
 	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
 	<link rel="stylesheet" href="css/style.css">
 
-	
 	<style type="text/css">
 		#content {
 			height: 90vh;
 		}		
-			#sidebar {
+		#sidebar {
 			height: 90vh;
 		}
+
+		<!-- color scheme 
+			blueish: "#99cccc"
+			whiteish: "#cccccc"
+		-->
+
 	</style>
-	
 	
 </head>
 <body id="index" class="home">
@@ -50,43 +53,43 @@
 
     <section class='container' id='main'>
         <section id='content'>
-            <img id="image" src="images/jan.png" />
-            <div class="slider"></div>
-            <script>
-            // set up an array to hold the months
-            var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-            // lets be fancy for the demo and select the current month.
-            var activeMonth = new Date().getMonth();
+		<img id="image" src="images/jan.png" />
+		<div class="slider"></div>
+		<script>
+			// set up an array to hold the months
+			var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+			// lets be fancy for the demo and select the current month.
+			var activeMonth = new Date().getMonth();
 
-            $(".slider")
-                // activate the slider with options
-                .slider({
-                    min: 0,
-                    max: months.length - 1,
-                    value: activeMonth
-                })
+			$(".slider")
+			// activate the slider with options
+			.slider({
+			    min: 0,
+			    max: months.length - 1,
+			    value: activeMonth
+			})
 
-            // add pips with the labels set to "months"
-            .slider("pips", {
-                rest: "label",
-                labels: months
-            })
+			// add pips with the labels set to "months"
+			.slider("pips", {
+				rest: "label",
+				labels: months
+			})
 
-            // and whenever the slider changes, lets echo out the month
-            .on("slidechange", function(e, ui) {
-                $("#labels-months-output").text("You selected " + months[ui.value] + " (" + ui.value + ")");
-                //display corresponding images based on selected date
-                $("#image").attr("src", "images/" + months[ui.value] + ".png");
-				console.log("images/" + months[ui.value] + ".png");
-            });
-            </script>
-			
-            <script>
-            window.onload = function() {
-                var query = JSON.parse(localStorage["userQuery"]);
-                console.log(query);
-            };
-            </script>
+			// and whenever the slider changes, lets echo out the month
+			.on("slidechange", function(e, ui) {
+			$("#labels-months-output").text("You selected " + months[ui.value] + " (" + ui.value + ")");
+			//display corresponding images based on selected date
+			$("#image").attr("src", "images/" + months[ui.value] + ".png");
+					console.log("images/" + months[ui.value] + ".png");
+			});
+		</script>
+				
+		<script>
+			window.onload = function() {
+				var query = JSON.parse(localStorage["userQuery"]);
+				console.log(query);
+			};
+		</script>
             
 			<!-- <script>
             //test data for UI rendering
@@ -100,44 +103,44 @@
 	
 	//Checks whether the stored data exists
 	if(_region) {
-	
-	//Do what you need with the object
-	alert(_region);
-	
-	//If you want to delete the object
-	localStorage.removeItem('_Region');
+		//Do what you need with the object
+		alert(_region);
+		
+		//If you want to delete the object
+		localStorage.removeItem('_Region');
 	}
 
 	//send user request package to server----testing code from Chao
 	function sendJson() {
-	var loctnArray = Array();
-	loctnArray[0] = {
-	"longitude" : 100,
-	"latitude" : 100
+		var loctnArray = Array();
+		loctnArray[0] = {
+		"longitude" : 100,
+		"latitude" : 100
 	}
+
 	loctnArray[1] = {
-	"longitude" : 200,
-	"latitude" : 200
+		"longitude" : 200,
+		"latitude" : 200
 	}
 
 	var anomlyRequest = {
-	"dsName" : "SSMI",
-	"dsFreq" : "s19h",
-	"sDate" : "20120101",
-	"eDate" : "20130101",
-	"locations" : loctnArray
+		"dsName" : "SSMI",
+		"dsFreq" : "s19h",
+		"sDate" : "20120101",
+		"eDate" : "20130101",
+		"locations" : loctnArray
 	}
 
 	var ajaxHandle = $.ajax({
-	type : "POST",
-	contentType : "application/json; charset=utf-8",
-	url : "anomaly/ajaxRetrv.do",
-	data : JSON.stringify(anomlyRequest),
-	dataType : 'jsonp',
-	async : false,
-	success : function(response) {
-	     $("#expDiv").html("Hi")
-	}
+		type : "POST",
+		contentType : "application/json; charset=utf-8",
+		url : "anomaly/ajaxRetrv.do",
+		data : JSON.stringify(anomlyRequest),
+		dataType : 'jsonp',
+		async : false,
+		success : function(response) {
+		     $("#expDiv").html("Hi")
+		}
 	});
 	$("#expDiv").html(ajaxHandle.responseText)
 	}

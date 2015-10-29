@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>AGU2015</title>
+    <title>AGU 2015</title>
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
     <!-- openlayers needs to compile sooner or error is raised -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
@@ -32,7 +32,7 @@
 			width: 100%;
 			margin: 0px;
 			padding: 0px;
-			background: #000;
+			background: #b4c8c8;
 		}
 		.olImageLoadError {
 			display: none !important;
@@ -40,16 +40,14 @@
 		#map .olControlAttribution {
 			right: 2px;
 			bottom: 2px;
-			color: #ccc;
+			color: #dcddd8;
 			font-family: arial;
 		}
 		#map .olControlAttribution a {
 			color: #ffc;
 		}
 		/* end css for maps */
-		body {
-			background-image: url("images/background.jpg");
-		}
+		
 		/* controls box */
 		#mapdiv { height:10px; }
 		div.olControlAttribution { bottom:3px; }    
@@ -107,7 +105,7 @@
 				document.getElementById("bbox_result").innerHTML = "";		  
 			} else {
 
-				b = bounds.clone().transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:3031"))
+				b = bounds.clone().transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"))
 				minlon = toPrecision(map.getZoom(), b.left);
 				minlat = toPrecision(map.getZoom(), b.bottom);
 				maxlon = toPrecision(map.getZoom(), b.right);
@@ -133,7 +131,6 @@
 				new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
 				new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
 			);
-
 
 			vectors = new OpenLayers.Layer.Vector("Vector Layer", {
 				displayInLayerSwitcher: false
@@ -181,7 +178,7 @@
 			}
 
 			// begin draw box
-			var zoom = 1;
+			var zoom = 2;
 			
 			vectors = new OpenLayers.Layer.Vector("Vector Layer", {
 				displayInLayerSwitcher: false
@@ -349,11 +346,12 @@
             <br><br>
             <span id="datasetFrequency"><font color="Black">Frequency [ SSMI ]</font></span>
             <br>
-            <button id="freq91" class="myButton" onclick="changeFrequency('91')">91.7</button>
-            <button id="freq85" class="myButton" onclick="changeFrequency('85')">85.5</button>
-            <button id="freq37" class="myButton" onclick="changeFrequency('37')">37.0</button>
-            <button id="freq22" class="myButton" onclick="changeFrequency('22')">22.2</button>
             <button id="freq19" class="myButton" onclick="changeFrequency('19')">19.3</button>
+            <button id="freq22" class="myButton" onclick="changeFrequency('22')">22.2</button>
+            <button id="freq37" class="myButton" onclick="changeFrequency('37')">37.0</button>
+	    <br>
+            <button id="freq85" class="myButton" onclick="changeFrequency('85')">85.5</button>
+            <button id="freq91" class="myButton" onclick="changeFrequency('91')">91.7</button>
             <br><br>
             <span id="datasetFrequency"><font color="Black">Polarization [ SSMI ]</font></span>
             <br>
@@ -383,7 +381,7 @@
     </section>
 	
     <footer class='container' id='footer'>
-        <p>© 2015 NSIDC & University of Colorado at Boulder</p>
+        <center><p>© 2015 NSIDC & University of Colorado at Boulder</p></center>
     </footer>
 </body>
 

@@ -33,7 +33,8 @@
 			height: 90vh;
 		}
 		#prevNext {
-			float: clear: left;
+			float: left;
+			margin: auto;
 		}
 	</style>
 	
@@ -41,7 +42,9 @@
 <body id="index" class="home">
 	
 	<header class='container' id='header'>
-		<h1 id='project' class='center'>Anomaly Analysis</h1>
+		<nav class='container roundEdge' id='nav'>
+			<center><h1 id='project'>Anomaly Analysis Results</h1></center>
+		</nav>
 	</header>
 	
 	<!--<nav class='container roundEdge' id='nav'>
@@ -52,11 +55,10 @@
 		<img id="image" src="images/jan.png" />
 		<div class="slider"></div>
 
-		<div id="prevNext">
-			<br><br>
-			<input class="myButton" value="Query Previous 10 Days" onclick="queryPrevious();" type="button">			
-			<br>
-			<input class="myButton" value="Query Next 10 Days" onclick="queryNext();" type="button">			
+		<div id="changeDateButtons">
+			<br><br><br>
+			<input class="myButton" value="Query Previous 10 Days" onclick="changeDateRange(-10);" type="button">
+			<input class="myButton" value="Query Next 10 Days" onclick="changeDateRange(10);" type="button">			
 		</div>
 
 		<script>
@@ -64,17 +66,35 @@
 			var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 			// lets be fancy for the demo and select the current month.
 			var activeMonth = new Date().getMonth();
-			
+		
+			function changeDateRange( num ){
+				var currentDate = new Date(slideDate.getDate());
+				currentDate.setDate;
+//console.log("before: " + slideDate);
+				slideDate.setDate(currentDate.getTime() + num);
+//console.log("after: " + slideDate);
+				var newDates = GetDates(slideDate, 10);
+console.log("newDates: " + newDates);
+				$(".slider")
+				.slider({ min: 0, max: 9, value: 1 })
+				.slider("pips", { rest: "label", labels: newDates })
+			}
+
 			// find the next ten days
 			function GetDates(startDate, daysToAdd){
 				var arrDates = [];
 				for(var i = 0; i <= daysToAdd; i++){
-					var currentDate = new Date();
+					var currentDate = new Date(startDate);
+//console.log(currentDate);
 					currentDate.setDate(startDate.getDate() + i);
-					arrDates.push(currentDate.getDate() + " " + MonthAsString(currentDate.getMonth()) + " " + currentDate.getFullYear());
+					arrDates.push(currentDate.getDate() + " " 
+						+ MonthAsString(currentDate.getMonth()) + " " 
+						+ currentDate.getFullYear());
 				}
 				return arrDates;
+// off by one day???? utc vs mst
 			}
+
 			function MonthAsString(monthIndex){
 				var d = new Date();
 				var month = new Array();
@@ -93,19 +113,21 @@
 				return month[monthIndex];
 			}
 			
-			var startDate = new Date();
+			sDate = JSON.parse(localStorage.userQuery)["sDate"];
+console.log("sDate: " + sDate);	
+			startDate = new Date(sDate);
+			slideDate = startDate;
 			var arrDates = GetDates(startDate, 10);
-			console.log(arrDates);
+console.log("arrDates" + arrDates);
 
 			$(".slider")
 			// activate the slider with options
 			.slider({
 			    min: 0,
-			    max: 10,
-			    value: 0
+			    max: 9,
+			    value: 1
 			})
 
-			// add pips with the labels set to "months"
 			.slider("pips", {
 				rest: "label",
 				labels: arrDates
@@ -113,18 +135,27 @@
 
 			// and whenever the slider changes, lets echo out the month
 			.on("slidechange", function(e, ui) {
-			$("#labels-months-output").text("You selected " + months[ui.value] + " (" + ui.value + ")");
-			//display corresponding images based on selected date
-			$("#image").attr("src", "images/" + months[ui.value] + ".png");
-					console.log("images/" + months[ui.value] + ".png");
+				$("#labels-months-output").text("You selected " + months[ui.value] + " (" + ui.value + ")");
+				//display corresponding images based on selected date
+				$("#image").attr("src", "images/" + months[ui.value] + ".png");
+//console.log("images/" + months[ui.value] + ".png");
 			});
 		</script>
 				
 		<script>
 			window.onload = function() {
 				var query = JSON.parse(localStorage["userQuery"]);
-				console.log(query);
+				console.log("query results: " + query);
 			};
+			
+			// get all the data
+			dataPassed = JSON.parse(localStorage.userQuery);
+			dsName = dataPassed["dsName"];
+			dsFreq = dataPassed["dsFreq"];
+			dsPolar = dataPassed["dsPolar"];
+			sDate = dataPassed["sDate"];
+			eDate = dataPassed["eDate"];
+
 		</script>
             
 			<!-- <script>
@@ -136,7 +167,6 @@
 	
 	//parse to Object Literal the JSON object
 	if(_region) _region = JSON.parse(_region);
-	
 	//Checks whether the stored data exists
 	if(_region) {
 		//Do what you need with the object
@@ -186,12 +216,11 @@
 
         <aside id="sidebar" class="roundEdge">
 		<br>
-		<img src="images/logo.png" alt="logo" style="width:200px;height:200px;"><br><br><br>
-		<img src="images/jan.png" alt="logo" style="width:100px;height:100px;">
+		<img src="images/jan.png" alt="logo" style="width:200px;height:200px;">
 		<p>January</p>
-		<img src="images/feb.png" alt="logo" style="width:100px;height:100px;">
+		<img src="images/feb.png" alt="logo" style="width:200px;height:200px;">
 		<p>February</p>
-		<img src="images/mar.png" alt="logo" style="width:100px;height:100px;">
+		<img src="images/mar.png" alt="logo" style="width:200px;height:200px;">
 		<p>March</p>
 	</aside>
     	</section>

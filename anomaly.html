@@ -7,45 +7,47 @@
 <!--<![endif]-->
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>AGU2015-Anomaly</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <script src="js/jquery-2.1.4.min.js"></script>
-    <script src="js/highmaps.js"></script>
-    <script src="js/exporting.js"></script>
-    <script src="js/antarctica.js"></script>
-    <!-- include the jQuery and jQuery UI scripts -->
-    <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
-    <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
-    <script src="js/jquery-ui-slider-pips.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
-    <!-- plus a jQuery UI theme, here I use "flick" -->
-    <link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
-    <link rel="stylesheet" href="css/style.css">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>AGU2015-Anomaly</title>
+
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+	<script src="js/jquery-2.1.4.min.js"></script>
+	<script src="js/highmaps.js"></script>
+	<script src="js/exporting.js"></script>
+	<script src="js/antarctica.js"></script>
+	<!-- include the jQuery and jQuery UI scripts -->
+	<script src="https://code.jquery.com/jquery-2.1.1.js"></script>
+	<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+	<script src="js/jquery-ui-slider-pips.js"></script>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
+	<!-- plus a jQuery UI theme, here I use "flick" -->
+	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
+	<link rel="stylesheet" href="css/style.css">
+
 	
-	
-    <style type="text/css">
+	<style type="text/css">
 		#content {
 			height: 90vh;
 		}		
-		#sidebar {
+			#sidebar {
 			height: 90vh;
 		}
 	</style>
 	
 	
 </head>
-
 <body id="index" class="home">
-    <header class='container' id='header'>
-        <!--<img src="css/img/logo_nsidc.jpg"> </img>-->
-        <h1 id='project' class='center'>Anomaly Analysis</h1>
-    </header>
-    <!--<nav class='container roundEdge' id='nav'>
+	
+	<header class='container' id='header'>
+		<!--<img src="css/img/logo_nsidc.jpg"> </img>-->
+		<h1 id='project' class='center'>Anomaly Analysis</h1>
+	</header>
+	
+	<!--<nav class='container roundEdge' id='nav'>
+	</nav>-->
 
-  </nav>-->
     <section class='container' id='main'>
         <section id='content'>
             <img id="image" src="images/jan.png" />
@@ -90,62 +92,65 @@
             //test data for UI rendering
             testData = [{"date":1350885600000,"val":222.1,"longi":100.0,"lati":100.0},{"date":1375336800000,"val":209.8,"longi":100.0,"lati":100.0},{"date":1375423200000,"val":209.4,"longi":100.0,"lati":100.0},{"date":1375509600000,"val":209.4,"longi":100.0,"lati":100.0},{"date":1375596000000,"val":210.6,"longi":100.0,"lati":100.0},{"date":1375682400000,"val":212.1,"longi":100.0,"lati":100.0}];
 
-            //test local storage to grab user request information
-                var _region = localStorage.getItem('_Region');
-               //parse to Object Literal the JSON object
-               if(_region) _region = JSON.parse(_region);
-               //Checks whether the stored data exists
-               if(_region) {
-                 //Do what you need with the object
-                 alert(_region);
-                 //If you want to delete the object
-                 localStorage.removeItem('_Region');
-               }
+	//test local storage to grab user request information
+	var _region = localStorage.getItem('_Region');
+	
+	//parse to Object Literal the JSON object
+	if(_region) _region = JSON.parse(_region);
+	
+	//Checks whether the stored data exists
+	if(_region) {
+	
+	//Do what you need with the object
+	alert(_region);
+	
+	//If you want to delete the object
+	localStorage.removeItem('_Region');
+	}
 
-            //send user request package to server----testing code from Chao
-             function sendJson() {
-                   var loctnArray = Array();
-                   loctnArray[0] = {
-                        "longitude" : 100,
-                        "latitude" : 100
-                   }
-                   loctnArray[1] = {
-                        "longitude" : 200,
-                        "latitude" : 200
-                   }
-         
-                   var anomlyRequest = {
-                        "dsName" : "SSMI",
-                        "dsFreq" : "s19h",
-                        "sDate" : "20120101",
-                        "eDate" : "20130101",
-                        "locations" : loctnArray
-                   }
-         
-                   var ajaxHandle = $.ajax({
-                        type : "POST",
-                        contentType : "application/json; charset=utf-8",
-                        url : "anomaly/ajaxRetrv.do",
-                        data : JSON.stringify(anomlyRequest),
-                        dataType : 'jsonp',
-                        async : false,
-                        success : function(response) {
-                             $("#expDiv").html("Hi")
-                        }
-                   });
-                   $("#expDiv").html(ajaxHandle.responseText)
-             }
+	//send user request package to server----testing code from Chao
+	function sendJson() {
+	var loctnArray = Array();
+	loctnArray[0] = {
+	"longitude" : 100,
+	"latitude" : 100
+	}
+	loctnArray[1] = {
+	"longitude" : 200,
+	"latitude" : 200
+	}
 
-            </script>-->
-        </section>
-        <aside id='sidebar' class='roundEdge'>
+	var anomlyRequest = {
+	"dsName" : "SSMI",
+	"dsFreq" : "s19h",
+	"sDate" : "20120101",
+	"eDate" : "20130101",
+	"locations" : loctnArray
+	}
+
+	var ajaxHandle = $.ajax({
+	type : "POST",
+	contentType : "application/json; charset=utf-8",
+	url : "anomaly/ajaxRetrv.do",
+	data : JSON.stringify(anomlyRequest),
+	dataType : 'jsonp',
+	async : false,
+	success : function(response) {
+	     $("#expDiv").html("Hi")
+	}
+	});
+	$("#expDiv").html(ajaxHandle.responseText)
+	}
+
+	</script>-->
+	</section>
+
+        <aside id="sidebar" class="roundEdge">
         </aside>
-    </section>
-    <footer class='container' id='footer'>
-        <p>
-            © 2015 NSIDC & University of Colorado at Boulder
-        </p>
-    </footer>
-</body>
+    	</section>
 
+	<footer class='container' id='footer'>
+		<p>© 2015 NSIDC & University of Colorado at Boulder</p>
+	</footer>
+</body>
 </html>

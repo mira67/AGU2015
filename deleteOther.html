@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>AGU2015</title>
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!-- openlayers needs to compile sooner or error is raised -->
+
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js"></script>
+	
+    <style type="text/css">
+		/* controls box */
+		#mapdiv { width:350px; height:200px; }
+		div.olControlAttribution { bottom:3px; }    
+		#bbox_drag_instruction { height:1.5em; }
+		#bbox_adjust_instruction { height:1.5em; display:none;  }
+		/* end controls box */
+    </style>
+	
+	<script>
+		// function for box
+		var vectors;
+		var box;
+		var transform;
+
+		Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+		Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+		Proj4js.defs["EPSG:900913"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
+
+		
+		function endDrag( bbox ){
+			var bounds = bbox.getBounds();
+			setBounds(bounds);
+			drawBox(bounds);
+			box.deactivate();
+			document.getElementById("bbox_drag_instruction").style.display = 'none';
+			document.getElementById("bbox_adjust_instruction").style.display = 'block';        
+		}
+
+		function dragNewBox(){
+			box.activate();
+			transform.deactivate(); //The remove the box with handles
+			vectors.destroyFeatures();
+			document.getElementById("bbox_drag_instruction").style.display = 'block';
+			document.getElementById("bbox_adjust_instruction").style.display = 'none';
+			setBounds(null);
+		}
+
+		function boxResize( event ){
+			setBounds(event.feature.geometry.bounds);
+		}
+
+		function drawBox( bounds ){
+			var feature = new OpenLayers.Feature.Vector(bounds.toGeometry());
+			vectors.addFeatures(feature);
+			transform.setFeature(feature);
+		}
+
+		function toPrecision( zoom, value ){
+			var decimals = Math.pow(10, Math.floor(zoom/3));
+			return Math.round(value * decimals) / decimals;
+		}
+		
+		function setBounds( bounds ){
+			if( bounds == null ){
+				document.getElementById("bbox_result").innerHTML = "";		  
+			} else {
+console.log("here1");
+console.log("map" + map.getProjectionObject());
+				b = bounds.clone().transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:3031"))
+console.log("here2");				
+				minlon = toPrecision(map.getZoom(), b.left);
+				minlat = toPrecision(map.getZoom(), b.bottom);
+				maxlon = toPrecision(map.getZoom(), b.right);
+				maxlat = toPrecision(map.getZoom(), b.top);
+
+console.log("values: " + minlon + maxlon + minlat + maxlat);
+				document.getElementById("bbox_result").innerHTML =
+				"minlon=" + minlon + ", " +
+				"minlat=" + minlat + ", " +
+				"maxlon=" + maxlon + ", " +
+				"maxlat=" + maxlat;  
+			}
+		}
+	
+		function setupmap() {
+
+			var map = new OpenLayers.Map('map', {
+				/*controls: [
+					new OpenLayers.Control.Navigation(),
+					new OpenLayers.Control.PanZoomBar(),
+					new OpenLayers.Control.Attribution(),
+					//new OpenLayers.Control.LayerSwitcher(),
+					new OpenLayers.Control.ScaleLine(),
+					new OpenLayers.Control.Permalink({
+						anchor: true
+					})
+				],*/
+				projection: "EPSG:3031",
+				displayProjection: "EPSG:4326"
+			});
+
+			var lonlat = new OpenLayers.LonLat(-1.788, 53.571).transform(
+				new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+				new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
+			);
+
+			vectors = new OpenLayers.Layer.Vector("Vector Layer", {
+				displayInLayerSwitcher: false
+			});
+					
+			var tiles = new OpenLayers.Layer.XYZ(
+				'Polar XYZ',
+				'http://polar.openstreetmap.de/tiles/${z}/${x}/${y}.png',
+				{
+					projection: 'EPSG:3031',
+					maxExtent: [-3000000,-3000000,3000000,3000000],
+					attribution: '© <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+					numZoomLevels: 20,
+					transitionEffect: 'resize'
+				}
+			)
+			map.addLayer(tiles);
+		
+			var markers = new OpenLayers.Layer.Vector("Markers", {
+				projection: 'EPSG:4326',
+				strategies: [new OpenLayers.Strategy.Fixed()],
+					protocol: new OpenLayers.Protocol.HTTP({
+					url: "interesting.json",
+					format: new OpenLayers.Format.GeoJSON()
+				})
+			});
+			map.addLayer(markers);
+		
+			var featctl = new OpenLayers.Control.SelectFeature(markers);
+			map.addControl(featctl);
+			featctl.activate();
+
+			featctl.events.register('featurehighlighted', this, function(e) {
+				var	pt = e.feature.geometry,
+					ll = new OpenLayers.LonLat(pt.x, pt.y);
+				map.setCenter(0, 0);
+			});
+
+			map.events.register('zoomend', this, function() {
+				markers.setVisibility(map.zoom < 8);
+			});
+
+			if( !map.getCenter() ){
+				map.setCenter(new OpenLayers.LonLat(0, 0)/* despite the class name, these are in EPSG:3031, so 0/0 is actually the pole */, 1);
+			}
+			
+			// begin draw box
+			var zoom = 1;
+			
+			vectors = new OpenLayers.Layer.Vector("Vector Layer", {
+				displayInLayerSwitcher: false
+			});
+			map.addLayer(vectors);
+
+			box = new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.RegularPolygon, {
+				handlerOptions: {
+					sides: 4,
+					snapAngle: 90,
+					irregular: true,
+					persist: true
+				}
+			});
+			box.handler.callbacks.done = endDrag;
+			map.addControl(box);
+			
+			transform = new OpenLayers.Control.TransformFeature(vectors, {
+				rotate: false,
+				irregular: true
+			});
+			
+			transform.events.register("transformcomplete", transform, boxResize);
+			
+			map.addControl(transform);
+			//map.addControl(box);
+			box.activate();
+			map.setCenter(lonlat, zoom);
+			// end draw box
+		}
+		</script>
+<!--  ///////////////////////////////////////////////////// -->	
+
+	<script>
+		
+	</script>
+</head>
+
+<body onload="setupmap()">
+
+    <section class='container' id='main'>
+        <div id='content'>
+            <div id='map' class='map'>
+				<div class="time"></div>
+            </div>
+        </div>
+		
+			<hr />
+			<div id="drawElements">
+
+				<div id="bbox_drag_instruction">Drag a box:</div>
+				<div id="bbox_adjust_instruction">Adjust the box ...or <input type="button" value="drag new box" onclick="dragNewBox();"></div>
+				<div id="mapdiv"></div>
+				<p id="bbox_result"> </p>
+
+			</div> <!-- end drawElements -->
+		
+    </section>
+	
+</body>
+
+</html>

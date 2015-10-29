@@ -17,7 +17,7 @@
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">	
 
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.js"></script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js"></script>
 	
     <style type="text/css">
 		#content {
@@ -51,6 +51,7 @@
 			background-image: url("images/background.jpg");
 		}
 		/* controls box */
+		#mapdiv { height:10px; }
 		div.olControlAttribution { bottom:3px; }    
 		#bbox_drag_instruction { height:1.5em; }
 		#bbox_adjust_instruction { height:1.5em; display:none;  }
@@ -63,6 +64,11 @@
 		var box;
 		var transform;
 
+		Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+		Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+		Proj4js.defs["EPSG:900913"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
+
+		
 		function endDrag( bbox ){
 			var bounds = bbox.getBounds();
 			setBounds(bounds);
@@ -100,8 +106,8 @@
 			if( bounds == null ){
 				document.getElementById("bbox_result").innerHTML = "";		  
 			} else {
-				console.log("here");
-				b = bounds.clone().transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"))
+
+				b = bounds.clone().transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:3031"))
 				minlon = toPrecision(map.getZoom(), b.left);
 				minlat = toPrecision(map.getZoom(), b.bottom);
 				maxlon = toPrecision(map.getZoom(), b.right);
@@ -109,29 +115,16 @@
 
 				console.log("values: " + minlon + maxlon + minlat + maxlat);
 				document.getElementById("bbox_result").innerHTML =
-				"minlon=" + minlon + ", " +
-				"minlat=" + minlat + ", " +
-				"maxlon=" + maxlon + ", " +
+				"<br><br>minlon=" + minlon + ",<br><br>" +
+				"minlat=" + minlat + ",<br><br>" +
+				"maxlon=" + maxlon + ",<br><br>" +
 				"maxlat=" + maxlat;  
 			}
 		}
 	
 		function setupmap() {
-			Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
-			Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
-			Proj4js.defs["EPSG:900913"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
 
-			var map = new OpenLayers.Map('map', {
-				controls: [
-					new OpenLayers.Control.Navigation(),
-					new OpenLayers.Control.PanZoomBar(),
-					new OpenLayers.Control.Attribution(),
-					//new OpenLayers.Control.LayerSwitcher(),
-					new OpenLayers.Control.ScaleLine(),
-					new OpenLayers.Control.Permalink({
-						anchor: true
-					})
-				],
+			map = new OpenLayers.Map('map', {
 				projection: "EPSG:3031",
 				displayProjection: "EPSG:4326"
 			});
@@ -141,10 +134,11 @@
 				new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
 			);
 
+
 			vectors = new OpenLayers.Layer.Vector("Vector Layer", {
 				displayInLayerSwitcher: false
 			});
-					
+
 			var tiles = new OpenLayers.Layer.XYZ(
 				'Polar XYZ',
 				'http://polar.openstreetmap.de/tiles/${z}/${x}/${y}.png',
@@ -157,7 +151,7 @@
 				}
 			)
 			map.addLayer(tiles);
-		
+
 			var markers = new OpenLayers.Layer.Vector("Markers", {
 				projection: 'EPSG:4326',
 				strategies: [new OpenLayers.Strategy.Fixed()],
@@ -166,7 +160,6 @@
 					format: new OpenLayers.Format.GeoJSON()
 				})
 			});
-
 			map.addLayer(markers);
 		
 			var featctl = new OpenLayers.Control.SelectFeature(markers);
@@ -184,15 +177,15 @@
 			});
 
 			if( !map.getCenter() ){
-				map.setCenter(new OpenLayers.LonLat(0, 0)/* despite the class name, these are in EPSG:3031, so 0/0 is actually the pole */, 1);
+				map.setCenter(new OpenLayers.LonLat(0, 0), 1); // despite the class name, these are in EPSG:3031, so 0/0 is actually the pole 
 			}
-			
+
 			// begin draw box
 			var zoom = 1;
+			
 			vectors = new OpenLayers.Layer.Vector("Vector Layer", {
 				displayInLayerSwitcher: false
 			});
-
 			map.addLayer(vectors);
 
 			box = new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.RegularPolygon, {
@@ -205,31 +198,25 @@
 			});
 			box.handler.callbacks.done = endDrag;
 			map.addControl(box);
-
+			
 			transform = new OpenLayers.Control.TransformFeature(vectors, {
 				rotate: false,
 				irregular: true
 			});
 			
 			transform.events.register("transformcomplete", transform, boxResize);
+			
 			map.addControl(transform);
 			map.addControl(box);
+
 			box.activate();
 			map.setCenter(lonlat, zoom);
 			// end draw box
-			
 		}
 		</script>
-	<!--  ///////////////////////////////////////////////////// -->	
-		<script>
+<!--  ///////////////////////////////////////////////////// -->	
 
-				
-			
-		</script>
-
-<!-- ///////////////////////////////////////////////////// -->	
-		<script>
-
+	<script>
 		/*User Request Configuration*/
 		var sendString = "",
 			dataSet = "SSMI",
@@ -338,7 +325,7 @@
 			var win = window.open("anomaly.html",'_blank');
 			win.focus();
 		};
-    </script>
+	</script>
 </head>
 
 <body id="index" class="home" onload="setupmap()">
@@ -381,50 +368,26 @@
             <br>
             <input id="endDate" name="endDate" value="2012-08-20" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
             <br>
-            <!--
-			<span id="datasetField"><font color="Black">Search Polygon Location</font></span>
-			<br><br>
-			<button id="searchButtonToggle" class="myButton" onclick="enablePolygonSearch()"><strike>| Enable |</strike></button>
-		-->
-            <br>
-            <div class="geospatialInputFieldsNsew" id="spatialInput_nsew">
-                <input class="myButton" value="Reset Map &amp; Selection" onclick="searchMapObject.resetMap();" type="button">
-                <br>
-                <br>
-                <span class="northInput">N <input id="nsew_northId" size="7" value="90.00" onchange="searchMapObject.changeLatLonBoundary('north', this.value, 'search');" type="text"></span>
-                <br>
-                <br>
-                <span class="westInput">W <input id="nsew_westId" size="7" value="-180.00" onchange="searchMapObject.changeLatLonBoundary('west', this.value, 'search');" type="text"></span>
-                <span class="eastInput"> E <input id="nsew_eastId" size="7" value="180.00" onchange="searchMapObject.changeLatLonBoundary('east',this.value, 'search');" type="text"></span>
-                <br>
-                <br>
-                <span class="southInput">S <input id="nsew_southId" size="7" value="-90.00" onchange="searchMapObject.changeLatLonBoundary('south',this.value, 'search');" type="text"></span>
-            </div>
-            <br>
-            
-<!-- -->
-		<hr />
-		<div id="drawElements">
-			<p><underline>Controls:</underline></p>
-            <p>[shift] + [click/drag] to draw rectangle</p>
-            <p>[click/drag] to move map</p>
-			<div id="bbox_drag_instruction">Drag a box:</div>
-			<div id="bbox_adjust_instruction">Adjust the box ...or<input type="button" value="drag new box" onclick="dragNewBox();"></div>
+
+			<hr />
+
+			<p>Coordinates:</p>
+			<div id="bbox_drag_instruction">Click to drag a box:</div>
+			<div id="bbox_adjust_instruction">Adjust the box ...or<br> <input type="button" value="drag new box" onclick="dragNewBox();"></div>
+			<div id="mapdiv"></div>
 			<p id="bbox_result"> </p>
 
-		</div> <!-- end drawElements -->
-		<hr />
-<!-- -->
-			<input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest);" type="button">
+			<hr />
+			<input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest);" type="button">			
 		</aside>
     </section>
+	
     <footer class='container' id='footer'>
         <p>© 2015 NSIDC & University of Colorado at Boulder</p>
     </footer>
 </body>
 
 </html>
-
 
 <!--
 Resources:
@@ -434,7 +397,5 @@ Resources:
 
 	<http://dev.openlayers.org/examples/draw-feature.html>
 	<http://harrywood.co.uk/maps/examples/openlayers/bbox-selector.view.html>
-
-
 
 -->

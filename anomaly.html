@@ -32,7 +32,9 @@
 		#sidebar {
 			height: 90vh;
 		}
-
+		#prevNext {
+			float: clear: left;
+		}
 	</style>
 	
 </head>
@@ -49,24 +51,64 @@
         <section id='content'>
 		<img id="image" src="images/jan.png" />
 		<div class="slider"></div>
+
+		<div id="prevNext">
+			<br><br>
+			<input class="myButton" value="Query Previous 10 Days" onclick="queryPrevious();" type="button">			
+			<br>
+			<input class="myButton" value="Query Next 10 Days" onclick="queryNext();" type="button">			
+		</div>
+
 		<script>
 			// set up an array to hold the months
 			var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 			// lets be fancy for the demo and select the current month.
 			var activeMonth = new Date().getMonth();
+			
+			// find the next ten days
+			function GetDates(startDate, daysToAdd){
+				var arrDates = [];
+				for(var i = 0; i <= daysToAdd; i++){
+					var currentDate = new Date();
+					currentDate.setDate(startDate.getDate() + i);
+					arrDates.push(currentDate.getDate() + " " + MonthAsString(currentDate.getMonth()) + " " + currentDate.getFullYear());
+				}
+				return arrDates;
+			}
+			function MonthAsString(monthIndex){
+				var d = new Date();
+				var month = new Array();
+				month[0] = "jan";
+				month[1] = "feb";
+				month[2] = "mar";
+				month[3] = "apr";
+				month[4] = "may";
+				month[5] = "jun";
+				month[6] = "jul";
+				month[7] = "aug";
+				month[8] = "sep";
+				month[9] = "oct";
+				month[10] = "nov";
+				month[11] = "dec";
+				return month[monthIndex];
+			}
+			
+			var startDate = new Date();
+			var arrDates = GetDates(startDate, 10);
+			console.log(arrDates);
 
 			$(".slider")
 			// activate the slider with options
 			.slider({
 			    min: 0,
-			    max: months.length - 1,
-			    value: activeMonth
+			    max: 10,
+			    value: 0
 			})
 
 			// add pips with the labels set to "months"
 			.slider("pips", {
 				rest: "label",
-				labels: months
+				labels: arrDates
 			})
 
 			// and whenever the slider changes, lets echo out the month
@@ -145,6 +187,12 @@
         <aside id="sidebar" class="roundEdge">
 		<br>
 		<img src="images/logo.png" alt="logo" style="width:200px;height:200px;"><br><br><br>
+		<img src="images/jan.png" alt="logo" style="width:100px;height:100px;">
+		<p>January</p>
+		<img src="images/feb.png" alt="logo" style="width:100px;height:100px;">
+		<p>February</p>
+		<img src="images/mar.png" alt="logo" style="width:100px;height:100px;">
+		<p>March</p>
 	</aside>
     	</section>
 

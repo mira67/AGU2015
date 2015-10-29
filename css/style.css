@@ -10,7 +10,7 @@ header, footer, section, nav {
 }
 
 body {
-    background: url("img/antarctica.jpg");
+    background-color: darkblue;
 }
 
 .container {

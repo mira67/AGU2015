@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>AGU 2015</title>
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-    <!-- openlayers needs to compile sooner or error is raised -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
-    <script language="javascript" type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
-    <script language="javascript" type="text/javascript" src="js/jquery-confirm.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="stylesheet" type="text/css" href="css/jquery-confirm.min.css">
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">	
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>AGU [query]</title>
+
+	<!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+	<!-- openlayers needs to compile sooner or error is raised -->
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
+	<script language="javascript" type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/jquery-confirm.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/jquery-confirm.min.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">	
 
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js"></script>
 	
-    <style type="text/css">
+	<style type="text/css">
 		#content {
 			height: 90vh;
 		}		
@@ -326,46 +326,35 @@
 </head>
 
 <body id="index" class="home" onload="setupmap()">
-    <header class='container' id='header'>
-    </header>
-    <nav class='container roundEdge' id='nav'>
-        <h1 id='project' class='center'>NSIDC - Condensing Massive Satellite Datasets For Rapid Interactive Analysis</h1>
-    </nav>
-    <section class='container' id='main'>
-        <div id='content'>
-            <div id='map'>
+    <header class='container' id='header'></header>
+	<nav class='container roundEdge' id='nav'>
+		<center><h1 id='project'>Condensing Massive Satellite Datasets For Rapid Interactive Analysis</h1></center>
+	</nav>
+	
+	<section class='container' id='main'>
+		<div id='content'>
+			<div id='map'>
 				<div class="time"></div>
-            </div>
-        </div>
-		
-        <aside id='sidebar' class='roundEdge'>
-            <br>
-            <span id="datasetName"><font color="Black">Data Set</font></span>
-            <br>
-            <button id="dataset2" class="myButton" onclick="changeDataSet('SSMI')">SSMI</button>
-            <br><br>
-            <span id="datasetFrequency"><font color="Black">Frequency [ SSMI ]</font></span>
-            <br>
-            <button id="freq19" class="myButton" onclick="changeFrequency('19')">19.3</button>
-            <button id="freq22" class="myButton" onclick="changeFrequency('22')">22.2</button>
-            <button id="freq37" class="myButton" onclick="changeFrequency('37')">37.0</button>
-	    <br>
-            <button id="freq85" class="myButton" onclick="changeFrequency('85')">85.5</button>
-            <button id="freq91" class="myButton" onclick="changeFrequency('91')">91.7</button>
-            <br><br>
-            <span id="datasetFrequency"><font color="Black">Polarization [ SSMI ]</font></span>
-            <br>
-            <button id="vertical" class="myButton" onclick="changePolarization('v')">vertical</button>
-            <button id="horizontal" class="myButton" onclick="changePolarization('h')">horizontal</button>
-            <br><br>
-            <span id="datasetField"><font color="Black">Start Date</font></span>
-            <br>
-            <input id="startDate" name="startDate" value="2012-08-08" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
-            <br><br>
-            <span id="datasetField"><font color="Black">End Date</font></span>
-            <br>
-            <input id="endDate" name="endDate" value="2012-08-20" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" />
-            <br>
+			</div>
+		</div>
+			
+		<aside id='sidebar' class='roundEdge'>
+			<br>
+			<span id="datasetName"><font color="Black">Data Set</font></span><br>
+			<button id="dataset2" class="myButton" onclick="changeDataSet('SSMI')">SSMI</button><br><br>
+			<span id="datasetFrequency"><font color="Black">Frequency [ SSMI ]</font></span><br>
+			<button id="freq19" class="myButton" onclick="changeFrequency('19')">19.3</button>
+			<button id="freq22" class="myButton" onclick="changeFrequency('22')">22.2</button>
+			<button id="freq37" class="myButton" onclick="changeFrequency('37')">37.0</button><br>
+			<button id="freq85" class="myButton" onclick="changeFrequency('85')">85.5</button>
+			<button id="freq91" class="myButton" onclick="changeFrequency('91')">91.7</button><br><br>
+			<span id="datasetFrequency"><font color="Black">Polarization [ SSMI ]</font></span><br>
+			<button id="vertical" class="myButton" onclick="changePolarization('v')">vertical</button>
+			<button id="horizontal" class="myButton" onclick="changePolarization('h')">horizontal</button><br><br>
+			<span id="datasetField"><font color="Black">Start Date</font></span><br>
+			<input id="startDate" name="startDate" value="2012-08-08" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" /><br><br>
+			<span id="datasetField"><font color="Black">End Date</font></span><br>
+			<input id="endDate" name="endDate" value="2012-08-20" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" /><br>
 
 			<hr />
 
@@ -378,13 +367,12 @@
 			<hr />
 			<input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest);" type="button">			
 		</aside>
-    </section>
+	</section>
 	
-    <footer class='container' id='footer'>
-        <center><p>© 2015 NSIDC & University of Colorado at Boulder</p></center>
-    </footer>
+	<footer class='container' id='footer'>
+		<center><p>© 2015 NSIDC & University of Colorado at Boulder</p></center>
+	</footer>
 </body>
-
 </html>
 
 <!--

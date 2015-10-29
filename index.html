@@ -122,6 +122,8 @@
 				anomalyRequest["minlon"] = minlon;
 				anomalyRequest["maxlat"] = maxlat;
 				anomalyRequest["maxlon"] = maxlon;
+				
+				loctnArray = [minlat,minlon,maxlat,maxlon]; // update the coordinates
 			}
 		}
 	
@@ -209,7 +211,7 @@
 			
 			map.addControl(transform);
 			map.addControl(box);
-
+			
 			box.activate();
 			map.setCenter(lonlat, zoom);
 			// end draw box
@@ -226,7 +228,7 @@
 			startDate = "2012-08-08",
 			endDate = "2012-08-10";
 
-		var loctnArray = Array();
+		loctnArray = Array();
 
 		/*user request function*/
 		var anomalyRequest = {
@@ -331,6 +333,7 @@
 
 <body id="index" class="home" onload="setupmap()">
     <header class='container' id='header'></header>
+
 	<nav class='container roundEdge' id='nav'>
 		<center><h1 id='project'>Condensing Massive Satellite Data For Rapid Interactive Analysis</h1></center>
 	</nav>

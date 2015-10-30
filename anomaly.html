@@ -205,89 +205,59 @@ console.log("arrDates" + arrDates);
 			eDate = dataPassed["eDate"];
 
 		</script>
-            
-			<!-- <script>
-            //test data for UI rendering
-            //testData = [{"date":1350885600000,"val":222.1,"longi":100.0,"lati":100.0},{"date":1375336800000,"val":209.8,"longi":100.0,"lati":100.0},{"date":1375423200000,"val":209.4,"longi":100.0,"lati":100.0},{"date":1375509600000,"val":209.4,"longi":100.0,"lati":100.0},{"date":1375596000000,"val":210.6,"longi":100.0,"lati":100.0},{"date":1375682400000,"val":212.1,"longi":100.0,"lati":100.0}];
-
-	//test local storage to grab user request information
-	var _region = localStorage.getItem('_Region');
-	
-	//parse to Object Literal the JSON object
-	if(_region) _region = JSON.parse(_region);
-	//Checks whether the stored data exists
-	if(_region) {
-		//Do what you need with the object
-		alert(_region);
 		
-		//If you want to delete the object
-		localStorage.removeItem('_Region');
-	}
+		<script>
+			var ajaxHandle = $.ajax({
+				type : "POST",
+				contentType : "application/json; charset=utf-8",
+				url : "anomaly/ajaxImutation.do",
+				data : JSON.stringify(anomlyRequest),
+				dataType : 'jsonp',
+				async : false,
+				success : function(response) {
+					 $("#expDiv").html("Hi")
+				}
+							
+				// finsih update pixels
+				var k = 0;
+				var foo = [];
+		//      testData = [{"date":1350885600000,"val":222.1,"longi":100.0,"lati":100.0},{"date":1375336800000,"val":209.8,"longi":100.0,"lati":100.0},{"date":1375423200000,"val":209.4,"longi":100.0,"lati":100.0},{"date":1375509600000,"val":209.4,"longi":100.0,"lati":100.0},{"date":1375596000000,"val":210.6,"longi":100.0,"lati":100.0},{"date":1375682400000,"val":212.1,"longi":100.0,"lati":100.0}];
+				for( k = 0; k <= testData.length; k++ ){
+					foo = testData[k];
+					var d = new Date(0); // set date to epoch
+					d.setUTCSeconds(foo["date"]);
+					val = foo["val"];
+					longi = foo["longi"];
+					lati = foo["lati"];
 
-	//send user request package to server----testing code from Chao
-	function sendJson() {
-		var loctnArray = Array();
-		loctnArray[0] = {
-		"longitude" : 100,
-		"latitude" : 100
-	}
+					var c = document.getElementById("myCanvas");
+					var ctx = c.getContext("2d");
+					var img = document.getElementById("image");
+					ctx.drawImage(img, 0, 0);
+					var imgData = ctx.getImageData(0, 0, c.width, c.height);
 
-	loctnArray[1] = {
-		"longitude" : 200,
-		"latitude" : 200
-	}
+					var indice = longi * c.width + lati;
+					
+					for(k = 0; k < 1000; k++){
+					indice = k;
+					imgData.data[indice] = 255;
+					imgData.data[indice+1] = 255;
+					imgData.data[indice+2] = 0;
+					imgData.data[indice+3] = 0; 
 
-	var anomlyRequest = {
-		"dsName" : "SSMI",
-		"dsFreq" : "s19h",
-		"sDate" : "20120101",
-		"eDate" : "20130101",
-		"locations" : loctnArray
-	}
--->
-	var ajaxHandle = $.ajax({
-		type : "POST",
-		contentType : "application/json; charset=utf-8",
-		url : "anomaly/ajaxImutation.do",
-		data : JSON.stringify(anomlyRequest),
-		dataType : 'jsonp',
-		async : false,
-		success : function(response) {
-		     $("#expDiv").html("Hi")
-		}
-		var foo;
-		// update pixels
-            	//testData = [{"date":1350885600000,"val":222.1,"longi":100.0,"lati":100.0},{"date":1375336800000,"val":209.8,"longi":100.0,"lati":100.0},{"date":1375423200000,"val":209.4,"longi":100.0,"lati":100.0},{"date":1375509600000,"val":209.4,"longi":100.0,"lati":100.0},{"date":1375596000000,"val":210.6,"longi":100.0,"lati":100.0},{"date":1375682400000,"val":212.1,"longi":100.0,"lati":100.0}];
-		for( var k = 0; k <= testData.length; k++ ){
-			foo = testData[k];
-			var d = new Date(0); // set date to epoch
-			d.setUTCSeconds(foo["date"]);
-			val = foo["val"];
-			longi = foo["longi"];
-			lati = foo["lati"];
+					console.log("image size: " + imgData.data.length);	 
+					console.log(longi + lati);
+					ctx.putImageData(imgData, 0, 0);
+					}
+				}
 
-			var c = document.getElementById("myCanvas");
-			var ctx = c.getContext("2d");
-			var img = document.getElementById("image");
-			ctx.drawImage(img, 0, 0);
-			var imgData = ctx.getImageData(0, 0, c.width, c.height);
+				
+				
+			});
+			
 
-			var indice = longi * c.width + lati;
-			imgData.data[indice] = 255;
-			imgData.data[indice+1] = 0;
-			imgData.data[indice+2] = 0;
-			imgData.data[indice+3] = 0; 
-
-			console.log("image size: " + imgData.data.length);	 
-			ctx.putImageData(imgData, 0, 0);
-		}
 	
-		// finsih update pixels
-	});
-	$("#expDiv").html(ajaxHandle.responseText)
-	}
-
-	</script>
+		</script>
 	</section>
 
         <aside id="sidebar" class="roundEdge">

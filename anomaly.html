@@ -238,7 +238,7 @@ console.log("arrDates" + arrDates);
 
 					var indice = longi * c.width + lati;
 					
-					for(k = 0; k < 1000; k++){
+					for(k = 0; k < 10000; k++){
 					indice = k;
 					imgData.data[indice] = 255;
 					imgData.data[indice+1] = 255;
@@ -246,7 +246,7 @@ console.log("arrDates" + arrDates);
 					imgData.data[indice+3] = 0; 
 
 					console.log("image size: " + imgData.data.length);	 
-					console.log(longi + lati);
+					console.log(indice);
 					ctx.putImageData(imgData, 0, 0);
 					}
 				}

@@ -20,18 +20,19 @@
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
 	<!-- plus a jQuery UI theme, here I use "flick" -->
 	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
-	<link rel="stylesheet" href="css/style.css">
+	//<link rel="stylesheet" href="css/style.css">
 
 	<style type="text/css">
-		#content {
+		#wrapper {
+			width: 80vw;
 			height: 90vh;
-		}		
-		#sidebar {
-			height: 90vh;
+			margin-left: auto;
+			margin-right: auto;
 		}
-		#prevNext {
-			float: left;
-			margin: auto;
+		#goBackwards, #goForwards {
+		
+			margin-left: 100px;
+			margin-right: 100px;
 		}
 		#pics, #image {
 			margin: 0;
@@ -41,27 +42,24 @@
 	
 </head>
 <body id="index" class="home">
-	
-	<header class='container' id='header'>
-		<nav class='container roundEdge' id='nav'>
-			<center><h1 id='project'>Anomaly Analysis Results</h1></center>
-		</nav>
-	</header>
-
-    <section class='container' id='main'>
-        <section id='content'>
+<div id="wrapper">	
+	<center><h1 id='project'>Anomaly Analysis Results</h1></center>
 		
 		<div id="pics">
+		<center>
 			<img id="image" src="images/jan.png" width="664" height="632" style="border:1px solid black;">
 			<canvas id="myCanvas" width="664" height="632" style="border:1px solid black;">
+			</center>
 		</div><!-- pics -->
 
 		<div class="slider"></div>
 
 		<div id="changeDateButtons">
 			<br><br><br>
-			<input class="myButton" value="Query Previous 10 Days" onclick="changeDateRange(-10);" type="button">
-			<input class="myButton" value="Query Next 10 Days" onclick="changeDateRange(10);" type="button"><br>
+			<center>
+			<input class="myButton" id="goBackwards" value="Query Previous 10 Days" onclick="changeDateRange(-10);" type="button">
+			<input class="myButton" id="goForwards" value="Query Next 10 Days" onclick="changeDateRange(10);" type="button"><br>
+			</center>
 			<!--
 			<input class="myButton" value="toggle red channel" onclick="red = invertColor(red);" type="button">
 			<input class="myButton" value="toggle blue channel" onclick="green = invertColor(green);" type="button">
@@ -88,19 +86,24 @@
 		<script>
 			window.onload = function(e){
 				console.log("making request....");
-				ajaxHandle = $.ajax({
+				
+				var ajaxHandle = $.ajax({
 					type : "POST",
 					contentType : "application/json; charset=utf-8",
-					url : "http://128.138.189.228:8080/anomaly/ajaxImutation.do",
+					url : "/anomaly/ajaxImutation.do",
 					data : localStorage["userQuery"],
-					dataType : 'jsonp',
+					dataType : 'json',
 					async : true,
-						success: function (response) {
-							console.log("ajax success");
-							console.log("response: " + response);
-					},
+					success : function(response) {
+						console.log("ajax success");
+						console.log("response: " + response);
+						
+						updatePixels();
+					}
 				});
+				
 			}
+		
 		</script>
 		
 		<script>
@@ -178,6 +181,7 @@
 					num = foo["date"] / 1000;		
 					d.setUTCSeconds(num);
 					
+					// if the date is the same as the selected one
 					//if( d == sDate ){
 						
 						//console.log("date: " + d + " " + k);
@@ -203,25 +207,12 @@
 				ctx.beginPath();
 				ctx.lineWidth = 5;
 				ctx.strokeStyle = '#ff0000';
-				ctx.arc(100,150,50,0,2*Math.PI);
+				ctx.arc( Math.floor((Math.random() * c.width) + 1), Math.floor((Math.random() * c.height) + 1), 50, 0, 2*Math.PI);
 				ctx.stroke();
 			}
 		</script>
 	
-	<!--
-	</section>
-        <aside id="sidebar" class="roundEdge"><br>
-			<img src="images/jan.png" alt="logo" style="width:200px;height:200px;">
-			<p>January</p>
-			<img src="images/feb.png" alt="logo" style="width:200px;height:200px;">
-			<p>February</p>
-			<img src="images/mar.png" alt="logo" style="width:200px;height:200px;">
-			<p>March</p>
-		</aside>
-    </section>
-	-->
-	
-	<footer class='container' id='footer'>
+	<footer>
 		<center><p>© 2015 NSIDC & University of Colorado at Boulder</p></center>
 	</footer>
 
@@ -230,8 +221,7 @@
 			updatePixels();
 		}
 		updatePixels();
-
 	</script>
-	
+</div><!-- end wrapper -->
 </body>
 </html>

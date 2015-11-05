@@ -225,8 +225,8 @@
 			dataSet = "SSMI",
 			frequency = "19",
 			polarization = "h",
-			startDate = "2012-08-08",
-			endDate = "2012-08-10";
+			startDate = "2010-12-12",
+			endDate = "2010-12-20";
 
 		loctnArray = Array();
 
@@ -250,16 +250,15 @@
 		function changeDataSet(ds) {
 			dataSet = ds;
 			updateDate();
-			//update dataSet
 			anomalyRequest["dsName"] = ds;
 
-			if (ds == "AVHRR") {
+/*			if (ds == "AVHRR\\\") {
 				document.getElementById("dataset1").style.color = "black";
 				document.getElementById("dataset2").style.color = "#B6B6B4";
 			} else {
 				document.getElementById("dataset2").style.color = "black";
 				document.getElementById("dataset1").style.color = "#B6B6B4";
-			}
+			//}*/
 		};
 
 		function changeFrequency(freq) {
@@ -322,9 +321,11 @@
 		//pass full request to a new page, in localStorage
 		function sendRequest(anomalyRequest) {
 			updateDate();
+
 			anomalyRequest["dsFreq"] = 's' + frequency + polarization;
 			//transfer request to result page
 			localStorage['userQuery'] = JSON.stringify(anomalyRequest);
+			//console.log(localStorage["userQuery"]);
 			var win = window.open("anomaly.html",'_blank');
 			win.focus();
 		};
@@ -363,9 +364,9 @@
 			<button id="horizontal" class="myButton" onclick="changePolarization('h')">horizontal</button><br><br>
 		
 			<span id="datasetField"><font color="Black">Start Date</font></span><br>
-			<input id="startDate" name="startDate" value="2012-08-08" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" /><br><br>
+			<input id="startDate" name="startDate" value="2010-12-12" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" /><br><br>
 			<span id="datasetField"><font color="Black">End Date</font></span><br>
-			<input id="endDate" name="endDate" value="2012-08-20" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" /><br>
+			<input id="endDate" name="endDate" value="2010-12-20" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" /><br>
 
 			<input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest);" type="button">			
 

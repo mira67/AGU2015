@@ -165,11 +165,11 @@
 			map.addLayer(tiles);
 
 			graphic = new OpenLayers.Layer.Image(
-                'Huntsville City',
-                'images/apr.png',
-                new OpenLayers.Bounds(-3923000, -3923000, 3923000, 4100000),
-                new OpenLayers.Size(50, 23),
-				{isBaseLayer: false, opacity: 0.3}
+                'SSMI Image	',
+                'images/mar.png',
+                new OpenLayers.Bounds(-3929786, -3929786, 3923000, 4323674), // not sure why last number is 43...
+				new OpenLayers.Size(1, 1),
+				{isBaseLayer: false, opacity: 0.5}
             );
 			map.addLayer(graphic);
 			
@@ -197,11 +197,11 @@
 			});
 
 			if( !map.getCenter() ){
-				map.setCenter(new OpenLayers.LonLat(0, 0), 2); // despite the class name, these are in EPSG:3031, so 0/0 is actually the pole 
+				map.setCenter(new OpenLayers.LonLat(0, 0), 1); // despite the class name, these are in EPSG:3031, so 0/0 is actually the pole 
 			}
 
 			// begin draw box
-			var zoom = 2;
+			var zoom = 1;
 			
 			vectors = new OpenLayers.Layer.Vector("Vector Layer", {
 				displayInLayerSwitcher: false

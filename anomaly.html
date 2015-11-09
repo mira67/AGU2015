@@ -67,17 +67,9 @@
 				async : true,
 				success : function(response) {
 					console.log("ajax success!");
-					//console.log("response: " + response);
 					anomalyRequest = response;
 					requestReturned = 1;
 					updatePixels();
-
-					//hh = new Date(0); hh.setUTCSeconds(anomalyRequest[1]["date"]/1000);
-					/*hh = new Date(anomalyRequest[1]["date"]);
-					ii = new Date(0); ii.setUTCSeconds(anomalyRequest[anomalyRequest.length-1]["date"]/1000);
-					console.log("dates span: " + hh.toDate() + " "+ (hh.getMonth()+1) + " " + hh.getFullYear() + " to " + ii);
-					console.log("  where the request asked for: " + JSON.parse(localStorage["userQuery"])["sDate"] + " to " + JSON.parse(localStorage["userQuery"])["eDate"]);
-					*/
 				}
 			});
 		}

@@ -1,20 +1,16 @@
 # mira67.github.io
 Front/Back End Code 
 ---------------------------------------
-Main page content Design, lead by Rudy
-
+Main page content Design, lead by Rudy and Qi
 
 ---------------------------------------
-2nd Page Design, lead by Qi
 Design:
-1. In main page map: user specify a rectangle region by click and drag
-2. Pop up "proceed?" confirmation dialog
-  -if 'Yes': open a new tab with anomaly spatial/temporal analysis
-  -if 'No': clear selected region, start over
-3. 2nd page content - Todo
+1. Specify parameters
+2. In main page map: user specify a rectangle region by click and drag
+3. Return query results as markers on the map
 
 Progress:
-1. Experiment to draw rectangle to select region, a piece of code working, need upgrade to be able to catch coordinaitons and clear up old selection or disregarded selection
+1. Can draw rectangle, need 
 2. Experiment to pop new page after user confirmation, using window.open works
 3. Experiment to pass variables tp new page, using localStorage, works
 

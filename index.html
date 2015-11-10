@@ -4,21 +4,20 @@
 	<meta charset="utf-8">
 	<title>Anomaly Detection</title>
 
-	<!-- <script language="javascript" type="text/javascript" src="js/jquery-2.1.4.min.js"></script> -->
-	<!--	<script language="javascript" type="text/javascript" src="js/jquery-confirm.min.js"></script> -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-	<link rel="stylesheet" type="text/css" href="css/jquery-confirm.min.css">
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">	
-	
-	<script src="https://code.jquery.com/jquery-2.1.1.js"></script>
+	<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
 	<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 	<script src="js/jquery-ui-slider-pips.js"></script>
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
 	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
 	<link rel="stylesheet" href="css/style.css">
 	
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">	
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/jquery-confirm.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	
+
 	<!-- openlayers needs to compile sooner or error is raised -->
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"></script>
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js"></script>
@@ -68,6 +67,9 @@
 			float: left;
 			margin: auto;
 		}
+		#slider {
+			color: #000;
+		}
 	</style>
 	
 <!-- ///////////////////////////////////////////////////////////////////////////////////////// -->
@@ -92,7 +94,7 @@
         	}
 		
 		// dynamically add markers to the map using a json object as input
-		function addNewMarkers(){	
+		function addNewMarkers(){
 			var markers2 = new OpenLayers.Layer.Vector("Markers", {
 				projection: 'EPSG:4326',
 				strategies: [new OpenLayers.Strategy.Fixed()],
@@ -186,7 +188,7 @@
 				{
 					projection: 'EPSG:3031',
 					maxExtent: [-3000000,-3000000,3000000,3000000],
-					attribution: '© <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+					//	attribution: '© <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors',
 					numZoomLevels: 20,
 					transitionEffect: 'resize'
 				}
@@ -378,6 +380,10 @@
 			//var win = window.open("anomaly.html",'_blank');
 			//win.focus();
 			parseRequest();
+
+			updateDateValues();
+//here!
+			changeDateRange(0);
 		};
 	</script>
 </head>
@@ -457,7 +463,6 @@
 	
 <!-- ///////////////////////////////////////////////////////////////////////////////////////// -->
 	<script>
-
 		requestReturned = 0;
 		function parseRequest(e) {
 			console.log("making request....");
@@ -483,14 +488,18 @@
 		var months = [ "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" ];
 		var activeMonth = new Date().getMonth();
 		var save = 0;
-		sDate = JSON.parse(localStorage.userQuery)["sDate"];
-		eDate = JSON.parse(localStorage.userQuery)["eDate"];
+		
+		function updateDateValues(){
+			sDate = JSON.parse(localStorage.userQuery)["sDate"];
+			eDate = JSON.parse(localStorage.userQuery)["eDate"];
 
-		console.log("sDate: " + sDate + ", " + "eDate: " + eDate);
-		startDate = new Date(sDate);
-		slideDate = startDate;
-		cDateNum = startDate;
-		arrDates = GetDates(startDate, 10);
+			console.log("sDate: " + sDate + ", " + "eDate: " + eDate);
+			startDate = new Date(sDate);
+			slideDate = startDate;
+			cDateNum = startDate;
+			arrDates = GetDates(startDate, 10);
+		}
+		updateDateValues();
 
 		function changeDateRange(num) {
 			var currentDate = new Date(slideDate.getDate());
@@ -507,6 +516,7 @@
 				labels : arrDates
 			})
 		}
+
 
 		// find the next set of days
 		function GetDates(startDate, daysToAdd) {
@@ -528,15 +538,12 @@
 		}).slider("pips", {
 			rest : "label",
 			labels : arrDates
-		})
-		.on(
-			"slidechange",
-			function(e, ui) {
-				//$("#labels-months-output").text("You selected " + months[ui.value] + " (" + ui.value + ")");
-				$("#image").attr("src", "images/" + months[ui.value] + ".png");
-				$( console.log("currentDay: " + arrDates[ui.value]) );
-			}
-		);
+		}).on("slidechange", function(e, ui) {
+			//$("#labels-months-output").text("You selected " + months[ui.value] + " (" + ui.value + ")");
+			$("#image").attr("src", "images/" + months[ui.value] + ".png");
+			$( console.log("currentDay: " + arrDates[ui.value]) );
+		});
+
 	</script>
 
 </div><!-- end wrapper -->

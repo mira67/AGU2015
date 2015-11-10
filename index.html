@@ -79,8 +79,8 @@
 		var vectors;
 		var box;
 		var transform;
-		var maxOpacity = 0.9;
-	        var minOpacity = 0.1;
+		var maxOpacity = 1.0;
+		var minOpacity = 0.0;
 
 		Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 		Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
@@ -91,7 +91,8 @@
 			newOpacity = Math.min(maxOpacity, Math.max(minOpacity, newOpacity));
 			OpenLayers.Util.getElement('opacity').value = newOpacity;
 			graphic.setOpacity(newOpacity);
-        	}
+			markers3.setOpacity(newOpacity);
+       	}
 		
 		// dynamically add markers to the map using a json object as input
 		function addNewMarkers(){
@@ -606,7 +607,7 @@
 						);
 						var size = new OpenLayers.Size(10, 10);
 						var offset = new OpenLayers.Pixel(-size.w/2, -size.h/2);
-						var icon = new OpenLayers.Icon('images/marker.png', size, offset);
+						var icon = new OpenLayers.Icon('images/markerSquare.jpg', size, offset);
 						markers3.addMarker(new OpenLayers.Marker(location, icon.clone()));
 						
 					}

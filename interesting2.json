@@ -1,10 +1,10 @@
 {
-	"type": "FeatureCollection", "features": [
-	
-		{"geometry": {"type": "Point", "coordinates": [-135, -90]}, "type": "Feature", "properties": {"name": "Mount Fridtjof Nansen", "osm_id": 2012913001}}, 
-		{"geometry": {"type": "Point", "coordinates": [-135, -80]}, "type": "Feature", "properties": {"name": "Steventon Island", "osm_id": 2202177851}},
-		{"geometry": {"type": "Point", "coordinates": [-135, -70]}, "type": "Feature", "properties": {"name": "Steventon Island", "osm_id": 2202177851}}, 
-		{"geometry": {"type": "Point", "coordinates": [-135, -60]}, "type": "Feature", "properties": {"name": "Franklin Island", "osm_id": 25291825}},
-		{"geometry": {"type": "Point", "coordinates": [-135, -50]}, "type": "Feature", "properties": {"name": "Coulman Island", "osm_id": 210571977}}
+	"type": "FeatureCollection", "features": 
+	[
+		{"geometry": {"type": "Point","coordinates": [-135, -90]}}, 
+		{"geometry": {"type": "Point", "coordinates": [-135, -80]}, "type": "Feature"},
+		{"geometry": {"type": "Point", "coordinates": [-135, -70]}, "type": "Feature"},
+		{"geometry": {"type": "Point", "coordinates": [-135, -60]}, "type": "Feature"},
+		{"geometry": {"type": "Point", "coordinates": [-135, -50]}, "type": "Feature"}
 	]
 }

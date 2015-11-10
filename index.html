@@ -98,7 +98,7 @@
 			var markers2 = new OpenLayers.Layer.Vector("Markers", {
 				projection: 'EPSG:4326',
 				strategies: [new OpenLayers.Strategy.Fixed()],
-					protocol: new OpenLayers.Protocol.HTTP({
+				protocol: new OpenLayers.Protocol.HTTP({
 					url: "interesting2.json",
 					format: new OpenLayers.Format.GeoJSON()
 				})
@@ -173,7 +173,7 @@
 				displayProjection: "EPSG:4326"
 			});
 
-			var lonlat = new OpenLayers.LonLat(-1.788, 53.571).transform(
+			var lonlat = new OpenLayers.LonLat(0, 0).transform(
 				new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
 				new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
 			);
@@ -263,6 +263,10 @@
 			
 			box.activate();
 			map.setCenter(lonlat, zoom);
+			
+			markers3 = new OpenLayers.Layer.Markers("anomalies");
+			map.addLayer(markers3);
+
 			// end draw box
 		}
 		</script>
@@ -384,6 +388,7 @@
 			updateDateValues();
 //here!
 			changeDateRange(0);
+			updatePixels();
 		};
 	</script>
 </head>
@@ -478,7 +483,7 @@
 					console.log("ajax success!");
 					anomalyRequest = response;
 					requestReturned = 1;
-					//updatePixels();
+					updatePixels();
 				}
 			});
 		}
@@ -542,7 +547,72 @@
 			//$("#labels-months-output").text("You selected " + months[ui.value] + " (" + ui.value + ")");
 			$("#image").attr("src", "images/" + months[ui.value] + ".png");
 			$( console.log("currentDay: " + arrDates[ui.value]) );
+			$( updatePixels() );
 		});
+
+	</script>
+
+	<script>
+		function updatePixels() {
+			var k, j = 0;
+			var foo = [];
+			
+			var sliderValue = 0;
+
+			// wait for ajax response
+			if( requestReturned == 1 ){
+				sliderValue = $(".slider").slider("value"); // which selection is highlighted
+				timeSeconds = (slideDate.getTime()+sliderValue*24*60*60*1000);
+				
+				slDate = new Date(0);
+				slDate.setUTCSeconds( (slideDate.getTime()+(sliderValue+1)*24*60*60*1000) / 1000 );
+				aReq = new Date(0);
+				aReq.setUTCSeconds(anomalyRequest[1]["date"]/1000);
+				
+				console.log("slideDate: " + slDate.getDate() + " "+ (slDate.getMonth()+1) + " " + slDate.getFullYear());
+				console.log("requestDate: " + aReq.getDate() + " "+ (aReq.getMonth()+1) + " " + aReq.getFullYear());
+
+				markers3.clearMarkers();
+				
+				for (k = 0; k < anomalyRequest.length; k++) {
+					foo = anomalyRequest[k];
+					num = foo["date"] / 1000;
+					d = new Date(0); // set date to epoch
+					d.setUTCSeconds(num);
+	
+					// if the slider day matches any of the json anomalies
+					if( d.getDate() == slDate.getDate() 
+						&& d.getMonth() == slDate.getMonth()
+						&& d.getFullYear() == slDate.getFullYear() ){
+			
+						longi = foo["longi"];
+						lati = foo["lati"];
+
+
+						//indice = longi * 4 * c.width + lati * 4; // cartesian to vector transform
+
+						// delete this!
+						longi = -135 + 50*longi/300;
+						lati = -85 + 10*lati/300;
+						// delete this!
+						
+						console.log("x: " + lati + ", y:" + longi + " k: " + k);						
+						// draw marker here!
+
+						//var location = new OpenLayers.LonLat(lati, longi);
+						var location = new OpenLayers.LonLat(longi, lati).transform(
+							new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+							new OpenLayers.Projection("EPSG:3031") // to Spherical Mercator
+						);
+						var size = new OpenLayers.Size(10, 10);
+						var offset = new OpenLayers.Pixel(-size.w/2, -size.h/2);
+						var icon = new OpenLayers.Icon('images/marker.png', size, offset);
+						markers3.addMarker(new OpenLayers.Marker(location, icon.clone()));
+						
+					}
+				} // end loop through anomalyRequest json
+			} // if request returned is 1
+		}
 
 	</script>
 

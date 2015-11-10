@@ -85,26 +85,19 @@
 		Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 		Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
 		Proj4js.defs["EPSG:900913"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
+		
 		// alter the opacity of the climatology image
 		function changeOpacity( byOpacity ) {
 			var newOpacity = (parseFloat(OpenLayers.Util.getElement('opacity').value) + byOpacity).toFixed(1);
 			newOpacity = Math.min(maxOpacity, Math.max(minOpacity, newOpacity));
 			OpenLayers.Util.getElement('opacity').value = newOpacity;
 			graphic.setOpacity(newOpacity);
-			markers3.setOpacity(newOpacity);
        	}
-		
-		// dynamically add markers to the map using a json object as input
-		function addNewMarkers(){
-			var markers2 = new OpenLayers.Layer.Vector("Markers", {
-				projection: 'EPSG:4326',
-				strategies: [new OpenLayers.Strategy.Fixed()],
-				protocol: new OpenLayers.Protocol.HTTP({
-					url: "interesting2.json",
-					format: new OpenLayers.Format.GeoJSON()
-				})
-			});
-			map.addLayer(markers2);
+		function changeOpacityMarker( byOpacity ){
+			var newOpacity = (parseFloat(OpenLayers.Util.getElement('opacityMarker').value) + byOpacity).toFixed(1);
+			newOpacity = Math.min(maxOpacity, Math.max(minOpacity, newOpacity));
+			OpenLayers.Util.getElement('opacityMarker').value = newOpacity;
+			markers3.setOpacity(newOpacity);
 		}
 
 		function endDrag( bbox ){
@@ -206,19 +199,25 @@
 			);
 			map.addLayer(graphic);
 			
+			
+			// markers that designate the corners of the climatology image
 			var markers = new OpenLayers.Layer.Vector("Markers", {
 				projection: 'EPSG:4326',
+				/* // don't need to plot the markers
 				strategies: [new OpenLayers.Strategy.Fixed()],
 					protocol: new OpenLayers.Protocol.HTTP({
 					url: "interesting.json",
 					format: new OpenLayers.Format.GeoJSON()
 				})
+				*/
 			});
 			map.addLayer(markers);
+			
 				
 			var featctl = new OpenLayers.Control.SelectFeature(markers);
 			map.addControl(featctl);
 			featctl.activate();
+			
 
 			featctl.events.register('featurehighlighted', this, function(e) {
 				var pt = e.feature.geometry, ll = new OpenLayers.LonLat(pt.x, pt.y);
@@ -309,16 +308,13 @@
 			dataSet = ds;
 			updateDate();
 			anomalyRequest["dsName"] = ds;
-
-/*			if (ds == "AVHRR\\\") {
-				document.getElementById("dataset1").style.color = "black";
-				document.getElementById("dataset2").style.color = "#B6B6B4";
-			} else {
-				document.getElementById("dataset2").style.color = "black";
-				document.getElementById("dataset1").style.color = "#B6B6B4";
-			//}*/
 		};
 
+		function changeVariableSelection(variable, selectionList){
+			updateDate();
+			
+		}
+		
 		function changeFrequency(freq) {
 			frequency = freq;
 			updateDate();
@@ -387,9 +383,10 @@
 			parseRequest();
 
 			updateDateValues();
-//here!
 			changeDateRange(0);
 			updatePixels();
+			
+			updateDate();
 		};
 	</script>
 </head>
@@ -413,44 +410,47 @@
 		<aside id='sidebar' class='roundEdge'>
 			<br>
 			<img src="images/logoNSIDC.png" alt="logo" style="width:100px;height:100px;">
-			<img src="images/logoCU.jpg" alt="logo" style="width:100px;height:100px;"><br><br>
-			<span id="updateMarkers"><font color="Black">Update Markers</font></span><br>
-			<button id="updateMarkers" class="myButton" onclick="addNewMarkers()">update</button><br><br>
+			<img src="images/logoCU.jpg" alt="logo" style="width:100px;height:100px;"><br>
 			
 			<span id="datasetName"><font color="Black">Data Set</font></span><br>
-			<button id="dataset2" class="myButton" onclick="changeDataSet('SSMI')">SSMI</button><br><br>
+			<button id="dataset2" class="myButton" onclick="changeDataSet('SSMI')">SSMI</button><br>
 		
 			<span id="datasetFrequency"><font color="Black">Frequency [ SSMI ]</font></span><br>
 			<button id="freq19" class="myButton" onclick="changeFrequency('19')">19.3</button>
 			<button id="freq22" class="myButton" onclick="changeFrequency('22')">22.2</button>
 			<button id="freq37" class="myButton" onclick="changeFrequency('37')">37.0</button><br>
 			<button id="freq85" class="myButton" onclick="changeFrequency('85')">85.5</button>
-			<button id="freq91" class="myButton" onclick="changeFrequency('91')">91.7</button><br><br>
+			<button id="freq91" class="myButton" onclick="changeFrequency('91')">91.7</button><br>
 			
 			<span id="datasetPolarization"><font color="Black">Polarization [ SSMI ]</font></span><br>
 			<button id="vertical" class="myButton" onclick="changePolarization('v')">vertical</button>
-			<button id="horizontal" class="myButton" onclick="changePolarization('h')">horizontal</button><br><br>
+			<button id="horizontal" class="myButton" onclick="changePolarization('h')">horizontal</button><br>
 		
 			<span id="datasetField"><font color="Black">Start Date</font></span><br>
 			<input id="startDate" name="startDate" value="2010-12-12" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" /><br><br>
 			<span id="datasetField"><font color="Black">End Date</font></span><br>
 			<input id="endDate" name="endDate" value="2010-12-20" type="date" min="1987-01-01" max="2014-12-31" onclick="updateDate()" /><br>
 
-			<input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest);" type="button">			
+			<input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest);" type="button">
 
-			<hr />
 			<div id="bbox_drag_instruction">Click to drag a box:</div>
 			<div id="bbox_adjust_instruction">Adjust the box<br> <input type="button" value="drag new box" onclick="dragNewBox();"></div>
 			<div id="mapdiv"></div>
-			<p id="bbox_result"> </p>
+			<p id="bbox_result"></p>
 
-			<p>Opacity:
+			<p>Opacity of Layer:
 			<a title="decrease opacity" href="javascript: changeOpacity(-0.1);">&lt;&lt;</a>
-			<input id="opacity" type="text" value="0.3" size="3" disabled="true" />
+			<input id="opacity" type="text" value="0.5" size="3" disabled="true" />
 			<a title="increase opacity" href="javascript: changeOpacity(0.1);">&gt;&gt;</a>
 			</p>
 
+			<p>Opacity of Markers:
+			<a title="decrease opacity" href="javascript: changeOpacityMarker(-0.1);">&lt;&lt;</a>
+			<input id="opacityMarker" type="text" value="0.5" size="3" disabled="true" />
+			<a title="increase opacity" href="javascript: changeOpacityMarker(0.1);">&gt;&gt;</a>
+			</p>
 
+			
 		</aside>
 	</section>
 
@@ -481,7 +481,7 @@
 				dataType : 'json',
 				async : true,
 				success : function(response) {
-					console.log("ajax success!");
+					console.log("________________ajax success!_________________");
 					anomalyRequest = response;
 					requestReturned = 1;
 					updatePixels();
@@ -589,18 +589,13 @@
 						longi = foo["longi"];
 						lati = foo["lati"];
 
-
-						//indice = longi * 4 * c.width + lati * 4; // cartesian to vector transform
-
-						// delete this!
-						longi = -135 + 50*longi/300;
-						lati = -85 + 10*lati/300;
-						// delete this!
+						// //////delete this!
+						//longi = -135 + 50*longi/300;
+						//lati = -85 + 10*lati/300;
+						// ////// delete this!
 						
-						console.log("x: " + lati + ", y:" + longi + " k: " + k);						
-						// draw marker here!
+						//console.log("x: " + lati + ", y:" + longi + " k: " + k);						
 
-						//var location = new OpenLayers.LonLat(lati, longi);
 						var location = new OpenLayers.LonLat(longi, lati).transform(
 							new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
 							new OpenLayers.Projection("EPSG:3031") // to Spherical Mercator

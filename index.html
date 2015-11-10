@@ -376,7 +376,7 @@
 		function sendRequest(anomalyRequest) {
 			updateDate();
 
-			anomalyRequest["dsFreq"] = 's' + frequency + polarization;
+			anomalyRequest["dsFreq"] = frequency + polarization;
 			localStorage['userQuery'] = JSON.stringify(anomalyRequest);
 			//var win = window.open("anomaly.html",'_blank');
 			//win.focus();
@@ -476,7 +476,7 @@
 			ajaxHandle = $.ajax({
 				type : "POST",
 				contentType : "application/json; charset=utf-8",
-				url : "./anomaly/ajaxImutation.do",
+				url : "./anomaly/ajaxRetrvAnomaly.do",
 				data : localStorage["userQuery"],
 				dataType : 'json',
 				async : true,

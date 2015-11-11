@@ -249,7 +249,7 @@ function updatePixels() {
                 );
                 var size = new OpenLayers.Size(10, 10);
                 var offset = new OpenLayers.Pixel(-size.w / 2, -size.h / 2);
-                var icon = new OpenLayers.Icon('images/markerSquare.jpg', size, offset);
+                var icon = new OpenLayers.Icon('images/redMarker.jpg', size, offset);
                 markers3.addMarker(new OpenLayers.Marker(location, icon.clone()));
 
             }

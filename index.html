@@ -151,12 +151,22 @@
 				"minlat: " + minlat + ", " +
 				"maxlat: " + maxlat;
 
-				anomalyRequest["minlat"] = minlat;
+				/*
+				anomalyRequest["locat"] = minlat;
 				anomalyRequest["minlon"] = minlon;
 				anomalyRequest["maxlat"] = maxlat;
 				anomalyRequest["maxlon"] = maxlon;
+				*/
 				
-				loctnArray = [minlat,minlon,maxlat,maxlon]; // update the coordinates
+				//loctnArray = [minlat,minlon,maxlat,maxlon]; // update the coordinates
+				loctnArray = Array();
+/*				loctnArray[0]={"longitude": maxlon, "latitude": maxlat};
+				loctnArray[1]={"longitude": minlon, "latitude": minlat};
+*/	
+				loctnArray[0]={"longitude": -42.23257	, "latitude":  -39.36487};
+				loctnArray[1]={"longitude": 42.05101, "latitude": -52.77403 };
+	
+				anomalyRequest["locations"] = loctnArray;
 			}
 		}
 	
@@ -188,6 +198,22 @@
 				}
 			)
 			map.addLayer(tiles);
+		
+			// http://dev.openlayers.org/examples/mouse-position.html
+			map.addControl(
+				new OpenLayers.Control.MousePosition({
+					prefix: 'coordinates: ',
+					separator: ' | ',
+					numDigits: 2,
+					emptyString: 'mouse over'
+				})
+			);
+			
+            map.events.register("mousemove", map, function(e) {
+                var position = this.events.getMousePosition(e);
+                //OpenLayers.Util.getElement("coords").innerHTML = position;
+            });
+
 		
 			// for overlaying the climatology image on top of the map
 			graphic = new OpenLayers.Layer.Image(
@@ -290,11 +316,7 @@
 			"dsPolar": polarization,
 			"sDate": startDate,
 			"eDate": endDate,
-			"locations": loctnArray,
-			"minlat": -71,
-			"minlon": -170,
-			"maxlat": -76,
-			"maxlon": 147
+			"locations": loctnArray
 		};
 
 		function updateDate() {
@@ -376,7 +398,7 @@
 		function sendRequest(anomalyRequest) {
 			updateDate();
 
-			anomalyRequest["dsFreq"] = frequency + polarization;
+			anomalyRequest["dsFreq"] = "s" + frequency + polarization;
 			localStorage['userQuery'] = JSON.stringify(anomalyRequest);
 			//var win = window.open("anomaly.html",'_blank');
 			//win.focus();
@@ -482,6 +504,7 @@
 				async : true,
 				success : function(response) {
 					console.log("________________ajax success!_________________");
+					console.log("respones: " + response);
 					anomalyRequest = response;
 					requestReturned = 1;
 					updatePixels();

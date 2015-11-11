@@ -83,12 +83,12 @@
                     .slider({
                         min: 0,
                         max: 1,
-                        step: 0.2,
+                        step: 0.1,
                         value: 0.6
                     })
                     .slider("pips", {
-                        first: "pip",
-                        last: "pip"
+                        rest: "label",
+                        labels: [0, 0.1, 0.2, 0.3, 0.4,0.5,0.6,0.7,0.8,0.9,1]
                     })
                     .on("slidechange", function(e, ui) {
                         $(changeOpacity(ui.value));
@@ -98,12 +98,12 @@
                     .slider({
                         min: 0,
                         max: 1,
-                        step: 0.2,
+                        step: 0.1,
                         value: 0.6
                     })
                     .slider("pips", {
-                        first: "pip",
-                        last: "pip"
+                        rest: "label",
+                        labels: [0, 0.1, 0.2, 0.3, 0.4,0.5,0.6,0.7,0.8,0.9,1]
                     })
                     .on("slidechange", function(e, ui) {
                         $(changeOpacityMarkers(ui.value));

@@ -1,4 +1,5 @@
 //js code
+/*-------------------------------------------*/
 /*****Helper Function for User Request*****/
 var sendString = "",
     dataSet = "SSMI",
@@ -104,6 +105,7 @@ function sendRequest(anomalyRequest) {
 };
 /*****End of Helper Function for User Reuqest*****/
 
+/*-------------------------------------------*/
 /*****Helper Functions for Visualizing User Request*****/
 requestReturned = 0;
 
@@ -235,6 +237,7 @@ function updatePixels() {
 
 /*****End of Helper Functions for Visualizing User Request*****/
 
+/*-------------------------------------------*/
 /*****Helper Functions and Variables for Map*****/
 var vectors;
 var box;
@@ -448,6 +451,7 @@ function setupmap() {
 };
 /*****End of Helper Functions/Variables for Map*****/
 
+/*-------------------------------------------*/
 /*****Exectute once document is ready*****/
 $(document).ready(function() {
     //set up map

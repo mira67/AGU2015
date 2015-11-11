@@ -102,6 +102,20 @@
 
 		function endDrag( bbox ){
 			var bounds = bbox.getBounds();
+			vertices = bbox.getVertices();
+			console.log("vertices: " + vertices);
+			
+				
+			// coordinate transformation
+			topLeftVertice = new OpenLayers.LonLat(vertices[0]["x"], vertices[0]["y"])
+				.transform(new OpenLayers.Projection("EPSG:3031"), new OpenLayers.Projection("EPSG:4326"));
+console.log("topLeft: " + topLeftVertice);
+			bottomRightVertice = new OpenLayers.LonLat(vertices[2]["x"], vertices[2]["y"])
+				.transform(new OpenLayers.Projection("EPSG:3031"), new OpenLayers.Projection("EPSG:4326"));
+console.log("bottomRight: " + bottomRightVertice);
+
+			
+				
 			setBounds(bounds);
 			drawBox(bounds);
 			box.deactivate();
@@ -146,11 +160,11 @@
 
 				console.log("values: " + minlon + ", " + maxlon + ", " + minlat + ", " + maxlat);
 				document.getElementById("bbox_result").innerHTML =
-				"<br>minlon: " + minlon + ", " +
-				"maxlon: " + maxlon + ",<br>" +
-				"minlat: " + minlat + ", " +
-				"maxlat: " + maxlat;
-
+				"<br>top left: " + topLeftVertice["lat"].toPrecision(3) + ", " + topLeftVertice["lon"].toPrecision(3) + ",<br>" +
+				"bottom right: " + bottomRightVertice["lat"].toPrecision(3) + ", " + bottomRightVertice["lon"].toPrecision(3);
+				
+				
+				
 				/*
 				anomalyRequest["locat"] = minlat;
 				anomalyRequest["minlon"] = minlon;
@@ -163,8 +177,8 @@
 /*				loctnArray[0]={"longitude": maxlon, "latitude": maxlat};
 				loctnArray[1]={"longitude": minlon, "latitude": minlat};
 */	
-				loctnArray[0]={"longitude": -42.23257	, "latitude":  -39.36487};
-				loctnArray[1]={"longitude": 42.05101, "latitude": -52.77403 };
+				loctnArray[0]={"longitude": topLeftVertice[0], "latitude":  topLeftVertice[1] };
+				loctnArray[1]={"longitude": bottomRightVertice[0], "latitude": bottomRightVertice[1] };
 	
 				anomalyRequest["locations"] = loctnArray;
 			}
@@ -204,7 +218,7 @@
 				new OpenLayers.Control.MousePosition({
 					prefix: 'coordinates: ',
 					separator: ' | ',
-					numDigits: 2,
+					numDigits: 3,
 					emptyString: 'mouse over'
 				})
 			);
@@ -238,12 +252,10 @@
 				*/
 			});
 			map.addLayer(markers);
-			
-				
+							
 			var featctl = new OpenLayers.Control.SelectFeature(markers);
 			map.addControl(featctl);
 			featctl.activate();
-			
 
 			featctl.events.register('featurehighlighted', this, function(e) {
 				var pt = e.feature.geometry, ll = new OpenLayers.LonLat(pt.x, pt.y);
@@ -292,6 +304,10 @@
 			
 			markers3 = new OpenLayers.Layer.Markers("anomalies");
 			map.addLayer(markers3);
+			
+			
+// http://stackoverflow.com/questions/8434261/openlayers-get-lat-lon-from-polygon-vertices			
+			
 
 			// end draw box
 		}
@@ -591,7 +607,10 @@
 				slDate = new Date(0);
 				slDate.setUTCSeconds( (slideDate.getTime()+(sliderValue+1)*24*60*60*1000) / 1000 );
 				aReq = new Date(0);
-				aReq.setUTCSeconds(anomalyRequest[1]["date"]/1000);
+// should be zero!
+
+// if there is nothing, then what?
+				aReq.setUTCSeconds(anomalyRequest[0]["date"]/1000);
 				
 				console.log("slideDate: " + slDate.getDate() + " "+ (slDate.getMonth()+1) + " " + slDate.getFullYear());
 				console.log("requestDate: " + aReq.getDate() + " "+ (aReq.getMonth()+1) + " " + aReq.getFullYear());

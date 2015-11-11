@@ -93,15 +93,15 @@ function changePolarization(pol) {
 }
 
 //pass full request to a new page, in localStorage
-function sendRequest(anomalyRequest) {
-    updateDate();
+function sendRequest(anomalyRequest, mode) {
+    if (mode === 0) {
+        updateDate(); //update start/end date based on query
+    }
     anomalyRequest["dsFreq"] = "s" + frequency + polarization;
     localStorage['userQuery'] = JSON.stringify(anomalyRequest);
-    parseRequest();
-    updateDateValues();
-    changeDateRange(0);
-    updatePixels();
-    updateDate();
+    parseRequest(); //send and parse results
+    updateDateValues(); //first 10 days from user query
+    updatePixels(); //visualize results
 };
 /*****End of Helper Function for User Reuqest*****/
 
@@ -121,10 +121,13 @@ function parseRequest(e) {
         async: true,
         success: function(response) {
             console.log("________________ajax success!_________________");
-            console.log("respones: " + response);
-            anomalyRequest = response;
-            requestReturned = 1;
-            updatePixels();
+            if ($.isEmptyObject(response)) {
+                alert('No Anomaly Found, Try Another Query');
+            } else {
+                anomalyRequest = response;
+                requestReturned = 1;
+                updatePixels();
+            }
         }
     });
 }
@@ -138,12 +141,10 @@ function updateDateValues() {
     sDate = JSON.parse(localStorage.userQuery)["sDate"];
     eDate = JSON.parse(localStorage.userQuery)["eDate"];
 
-    console.log("sDate: " + sDate + ", " + "eDate: " + eDate);
     startDate = new Date(sDate);
     slideDate = startDate;
     cDateNum = startDate;
     arrDates = GetDates(startDate, 10);
-
     //udpate labels for slider bar
     $(".slider").slider({
         min: 0,
@@ -155,14 +156,29 @@ function updateDateValues() {
     });
 }
 
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
 function changeDateRange(num) {
     var currentDate = new Date(slideDate.getDate());
     currentDate.setDate;
     slideDate.setDate(currentDate.getTime() + num);
-    arrDates = GetDates(slideDate, 10); // next 10 days
 
-    //update labels for slider bar
-    console.log(arrDates);
+    startDate = formatDate(slideDate); //update start date
+    var currentDate = new Date(startDate);
+    currentDate.setDate(slideDate.getDate() + 10);
+    endDate = formatDate(currentDate); //update end date, need simplify code
+
+    arrDates = GetDates(slideDate, 10); // next 10 days
     $(".slider").slider({
         min: 0,
         max: 9,
@@ -170,12 +186,19 @@ function changeDateRange(num) {
     }).slider("pips", {
         rest: "label",
         labels: arrDates
-    });
+    })
+
+    //send new query to server, no data cached so far, always query new data
+
+    anomalyRequest["sDate"] = startDate;
+    anomalyRequest["eDate"] = endDate;
+    console.log(anomalyRequest);
+    sendRequest(anomalyRequest, 1);
 }
 
 // find the next set of days
 function GetDates(startDate, daysToAdd) {
-	arrDates = [];
+    arrDates = [];
     for (var i = 1; i <= daysToAdd; i++) {
         var currentDate = new Date(startDate);
         currentDate.setDate(startDate.getDate() + i);

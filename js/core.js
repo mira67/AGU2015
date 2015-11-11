@@ -98,6 +98,7 @@ function sendRequest(anomalyRequest, mode) {
         updateDate(); //update start/end date based on query
     }
     anomalyRequest["dsFreq"] = "s" + frequency + polarization;
+    console.log(anomalyRequest);
     localStorage['userQuery'] = JSON.stringify(anomalyRequest);
     parseRequest(); //send and parse results
     updateDateValues(); //first 10 days from user query
@@ -189,10 +190,8 @@ function changeDateRange(num) {
     })
 
     //send new query to server, no data cached so far, always query new data
-
     anomalyRequest["sDate"] = startDate;
     anomalyRequest["eDate"] = endDate;
-    console.log(anomalyRequest);
     sendRequest(anomalyRequest, 1);
 }
 
@@ -340,13 +339,14 @@ function setBounds(bounds) {
         //user input region
         loctnArray = Array();
         loctnArray[0] = {
-            "longitude": topLeftVertice[0],
-            "latitude": topLeftVertice[1]
+            "longitude": topLeftVertice["lon"].toPrecision(3),
+            "latitude": topLeftVertice["lat"].toPrecision(3)
         };
         loctnArray[1] = {
-            "longitude": bottomRightVertice[0],
-            "latitude": bottomRightVertice[1]
+            "longitude": bottomRightVertice["lon"].toPrecision(3),
+            "latitude": bottomRightVertice["lat"].toPrecision(3)
         };
+
         anomalyRequest["locations"] = loctnArray;
     }
 }

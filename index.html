@@ -102,6 +102,20 @@
 
 		function endDrag( bbox ){
 			var bounds = bbox.getBounds();
+			vertices = bbox.getVertices();
+			console.log("vertices: " + vertices);
+			
+				
+			// coordinate transformation
+			topLeftVertice = new OpenLayers.LonLat(vertices[0]["x"], vertices[0]["y"])
+				.transform(new OpenLayers.Projection("EPSG:3031"), new OpenLayers.Projection("EPSG:4326"));
+console.log("topLeft: " + topLeftVertice);
+			bottomRightVertice = new OpenLayers.LonLat(vertices[2]["x"], vertices[2]["y"])
+				.transform(new OpenLayers.Projection("EPSG:3031"), new OpenLayers.Projection("EPSG:4326"));
+console.log("bottomRight: " + bottomRightVertice);
+
+			
+				
 			setBounds(bounds);
 			drawBox(bounds);
 			box.deactivate();
@@ -146,17 +160,27 @@
 
 				console.log("values: " + minlon + ", " + maxlon + ", " + minlat + ", " + maxlat);
 				document.getElementById("bbox_result").innerHTML =
-				"<br>minlon: " + minlon + ", " +
-				"maxlon: " + maxlon + ",<br>" +
-				"minlat: " + minlat + ", " +
-				"maxlat: " + maxlat;
-
-				anomalyRequest["minlat"] = minlat;
+				"<br>top left: " + topLeftVertice["lat"].toPrecision(3) + ", " + topLeftVertice["lon"].toPrecision(3) + ",<br>" +
+				"bottom right: " + bottomRightVertice["lat"].toPrecision(3) + ", " + bottomRightVertice["lon"].toPrecision(3);
+				
+				
+				
+				/*
+				anomalyRequest["locat"] = minlat;
 				anomalyRequest["minlon"] = minlon;
 				anomalyRequest["maxlat"] = maxlat;
 				anomalyRequest["maxlon"] = maxlon;
+				*/
 				
-				loctnArray = [minlat,minlon,maxlat,maxlon]; // update the coordinates
+				//loctnArray = [minlat,minlon,maxlat,maxlon]; // update the coordinates
+				loctnArray = Array();
+/*				loctnArray[0]={"longitude": maxlon, "latitude": maxlat};
+				loctnArray[1]={"longitude": minlon, "latitude": minlat};
+*/	
+				loctnArray[0]={"longitude": topLeftVertice[0], "latitude":  topLeftVertice[1] };
+				loctnArray[1]={"longitude": bottomRightVertice[0], "latitude": bottomRightVertice[1] };
+	
+				anomalyRequest["locations"] = loctnArray;
 			}
 		}
 	
@@ -189,6 +213,22 @@
 			)
 			map.addLayer(tiles);
 		
+			// http://dev.openlayers.org/examples/mouse-position.html
+			map.addControl(
+				new OpenLayers.Control.MousePosition({
+					prefix: 'coordinates: ',
+					separator: ' | ',
+					numDigits: 3,
+					emptyString: 'mouse over'
+				})
+			);
+			
+            map.events.register("mousemove", map, function(e) {
+                var position = this.events.getMousePosition(e);
+                //OpenLayers.Util.getElement("coords").innerHTML = position;
+            });
+
+		
 			// for overlaying the climatology image on top of the map
 			graphic = new OpenLayers.Layer.Image(
 				'SSMI Image	',
@@ -212,12 +252,10 @@
 				*/
 			});
 			map.addLayer(markers);
-			
-				
+							
 			var featctl = new OpenLayers.Control.SelectFeature(markers);
 			map.addControl(featctl);
 			featctl.activate();
-			
 
 			featctl.events.register('featurehighlighted', this, function(e) {
 				var pt = e.feature.geometry, ll = new OpenLayers.LonLat(pt.x, pt.y);
@@ -266,6 +304,10 @@
 			
 			markers3 = new OpenLayers.Layer.Markers("anomalies");
 			map.addLayer(markers3);
+			
+			
+// http://stackoverflow.com/questions/8434261/openlayers-get-lat-lon-from-polygon-vertices			
+			
 
 			// end draw box
 		}
@@ -290,11 +332,7 @@
 			"dsPolar": polarization,
 			"sDate": startDate,
 			"eDate": endDate,
-			"locations": loctnArray,
-			"minlat": -71,
-			"minlon": -170,
-			"maxlat": -76,
-			"maxlon": 147
+			"locations": loctnArray
 		};
 
 		function updateDate() {
@@ -376,7 +414,7 @@
 		function sendRequest(anomalyRequest) {
 			updateDate();
 
-			anomalyRequest["dsFreq"] = frequency + polarization;
+			anomalyRequest["dsFreq"] = "s" + frequency + polarization;
 			localStorage['userQuery'] = JSON.stringify(anomalyRequest);
 			//var win = window.open("anomaly.html",'_blank');
 			//win.focus();
@@ -482,6 +520,7 @@
 				async : true,
 				success : function(response) {
 					console.log("________________ajax success!_________________");
+					console.log("respones: " + response);
 					anomalyRequest = response;
 					requestReturned = 1;
 					updatePixels();
@@ -568,7 +607,10 @@
 				slDate = new Date(0);
 				slDate.setUTCSeconds( (slideDate.getTime()+(sliderValue+1)*24*60*60*1000) / 1000 );
 				aReq = new Date(0);
-				aReq.setUTCSeconds(anomalyRequest[1]["date"]/1000);
+// should be zero!
+
+// if there is nothing, then what?
+				aReq.setUTCSeconds(anomalyRequest[0]["date"]/1000);
 				
 				console.log("slideDate: " + slDate.getDate() + " "+ (slDate.getMonth()+1) + " " + slDate.getFullYear());
 				console.log("requestDate: " + aReq.getDate() + " "+ (aReq.getMonth()+1) + " " + aReq.getFullYear());

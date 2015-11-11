@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<title>Anomaly Detection</title>
 
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Syncopate" />
 	<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
 	<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 	<script src="js/jquery-ui-slider-pips.js"></script>
@@ -24,10 +25,18 @@
 	
 	<style type="text/css">
 		#wrapper {
-			height: 97vh;
+			height: 90vh;
 			width: 97vw;
 			margin-left: auto;
 			margin-right: auto;
+		}
+		h1 {
+			font-family: Syncopate;
+			font-size: 24px;
+			font-style: normal;
+			font-variant: normal;
+			font-weight: 500;
+			line-height: 26.4px;
 		}
 		#content {
 			height: 80vh;
@@ -59,7 +68,7 @@
 		
 		/* controls box */
 		#mapdiv { height:10px; }
-		div.olControlAttribution { bottom:3px; }    
+		div.olControlAttribution { bottom:3px; }
 		#bbox_drag_instruction { height:1.5em; }
 		#bbox_adjust_instruction { height:1.5em; display:none;  }
 		/* end controls box */
@@ -86,37 +95,30 @@
 		Proj4js.defs["EPSG:3031"] = "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
 		Proj4js.defs["EPSG:900913"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
 		
-		// alter the opacity of the climatology image
+
 		function changeOpacity( byOpacity ) {
-			var newOpacity = (parseFloat(OpenLayers.Util.getElement('opacity').value) + byOpacity).toFixed(1);
-			newOpacity = Math.min(maxOpacity, Math.max(minOpacity, newOpacity));
-			OpenLayers.Util.getElement('opacity').value = newOpacity;
-			graphic.setOpacity(newOpacity);
+			graphic.setOpacity(byOpacity);
        	}
 		function changeOpacityMarker( byOpacity ){
-			var newOpacity = (parseFloat(OpenLayers.Util.getElement('opacityMarker').value) + byOpacity).toFixed(1);
-			newOpacity = Math.min(maxOpacity, Math.max(minOpacity, newOpacity));
-			OpenLayers.Util.getElement('opacityMarker').value = newOpacity;
-			markers3.setOpacity(newOpacity);
+			markers3.setOpacity(byOpacity);
 		}
 
 		function endDrag( bbox ){
 			var bounds = bbox.getBounds();
 			vertices = bbox.getVertices();
-			console.log("vertices: " + vertices);
+			//console.log("vertices: " + vertices);
 			
 				
 			// coordinate transformation
 			topLeftVertice = new OpenLayers.LonLat(vertices[0]["x"], vertices[0]["y"])
 				.transform(new OpenLayers.Projection("EPSG:3031"), new OpenLayers.Projection("EPSG:4326"));
-console.log("topLeft: " + topLeftVertice);
+//console.log("topLeft: " + topLeftVertice);
 			bottomRightVertice = new OpenLayers.LonLat(vertices[2]["x"], vertices[2]["y"])
 				.transform(new OpenLayers.Projection("EPSG:3031"), new OpenLayers.Projection("EPSG:4326"));
-console.log("bottomRight: " + bottomRightVertice);
+//console.log("bottomRight: " + bottomRightVertice);
 
-			
-				
 			setBounds(bounds);
+			
 			drawBox(bounds);
 			box.deactivate();
 			document.getElementById("bbox_drag_instruction").style.display = 'none';
@@ -125,6 +127,7 @@ console.log("bottomRight: " + bottomRightVertice);
 
 		function dragNewBox(){
 			box.activate();
+			console.log("drag box");
 			transform.deactivate(); //The remove the box with handles
 			vectors.destroyFeatures();
 			document.getElementById("bbox_drag_instruction").style.display = 'block';
@@ -145,7 +148,7 @@ console.log("bottomRight: " + bottomRightVertice);
 		function toPrecision( zoom, value ){
 			var decimals = Math.pow(10, Math.floor(zoom/3));
 			return Math.round(value * decimals) / decimals;
-		}
+		}	
 		
 		function setBounds( bounds ){
 			if( bounds == null ){
@@ -158,25 +161,11 @@ console.log("bottomRight: " + bottomRightVertice);
 				maxlon = toPrecision(map.getZoom(), b.right);
 				maxlat = toPrecision(map.getZoom(), b.top);
 
-				console.log("values: " + minlon + ", " + maxlon + ", " + minlat + ", " + maxlat);
 				document.getElementById("bbox_result").innerHTML =
-				"<br>top left: " + topLeftVertice["lat"].toPrecision(3) + ", " + topLeftVertice["lon"].toPrecision(3) + ",<br>" +
-				"bottom right: " + bottomRightVertice["lat"].toPrecision(3) + ", " + bottomRightVertice["lon"].toPrecision(3);
+					"<br>[top left] lat: " + topLeftVertice["lat"].toPrecision(3) + ", lon: " + topLeftVertice["lon"].toPrecision(3) + ",<br>" +
+					"[bottom right] lat:" + bottomRightVertice["lat"].toPrecision(3) + ", lon: " + bottomRightVertice["lon"].toPrecision(3);
 				
-				
-				
-				/*
-				anomalyRequest["locat"] = minlat;
-				anomalyRequest["minlon"] = minlon;
-				anomalyRequest["maxlat"] = maxlat;
-				anomalyRequest["maxlon"] = maxlon;
-				*/
-				
-				//loctnArray = [minlat,minlon,maxlat,maxlon]; // update the coordinates
 				loctnArray = Array();
-/*				loctnArray[0]={"longitude": maxlon, "latitude": maxlat};
-				loctnArray[1]={"longitude": minlon, "latitude": minlat};
-*/	
 				loctnArray[0]={"longitude": topLeftVertice[0], "latitude":  topLeftVertice[1] };
 				loctnArray[1]={"longitude": bottomRightVertice[0], "latitude": bottomRightVertice[1] };
 	
@@ -434,9 +423,11 @@ console.log("bottomRight: " + bottomRightVertice);
 <div id="wrapper">
     <header class='container' id='header'></header>
 
-	<nav class='container roundEdge' id='nav'>
+	<!--<nav class='container roundEdge' id='nav'> -->
+	<div id="header">
 		<center><h1 id='project'>Condensing Massive Satellite Data For Rapid Interactive Analysis</h1></center>
-	</nav>
+	</div>
+	<!-- </nav> -->
 	
 	<section class='container' id='main'>
 		<div id='content'>
@@ -476,17 +467,48 @@ console.log("bottomRight: " + bottomRightVertice);
 			<div id="mapdiv"></div>
 			<p id="bbox_result"></p>
 
-			<p>Opacity of Layer:
-			<a title="decrease opacity" href="javascript: changeOpacity(-0.1);">&lt;&lt;</a>
-			<input id="opacity" type="text" value="0.5" size="3" disabled="true" />
-			<a title="increase opacity" href="javascript: changeOpacity(0.1);">&gt;&gt;</a>
-			</p>
+			<p>Opacity of Layer</p>
+			<div class="sliderOpacityLayer"></div>
+			
+			<p>Opacity of Markers</p>
+			<div class="sliderOpacityMarkers"></div>
+			
+			<script>
+				//sliderValue = $(".sliderOpacity").slider("value"); // which selection is highlighted
+				$(".sliderOpacityLayer")
+				.slider({ 
+					min: 0, 
+					max: 1,
+					step: 0.2,
+					value: 0.6
+				})
+				.slider("pips", {
+					first: "pip",
+					last: "pip"
+				})
+				.on("slidechange", function(e, ui) {
+					$( changeOpacity(ui.value) );
+				});
 
-			<p>Opacity of Markers:
-			<a title="decrease opacity" href="javascript: changeOpacityMarker(-0.1);">&lt;&lt;</a>
-			<input id="opacityMarker" type="text" value="0.5" size="3" disabled="true" />
-			<a title="increase opacity" href="javascript: changeOpacityMarker(0.1);">&gt;&gt;</a>
-			</p>
+				$(".sliderOpacityMarkers")
+				.slider({ 
+					min: 0, 
+					max: 1,
+					step: 0.2,
+					value: 0.6
+				})
+				.slider("pips", {
+					first: "pip",
+					last: "pip"
+				})
+				.on("slidechange", function(e, ui) {
+					$( changeOpacityMarkers(ui.value) );
+				});
+
+				
+			</script>
+
+
 
 			
 		</aside>
@@ -598,9 +620,8 @@ console.log("bottomRight: " + bottomRightVertice);
 			var foo = [];
 			
 			var sliderValue = 0;
-
-			// wait for ajax response
-			if( requestReturned == 1 ){
+			
+			if( ( requestReturned == 1 ) && ( anomalyRequest.length !== 0 ) ){
 				sliderValue = $(".slider").slider("value"); // which selection is highlighted
 				timeSeconds = (slideDate.getTime()+sliderValue*24*60*60*1000);
 				
@@ -631,13 +652,6 @@ console.log("bottomRight: " + bottomRightVertice);
 						longi = foo["longi"];
 						lati = foo["lati"];
 
-						// //////delete this!
-						//longi = -135 + 50*longi/300;
-						//lati = -85 + 10*lati/300;
-						// ////// delete this!
-						
-						//console.log("x: " + lati + ", y:" + longi + " k: " + k);						
-
 						var location = new OpenLayers.LonLat(longi, lati).transform(
 							new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
 							new OpenLayers.Projection("EPSG:3031") // to Spherical Mercator
@@ -649,7 +663,9 @@ console.log("bottomRight: " + bottomRightVertice);
 						
 					}
 				} // end loop through anomalyRequest json
-			} // if request returned is 1
+			} else { // if request returned is 1
+				console.log("...either waiting for the data or something went wrong?!");
+			}
 		}
 
 	</script>
@@ -657,15 +673,3 @@ console.log("bottomRight: " + bottomRightVertice);
 </div><!-- end wrapper -->
 </body>
 </html>
-
-<!-- ///////////////////////////////////////////////////////////////////////////////////////// -->
-<!--
-Resources:
-
-	SSMI Page:
-	<http://nsidc.org/data/docs/daac/nsidc0001_ssmi_tbs.gd.html>
-
-	<http://dev.openlayers.org/examples/draw-feature.html>
-	<http://harrywood.co.uk/maps/examples/openlayers/bbox-selector.view.html>
-
--->

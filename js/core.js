@@ -20,6 +20,8 @@ var anomalyRequest = {
     "locations": loctnArray
 };
 
+var anomalyResults = [];
+
 function updateDate() {
     startDate = "" + document.getElementById('startDate').value;
     endDate = "" + document.getElementById('endDate').value;
@@ -125,7 +127,7 @@ function parseRequest(e) {
             if ($.isEmptyObject(response)) {
                 alert('No Anomaly Found, Try Another Query');
             } else {
-                anomalyRequest = response;
+                anomalyResults = response;
                 requestReturned = 1;
                 updatePixels();
             }
@@ -212,7 +214,7 @@ function updatePixels() {
 
     var sliderValue = 0;
 
-    if ((requestReturned == 1) && (anomalyRequest.length !== 0)) {
+    if ((requestReturned == 1) && (anomalyResults.length !== 0)) {
         sliderValue = $(".slider").slider("value"); // which selection is highlighted
         timeSeconds = (slideDate.getTime() + sliderValue * 24 * 60 * 60 * 1000);
 
@@ -222,15 +224,15 @@ function updatePixels() {
         // should be zero!
 
         // if there is nothing, then what?
-        aReq.setUTCSeconds(anomalyRequest[0]["date"] / 1000);
+        aReq.setUTCSeconds(anomalyResults[0]["date"] / 1000);
 
         console.log("slideDate: " + slDate.getDate() + " " + (slDate.getMonth() + 1) + " " + slDate.getFullYear());
         console.log("requestDate: " + aReq.getDate() + " " + (aReq.getMonth() + 1) + " " + aReq.getFullYear());
 
         markers3.clearMarkers();
 
-        for (k = 0; k < anomalyRequest.length; k++) {
-            foo = anomalyRequest[k];
+        for (k = 0; k < anomalyResults.length; k++) {
+            foo = anomalyResults[k];
             num = foo["date"] / 1000;
             d = new Date(0); // set date to epoch
             d.setUTCSeconds(num);
@@ -251,7 +253,7 @@ function updatePixels() {
                 markers3.addMarker(new OpenLayers.Marker(location, icon.clone()));
 
             }
-        } // end loop through anomalyRequest json
+        } // end loop through anomalyResults json
     } else { // if request returned is 1
         console.log("...either waiting for the data or something went wrong?!");
     }

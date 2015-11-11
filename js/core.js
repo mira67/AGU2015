@@ -249,7 +249,7 @@ function updatePixels() {
                 );
                 var size = new OpenLayers.Size(10, 10);
                 var offset = new OpenLayers.Pixel(-size.w / 2, -size.h / 2);
-                var icon = new OpenLayers.Icon('images/redMarker.jpg', size, offset);
+                var icon = new OpenLayers.Icon('images/redMarker.png', size, offset);
                 markers3.addMarker(new OpenLayers.Marker(location, icon.clone()));
 
             }
@@ -278,7 +278,7 @@ function changeOpacity(byOpacity) {
 }
 
 //Note: Update to be able to control opacity for different channels
-function changeOpacityMarker(byOpacity) {
+function changeOpacityMarkers(byOpacity) {
     markers3.setOpacity(byOpacity);
 }
 
@@ -473,6 +473,7 @@ function setupmap() {
 
     markers3 = new OpenLayers.Layer.Markers("anomalies");
     map.addLayer(markers3);
+
 };
 /*****End of Helper Functions/Variables for Map*****/
 

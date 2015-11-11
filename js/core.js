@@ -141,6 +141,16 @@ function updateDateValues() {
     slideDate = startDate;
     cDateNum = startDate;
     arrDates = GetDates(startDate, 10);
+
+    //udpate labels for slider bar
+    $(".slider").slider({
+        min: 0,
+        max: 9,
+        value: 0
+    }).slider("pips", {
+        rest: "label",
+        labels: arrDates
+    });
 }
 
 function changeDateRange(num) {
@@ -148,10 +158,22 @@ function changeDateRange(num) {
     currentDate.setDate;
     slideDate.setDate(currentDate.getTime() + num);
     arrDates = GetDates(slideDate, 10); // next 10 days
+
+    //update labels for slider bar
+    console.log(arrDates);
+    $(".slider").slider({
+        min: 0,
+        max: 9,
+        value: 0
+    }).slider("pips", {
+        rest: "label",
+        labels: arrDates
+    });
 }
 
 // find the next set of days
 function GetDates(startDate, daysToAdd) {
+	arrDates = [];
     for (var i = 1; i <= daysToAdd; i++) {
         var currentDate = new Date(startDate);
         currentDate.setDate(startDate.getDate() + i);

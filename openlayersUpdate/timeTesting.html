@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>timeline testing</title>
+
+
+	<style type="text/css">
+		$primary: #F07444;
+		$secondary: #f3f3f3;
+		* {
+			box-sizing: border-box;
+		}
+		body {
+			font-family: 'Roboto', 'Helvetica', 'Arial', 'Sans Serif';
+			max-width: 100%;
+			overflow-x: hidden;
+			background: url('https://s3.amazonaws.com/ooomf-com-files/45FrPhQaQL26yBeYQvR2_telesiege.jpg') no-repeat center center fixed;
+			-webkit-background-size: cover;
+			-moz-background-size: cover;
+			-o-background-size: cover;
+			background-size: cover;
+		}
+		.background {
+		  position: fixed;
+		  top: 0;
+		  width: 100%;
+		  border-radius: 2px;
+		  height: 100%;
+		  background-color: rgba(0, 0, 0, 0.6);
+		}
+		.options{
+			margin-left: auto;
+			margin-right: auto;
+			width: 25vw;
+		}
+		p {
+			color: #aaa;
+			font-size: 1em;
+		}
+		.row {
+			width: 100%;
+			position: relative;
+			float: left;
+			display: inline-block;
+			text-align: center;
+		}
+		.btn {
+			display: inline-block;
+			border-radius: 2px;
+			border: none;
+			height: 45px;
+			padding: 0;
+			margin-bottom: 5px;
+		}
+		.sm { width: 19%; }
+		.md { width: 49%; }
+		.lg { width: 99%; }
+		.ghost {
+			background-color: rgba(255, 255, 255, 0.4);
+			color: #222;
+			border: 1px solid #aaa;  
+			transition: .2s ease;
+		}
+		.ghost:hover {
+			background-color: #eee;
+			transition-property: font-size;
+			transition-duration: 0.7s;
+			font-size: 1.1em;
+			transition-duration: 0.7s;
+		}
+	</style>
+	
+</head>
+<!-- ///////////////////////////////////////////////////////////////////////////////////////// -->
+<body>
+<div class="background"></div>
+
+<div class="options">
+	
+	<div class="row"><p>Data Set SSMI</p></div>
+	
+	<div class="row"><p>Frequency</p></div>
+
+	<div class="row">
+		<button class="btn sm ghost">19.3</button>
+		<button class="btn sm ghost">22.2</button>
+		<button class="btn sm ghost">37.0</button>
+		<button class="btn sm ghost">85.5</button>
+		<button class="btn sm ghost">91.7</button>
+	</div>
+
+	<div class="row"><p>Polarization</p></div>
+
+	<div class="row">
+		<button class="btn md ghost">vertical</button>
+		<button class="btn md ghost">horizontal</button>
+	</div>
+
+	<div class="row">
+		<button class="btn lg ghost">submit query</button>
+	</div>
+
+	<div class="row">
+		<button class="btn md ghost">previous</button>
+		<button class="btn md ghost">next</button>
+	</div>
+	
+</div>
+
+<!-- ///////////////////////////////////////////////////////////////////////////////////////// -->
+</body>
+</html>

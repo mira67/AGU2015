@@ -15,16 +15,14 @@
 			height: 100%;
 			margin: 0;
 			padding: 0;
-			overflow: hidden;
+			//overflow: hidden;
 		}
 		body {
 			margin:0;
 			padding:0;
 			height:100%;
-			background:#f8f8f8;
 		}
-		#wrapper {
-			background-color: pink;
+/*		#wrapper {
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -32,102 +30,49 @@
 			bottom: 0;
 			height: 100%;
 		}
-		#mapBox {
-			background-color: green;
-			height: 100%;
-			width: 100%;
-			border: #CCC 2px dashed;
-		}
+*/
+#wrapper {width: 90vw; height: 90vh;margin-left: auto; margin-right: auto;}
 		#titleBox {
-			position: absolute;
-			background-color: brown;
-			width: 75%;
-			height: 5%;
-			top: 20px;
-			left: 20px;
-			border: #CCC 2px dashed;		
+			width: 100%;
+			height: 10%;
+			top: 0;
 		}
-		#navBox {
-			position: absolute;
-			background-color: orange;
-			width: 20%;
-			height: 50%;
-			top: 20px;
-			right: 20px;
-			border: #CCC 2px dashed;
+		#titleText {
+			margin: 0;
+			padding: 0;
+			font-family: Times, serif;
+			letter-spacing: 0.1em;
+			text-align: center;
+			color: #fff;
+			background-color: rgba(20,20,20,0.7);
+		}
+		#mapContainer {
 		}
 		#timelineBox{
-			background-color: yellow;
-			position: absolute;
+			width: 100%;
+			min-height: 50px;
 			height: 10%;
-			left: 20px;
-			bottom: 20px;
-			right: 20px;
-			border: #CCC 2px dashed;
+			background-color: rgba(255,255,255,0.4);
+			text-align: center;
 		}
-		#timelineLeft{
-			background-color: pink;
-			position: absolute;
-			top: 2px;
-			left: 2px;
-			bottom: 2px;
-			width: 12%;
-			border: #CCC 2px dashed;
-		}
-		#timelineRight{
-			background-color: pink;
-			position: absolute;
-			top: 2px;
-			right: 2px;
-			bottom: 2px;
-			width: 12%;
-			border: #CCC 2px dashed;
-		}
-		#timelineCenter{
-/* center these boxes vertically */
-			background-color: pink;
-			margin-left: auto;
-			margin-right: auto;
-			width: 70%;
-			height: 100%;
-			border: #CCC 2px dashed;
-		}
-
-		
 	</style>
 	
 </head>
 <body>
 <div id="wrapper">
-
-	<!-- <div id="map"></div> -->
-
-	<div id="mapBox">
-		<div id="titleBox">
-			Condense Method
-		</div><!-- end title box -->
-
+<!-- 
+	<div id="titleBox">
+		<h1 id="titleText">NSIDC and the University of Colorado Condense Method</h1>
+	</div>
+-->
 	
-		<div id="navBox">
-			Navigation
-		</div><!-- end nav box -->
-
-		<div id="timelineBox">
-			<div id="timelineLeft">
-				left
-			</div>
-			
-			<div id="timelineCenter">
-				timeline
-			</div>
-			
-			<div id="timelineRight">
-				right
-			</div>
-		</div><!-- end timeline box -->
-
-	</div><!-- end map box -->
-
+	<div id="mapContainer">
+		<div id="map"></div>
+	</div>
+	
+	<div id="timelineBox">
+		timeline
+	</div><!-- end timeline box -->	
 	
 </div><!-- end wrapper -->
 </body>

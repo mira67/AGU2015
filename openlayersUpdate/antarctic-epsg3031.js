@@ -99,7 +99,7 @@ window.onload = function() {
 		})
 	});
 	//map.addLayer(imageLayer);
-	//map.addLayer(layerLandWater);
+	map.addLayer(layerLandWater);
 	//map.addLayer(layerBaseMap);
 	map.addLayer(layerCoastlines);
 

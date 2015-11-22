@@ -3,11 +3,9 @@
 <head>
 	<meta charset="utf-8">
 	<title>timeline testing</title>
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 	<style type="text/css">
-		$primary: #F07444;
-		$secondary: #f3f3f3;
 		* {
 			box-sizing: border-box;
 		}
@@ -15,28 +13,34 @@
 			font-family: 'Roboto', 'Helvetica', 'Arial', 'Sans Serif';
 			max-width: 100%;
 			overflow-x: hidden;
-			background: url('https://s3.amazonaws.com/ooomf-com-files/45FrPhQaQL26yBeYQvR2_telesiege.jpg') no-repeat center center fixed;
+			background: url('images/snow2.jpg') no-repeat center center fixed;
 			-webkit-background-size: cover;
 			-moz-background-size: cover;
 			-o-background-size: cover;
 			background-size: cover;
+			margin: 0; padding: 0;
 		}
 		.background {
-		  position: fixed;
-		  top: 0;
-		  width: 100%;
-		  border-radius: 2px;
-		  height: 100%;
-		  background-color: rgba(0, 0, 0, 0.6);
+			position: fixed;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
 		}
-		.options{
+		.options {
+			top: 0;
+			bottom: 0;
 			margin-left: auto;
 			margin-right: auto;
 			width: 25vw;
+			height: 100%;
+			background-color: red;
 		}
 		p {
-			color: #aaa;
-			font-size: 1em;
+			color: #fff;
+			font-size: 1.2em;
+			text-align: left;
+			margin-bottom: 5px;
 		}
 		.row {
 			width: 100%;
@@ -47,15 +51,18 @@
 		}
 		.btn {
 			display: inline-block;
-			border-radius: 2px;
+			border-radius: 10px;
 			border: none;
-			height: 45px;
+			height: 40px;
 			padding: 0;
 			margin-bottom: 5px;
+			font-size: 1em;
+			letter-spacing: 3px;
 		}
-		.sm { width: 19%; }
-		.md { width: 49%; }
-		.lg { width: 99%; }
+		.sm { width: 18%; }
+		.thr { width: 32%; }
+		.md { width: 48%; }
+		.lg { width: 98%; }
 		.ghost {
 			background-color: rgba(255, 255, 255, 0.4);
 			color: #222;
@@ -65,9 +72,17 @@
 		.ghost:hover {
 			background-color: #eee;
 			transition-property: font-size;
-			transition-duration: 0.7s;
+			transition-duration: 0.3s;
+			font-size: 1.2em;
+			transition-duration: 0.3s;
+		}
+		.ghost:active {
+			background-color: #222;
+			color: #fff;
+			transition-property: font-size;
+			transition-duration: 0.3s;
 			font-size: 1.1em;
-			transition-duration: 0.7s;
+			transition-duration: 0.3s;
 		}
 	</style>
 	
@@ -76,12 +91,12 @@
 <body>
 <div class="background"></div>
 
+<div id="wrapper">
 <div class="options">
 	
-	<div class="row"><p>Data Set SSMI</p></div>
+	<div class="row"><p>SSMI - Projection: EPSG:3031</p></div>
 	
 	<div class="row"><p>Frequency</p></div>
-
 	<div class="row">
 		<button class="btn sm ghost">19.3</button>
 		<button class="btn sm ghost">22.2</button>
@@ -89,25 +104,54 @@
 		<button class="btn sm ghost">85.5</button>
 		<button class="btn sm ghost">91.7</button>
 	</div>
-
+	
 	<div class="row"><p>Polarization</p></div>
-
 	<div class="row">
-		<button class="btn md ghost">vertical</button>
+		<button class="btn md ghost" class="active">vertical</button>
 		<button class="btn md ghost">horizontal</button>
 	</div>
 
+	
+	
+	<div class="row"><p>Timeline Zoom</p></div>
 	<div class="row">
-		<button class="btn lg ghost">submit query</button>
+		<button class="btn thr ghost">Day</button>
+		<button class="btn thr ghost">Month</button>
+		<button class="btn thr ghost">Year</button>
 	</div>
 
+	<div class="row"><p>Change Dates</p></div>
 	<div class="row">
 		<button class="btn md ghost">previous</button>
 		<button class="btn md ghost">next</button>
 	</div>
 	
+	
+	<div class="row">
+	</div>
+	
+	<div class="row"><p>Layer Opacity</p></div>
+	<div class="row"><p>Marker Opacity</p></div>
+
+	<div class="row"><p>Submit Query</p></div>
+	<div class="row">
+		<button class="btn lg ghost">submit query</button>
+	</div>
+
+	
+</div>
 </div>
 
 <!-- ///////////////////////////////////////////////////////////////////////////////////////// -->
+<script>
+	$('button').click(function () {
+		$(this).css('border', '5px solid #444');
+		$(this).css('background', '#eee');
+	});
+
+	
+
+
+</script>
 </body>
 </html>

@@ -87,7 +87,7 @@
 		.ghost:hover {
 			transition-property: font-size;
 			transition-duration: 0.3s;
-			background-color: #bbb;
+			background-color: #ddd;
 			/*font-size: 1.1em;*/
 			transition-duration: 0.3s;
 		}
@@ -137,22 +137,22 @@
 	<div class="row">
 	</div>
 	
-	<div class="row"><p>Layer Opacity</p></div>
+	<div class="row"><p>Layer Opacity</p><p id="layerOpacityText"></p></div>
 	<div class="row">
 		<div class="slide sliderLayerOpacity"></div>
 	</div>
 	
-	<div class="row"><p>Marker Opacity</p></div>
+	<div class="row"><p>Marker Opacity</p><p id="markerOpacityText"></p></div>
 		<div class="row">
 		<div class="slide sliderMarkerOpacity"></div>
 	</div>
 
-	<div class="row"><p id="yearsText">Years</p></div>
+	<div class="row"><p>Years</p><p id="yearsText"></p></div>
 		<div class="row">
 		<div class="slide sliderYears"></div>
 	</div>
 	
-	<div class="row"><p id="patternText">Pattern</p></div>
+	<div class="row"><p>Pattern</p><p id="patternText"></p></div>
 		<div class="row">
 		<div class="slide sliderPattern"></div>
 	</div>
@@ -169,7 +169,7 @@
 	<div class="row"><p>Results:</p></div>
 	<div class="row">
 		<div id="outputResults"></div>
-	</div>p
+	</div>
 
 </div>
 <!-- ///////////////////////////////////////////////////////////////////////////////////////// -->
@@ -202,15 +202,22 @@
 		min: 0,
         max: 1,
 		step: 0.05,
-		value: 0.5
+		value: 0.5,
+		slide: function( event, ui ){
+			$("#layerOpacityText").text( ui.value );
+		},
+		change: function( event, ui ){
+			$("#layerOpacityText").text( ui.value );
+		}
     })
     .slider("pips", {
-        rest: false
+        rest: "label",
+		step: 5
     })
 	.on("slidechange", function( event, ui ){
 		$( updateResults() );
+		$("#layerOpacityText").text( ui.value );
     });
-
 
 	// change opacity of the markers
 	$(".sliderMarkerOpacity")
@@ -218,14 +225,23 @@
 		min: 0,
         max: 1,
 		step: 0.05,
-		value: 0.5
+		value: 0.5,
+		slide: function( event, ui ){
+			$("#markerOpacityText").text( ui.value );
+		},
+		change: function( event, ui ){
+			$("#markerOpacityText").text( ui.value );
+		}
     })
     .slider("pips", {
-        rest: false
+        rest: "label",
+		step: 5
     })
 	.on("slidechange", function( event, ui ){
 		$( updateResults() );
+		$("#markerOpacityText").text( ui.value );
     });
+	
 	// user input of the date
 	var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 	$(".sliderYears")
@@ -237,10 +253,10 @@
 			values: [1990, 1993],
 			//this gets a live reading of the value and prints it on the page
 			slide: function( event, ui ){
-				$("#yearsText").text( "Years: " + ui.values[0] + " to " + ui.values[1] );
+				$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
 			},
 			change: function( event, ui ){
-				$("#yearsText").text( "Years: " + ui.values[0] + " to " + ui.values[1] );
+				$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
 			}
 		})
 		.slider("pips", {
@@ -248,7 +264,7 @@
 			step: 4
 		})
 		.on("slidechange", function( event, ui ){
-			$("#yearsText").text( "Years: " + ui.values[0] + " to " + ui.values[1] );
+			$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
     });
 	
 	$(".sliderPattern")
@@ -258,10 +274,10 @@
 			range: true,
 			values: [0, 11],
 			slide: function( event, ui ){
-				$("#patternText").text( "Pattern: " + months[ui.values[0]] + " to " + months[ui.values[1]] );
+				$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
 			},
 			change: function( event, ui ){
-				$("#patternText").text( "Pattern: " + months[ui.values[0]] + " to " + months[ui.values[1]] );
+				$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
 			}
 
 		})
@@ -270,7 +286,7 @@
 			labels: months
 		})
 		.on("slidechange", function( event ,ui ){
-			$("#patternText").text( "Pattern: " + months[ui.values[0]] + " to " + months[ui.values[1]] );
+			$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
 			console.log("ui" + ui.values);
     });
 

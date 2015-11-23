@@ -3,7 +3,14 @@
 <head>
 	<meta charset="utf-8">
 	<title>timeline testing</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    
+    <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+    <script src="js/jquery-ui-slider-pips.js"></script>
+	
+	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
 
 	<style type="text/css">
 		* {
@@ -28,17 +35,22 @@
 			background-color: rgba(0, 0, 0, 0.5);
 		}
 		.options {
+			float: left;
 			top: 0;
 			bottom: 0;
-			margin-left: auto;
-			margin-right: auto;
-			width: 25vw;
+			width: 50vw;
 			height: 100%;
-			background-color: red;
+		}
+		.results {
+			float: right;
+			top: 0;
+			bottom: 0;
+			width: 48vw;
+			height: 100%;
 		}
 		p {
 			color: #fff;
-			font-size: 1.2em;
+			font-size: 1em;
 			text-align: left;
 			margin-bottom: 5px;
 		}
@@ -49,17 +61,20 @@
 			display: inline-block;
 			text-align: center;
 		}
+		.slide {
+			margin: 0 2% 0 2%;
+		}
 		.btn {
 			display: inline-block;
-			border-radius: 10px;
+			border-radius: 5px;
 			border: none;
-			height: 40px;
+			height: 30px;
 			padding: 0;
 			margin-bottom: 5px;
 			font-size: 1em;
 			letter-spacing: 3px;
 		}
-		.sm { width: 18%; }
+		.sm { width: 19%; }
 		.thr { width: 32%; }
 		.md { width: 48%; }
 		.lg { width: 98%; }
@@ -70,18 +85,18 @@
 			transition: .2s ease;
 		}
 		.ghost:hover {
-			background-color: #eee;
 			transition-property: font-size;
 			transition-duration: 0.3s;
-			font-size: 1.2em;
+			background-color: #bbb;
+			/*font-size: 1.1em;*/
 			transition-duration: 0.3s;
 		}
 		.ghost:active {
-			background-color: #222;
 			color: #fff;
 			transition-property: font-size;
 			transition-duration: 0.3s;
-			font-size: 1.1em;
+			background-color: #222;
+			/*font-size: 1.1em;*/
 			transition-duration: 0.3s;
 		}
 	</style>
@@ -90,7 +105,6 @@
 <!-- ///////////////////////////////////////////////////////////////////////////////////////// -->
 <body>
 <div class="background"></div>
-
 <div id="wrapper">
 <div class="options">
 	
@@ -119,39 +133,154 @@
 		<button class="btn thr ghost">Month</button>
 		<button class="btn thr ghost">Year</button>
 	</div>
-
-	<div class="row"><p>Change Dates</p></div>
-	<div class="row">
-		<button class="btn md ghost">previous</button>
-		<button class="btn md ghost">next</button>
-	</div>
-	
 	
 	<div class="row">
 	</div>
 	
 	<div class="row"><p>Layer Opacity</p></div>
+	<div class="row">
+		<div class="slide sliderLayerOpacity"></div>
+	</div>
+	
 	<div class="row"><p>Marker Opacity</p></div>
+		<div class="row">
+		<div class="slide sliderMarkerOpacity"></div>
+	</div>
+
+	<div class="row"><p id="yearsText">Years</p></div>
+		<div class="row">
+		<div class="slide sliderYears"></div>
+	</div>
+	
+	<div class="row"><p id="patternText">Pattern</p></div>
+		<div class="row">
+		<div class="slide sliderPattern"></div>
+	</div>
 
 	<div class="row"><p>Submit Query</p></div>
 	<div class="row">
 		<button class="btn lg ghost">submit query</button>
 	</div>
-
 	
 </div>
-</div>
 
+<div class="results">
+	
+	<div class="row"><p>Results:</p></div>
+	<div class="row">
+		<div id="outputResults"></div>
+	</div>p
+
+</div>
 <!-- ///////////////////////////////////////////////////////////////////////////////////////// -->
 <script>
+
+    dataSet = "SSMI";
+    frequency = "19";
+    polarization = "h";
+    startDate = "2010-12-12";
+    endDate = "2010-12-20";
+	loctnArray = Array();
+
+	var anomalyRequest = {
+		"dsName": dataSet,
+		"dsFreq": frequency,
+		"dsPolar": polarization,
+		"sDate": startDate,
+		"eDate": endDate,
+		"locations": loctnArray
+	};
+
 	$('button').click(function () {
 		$(this).css('border', '5px solid #444');
 		$(this).css('background', '#eee');
 	});
 
+	// change opacity of the layer
+	$(".sliderLayerOpacity")
+    .slider({
+		min: 0,
+        max: 1,
+		step: 0.05,
+		value: 0.5
+    })
+    .slider("pips", {
+        rest: false
+    })
+	.on("slidechange", function( event, ui ){
+		$( updateResults() );
+    });
+
+
+	// change opacity of the markers
+	$(".sliderMarkerOpacity")
+    .slider({
+		min: 0,
+        max: 1,
+		step: 0.05,
+		value: 0.5
+    })
+    .slider("pips", {
+        rest: false
+    })
+	.on("slidechange", function( event, ui ){
+		$( updateResults() );
+    });
+	// user input of the date
+	var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+	$(".sliderYears")
+		.slider({
+			min: 1987, 
+			max: 2014,
+			range: true,
+			step: 1,
+			values: [1990, 1993],
+			//this gets a live reading of the value and prints it on the page
+			slide: function( event, ui ){
+				$("#yearsText").text( "Years: " + ui.values[0] + " to " + ui.values[1] );
+			},
+			change: function( event, ui ){
+				$("#yearsText").text( "Years: " + ui.values[0] + " to " + ui.values[1] );
+			}
+		})
+		.slider("pips", {
+			rest: "label",
+			step: 4
+		})
+		.on("slidechange", function( event, ui ){
+			$("#yearsText").text( "Years: " + ui.values[0] + " to " + ui.values[1] );
+    });
 	
+	$(".sliderPattern")
+		.slider({ 
+			min: 0, 
+			max: months.length-1,
+			range: true,
+			values: [0, 11],
+			slide: function( event, ui ){
+				$("#patternText").text( "Pattern: " + months[ui.values[0]] + " to " + months[ui.values[1]] );
+			},
+			change: function( event, ui ){
+				$("#patternText").text( "Pattern: " + months[ui.values[0]] + " to " + months[ui.values[1]] );
+			}
 
+		})
+		.slider("pips", {
+			rest: "label",
+			labels: months
+		})
+		.on("slidechange", function( event ,ui ){
+			$("#patternText").text( "Pattern: " + months[ui.values[0]] + " to " + months[ui.values[1]] );
+			console.log("ui" + ui.values);
+    });
 
+	function updateResults(){
+		document.getElementById("outputResults").innerHTML =
+			"<p>" + $(".sliderLayerOpacity").slider("value") + "</p>"
+			+ "<p>" + $(".sliderMarkerOpacity").slider("value") + "</p>"
+			+ "<p>" + $(".sliderYears").slider("values") + "</p>"
+			+ "<p>" + $(".sliderPattern").slider("values") + "</p>";
+	}
 </script>
 </body>
 </html>

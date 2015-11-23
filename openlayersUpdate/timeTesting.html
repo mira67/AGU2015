@@ -82,14 +82,14 @@
 			background-color: rgba(255, 255, 255, 0.4);
 			color: #222;
 			border: 1px solid #aaa;  
-			transition: .2s ease;
+			transition: .5s ease;
 		}
 		.ghost:hover {
 			transition-property: font-size;
-			transition-duration: 0.3s;
+			transition-duration: 1s;
 			background-color: #ddd;
-			/*font-size: 1.1em;*/
-			transition-duration: 0.3s;
+			font-size: 1.2em;
+			transition-duration: 0.5s;
 		}
 		.ghost:active {
 			color: #fff;
@@ -175,6 +175,7 @@
 <!-- ///////////////////////////////////////////////////////////////////////////////////////// -->
 <script>
 
+	months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
     dataSet = "SSMI";
     frequency = "19";
     polarization = "h";
@@ -215,8 +216,8 @@
 		step: 5
     })
 	.on("slidechange", function( event, ui ){
-		$( updateResults() );
 		$("#layerOpacityText").text( ui.value );
+		$( updateResults() );
     });
 
 	// change opacity of the markers
@@ -238,12 +239,11 @@
 		step: 5
     })
 	.on("slidechange", function( event, ui ){
-		$( updateResults() );
 		$("#markerOpacityText").text( ui.value );
+		$( updateResults() );
     });
 	
 	// user input of the date
-	var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 	$(".sliderYears")
 		.slider({
 			min: 1987, 
@@ -265,6 +265,7 @@
 		})
 		.on("slidechange", function( event, ui ){
 			$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
+			$( updateResults() );
     });
 	
 	$(".sliderPattern")
@@ -287,16 +288,22 @@
 		})
 		.on("slidechange", function( event ,ui ){
 			$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
-			console.log("ui" + ui.values);
+			$( updateResults() );
     });
 
 	function updateResults(){
 		document.getElementById("outputResults").innerHTML =
-			"<p>" + $(".sliderLayerOpacity").slider("value") + "</p>"
-			+ "<p>" + $(".sliderMarkerOpacity").slider("value") + "</p>"
-			+ "<p>" + $(".sliderYears").slider("values") + "</p>"
-			+ "<p>" + $(".sliderPattern").slider("values") + "</p>";
+		
+			"<p>" + dataSet + ", " + frequency + ", " + polarization + "</p>"
+			+ "<p>" + startDate + ", " + endDate + "</p>"
+			+ "<p>" + loctnArray + "</p>"
+			+ "<p>layer opacity: " + $(".sliderLayerOpacity").slider("value") + "</p>"
+			+ "<p>marker opacity: " + $(".sliderMarkerOpacity").slider("value") + "</p>"
+			+ "<p>slier years: " + $(".sliderYears").slider("values") + "</p>"
+			+ "<p>slider pattern: " + months[$(".sliderPattern").slider("values")[0]] + " to " + months[$(".sliderPattern").slider("values")[1]] + "</p>";
 	}
+	
+	updateResults();
 </script>
 </body>
 </html>

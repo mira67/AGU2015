@@ -12,6 +12,40 @@
 	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
 
+	<script>
+		var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+		var dataSet = "SSMI";
+		var frequency = "19";
+		var polarization = "h";
+		var startDate = "2010-12-12";
+		var endDate = "2010-12-20";
+
+		var loctnArray = Array();
+		loctnArray[0] = {
+			"longitude": -39.3,
+			"latitude": -42.5
+		};
+		loctnArray[1] = {
+			"longitude": -41.4,
+			"latitude": 136
+		};
+		
+		var startYear = 1987; // set up as the same for the slider
+		var endYear = 2014;
+		var startMonth = 0;
+		var endMonth = 11;
+
+		anomalyRequest = {
+			"dsName": dataSet,
+			"dsFreq": frequency,
+			"dsPolar": polarization,
+			"sDate": startDate,
+			"eDate": endDate,
+			"locations": loctnArray
+		};
+
+	</script>
+	
 	<style type="text/css">
 		* {
 			box-sizing: border-box;
@@ -38,7 +72,7 @@
 			float: left;
 			top: 0;
 			bottom: 0;
-			width: 50vw;
+			width: 25vw;
 			height: 100%;
 		}
 		.results {
@@ -107,31 +141,37 @@
 <div class="background"></div>
 <div id="wrapper">
 <div class="options">
-	
+
+	<!--
 	<div class="row"><p>SSMI - Projection: EPSG:3031</p></div>
+	-->
 	
-	<div class="row"><p>Frequency</p></div>
+	<div class="row"><p>Frequency</p></div>	
 	<div class="row">
-		<button class="btn sm ghost">19.3</button>
-		<button class="btn sm ghost">22.2</button>
-		<button class="btn sm ghost">37.0</button>
-		<button class="btn sm ghost">85.5</button>
-		<button class="btn sm ghost">91.7</button>
+		<div class="mutual">
+			19<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>
+			22<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">
+			37<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">
+			85<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">
+			91<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">
+		</div>
 	</div>
 	
 	<div class="row"><p>Polarization</p></div>
 	<div class="row">
-		<button class="btn md ghost" class="active">vertical</button>
-		<button class="btn md ghost">horizontal</button>
+		<div class="mutual">
+			vertical<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox">
+			horizontal<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox" checked>
+		</div>
 	</div>
 
-	
-	
 	<div class="row"><p>Timeline Zoom</p></div>
 	<div class="row">
-		<button class="btn thr ghost">Day</button>
-		<button class="btn thr ghost">Month</button>
-		<button class="btn thr ghost">Year</button>
+		<div class="mutual">
+			days<input id="chkDay" name="chkDay" type="checkbox" value="vertical" class="checkbox">
+			months<input id="chkMonth" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">
+			years<input id="chkYear" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox" checked>
+		</div>
 	</div>
 	
 	<div class="row">
@@ -151,51 +191,64 @@
 		<div class="row">
 		<div class="slide sliderYears"></div>
 	</div>
-	
+
 	<div class="row"><p>Pattern</p><p id="patternText"></p></div>
 		<div class="row">
 		<div class="slide sliderPattern"></div>
 	</div>
 
 	<div class="row"><p>Submit Query</p></div>
+	
+	<!-- old code
+	<input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest,0);" type="button">
+	-->
 	<div class="row">
-		<button class="btn lg ghost">submit query</button>
+		<button class="btn lg ghost" onclick="sendRequest(anomalyRequest, 0);">submit query</button>
 	</div>
 	
 </div>
 
 <div class="results">
-	
 	<div class="row"><p>Results:</p></div>
 	<div class="row">
 		<div id="outputResults"></div>
 	</div>
+</div>
 
+<div>
+	<div class="row"><p>Timeline</p><p id="timelineText"></p></div>
+		<div class="row">
+		<div class="slide sliderTimeline"></div>
+	</div>
 </div>
 <!-- ///////////////////////////////////////////////////////////////////////////////////////// -->
-<script>
+<script type="text/javascript">
 
-	months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-    dataSet = "SSMI";
-    frequency = "19";
-    polarization = "h";
-    startDate = "2010-12-12";
-    endDate = "2010-12-20";
-	loctnArray = Array();
-
-	var anomalyRequest = {
-		"dsName": dataSet,
-		"dsFreq": frequency,
-		"dsPolar": polarization,
-		"sDate": startDate,
-		"eDate": endDate,
-		"locations": loctnArray
-	};
+	// variables that control the timelilne view -- start zoomed to years
+	var minYear = 1987;
+	var maxYear = 2014;
+	var sliderTimelineMin = minYear;
+	var sliderTimelineMax = maxYear;
+	var sliderTimelineStep = 1;
+	var sliderTimelineValue = 1;
+	var timelineZoomLevel = "day";
 
 	$('button').click(function () {
 		$(this).css('border', '5px solid #444');
 		$(this).css('background', '#eee');
 	});
+	
+	// http://jsfiddle.net/3TssG/
+	$('.mutual .checkbox').click( function( ){
+		var checkedState = $(this).prop("checked")
+			$(this)
+				.parent('div')
+				.children('.checkbox:checked')
+				.prop("checked", false);
+		$(this).prop("checked", checkedState);
+		$( updateResults( anomalyRequest ) );
+		$( updateDateValues() );
+	});	
 
 	// change opacity of the layer
 	$(".sliderLayerOpacity")
@@ -217,7 +270,7 @@
     })
 	.on("slidechange", function( event, ui ){
 		$("#layerOpacityText").text( ui.value );
-		$( updateResults() );
+		$( updateResults( anomalyRequest ) );
     });
 
 	// change opacity of the markers
@@ -240,17 +293,17 @@
     })
 	.on("slidechange", function( event, ui ){
 		$("#markerOpacityText").text( ui.value );
-		$( updateResults() );
+		$( updateResults( anomalyRequest ) );
     });
 	
 	// user input of the date
 	$(".sliderYears")
 		.slider({
-			min: 1987, 
-			max: 2014,
+			min: minYear,
+			max: maxYear,
 			range: true,
 			step: 1,
-			values: [1990, 1993],
+			values: [1990, 1992],
 			//this gets a live reading of the value and prints it on the page
 			slide: function( event, ui ){
 				$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
@@ -261,13 +314,13 @@
 		})
 		.slider("pips", {
 			rest: "label",
-			step: 4
+			step: 3
 		})
 		.on("slidechange", function( event, ui ){
 			$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
-			$( updateResults() );
+			$( updateResults( anomalyRequest ) );
     });
-	
+
 	$(".sliderPattern")
 		.slider({ 
 			min: 0, 
@@ -288,22 +341,159 @@
 		})
 		.on("slidechange", function( event ,ui ){
 			$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
-			$( updateResults() );
+			$( updateResults( anomalyRequest ) );
     });
 
-	function updateResults(){
-		document.getElementById("outputResults").innerHTML =
+	$(".sliderTimeline")
+		.slider({ 
+			min: sliderTimelineMin,
+			max: sliderTimelineMax,
+			step: sliderTimelineStep,
+			values: [sliderTimelineMin, sliderTimelineMax],
+			slide: function( event, ui ){
+				$("#timelineText").text( ui.value );
+			},
+			change: function( event, ui ){
+				$("#timelineText").text( ui.value );
+			}
+		})
+		.slider("pips", {
+			rest: "label",
+			step: 1
+		})
+		.on("slidechange", function( event ,ui ){
+			$("#timelineText").text( ui.value );
+			$( updateResults( anomalyRequest ) );
+    });
+
+	function updateResults( anomalyRequest ){
+	
+		// determine frequency
+		if( $("#chk19").is(':checked') ){
+			frequency = "19";
+		} else if( $("#chk22").is(':checked') ){
+			frequency = "22";
+		} else if( $("#chk37").is(':checked') ){
+			frequency = "37";
+		} else if( $("#chk85").is(':checked') ){
+			frequency = "85";
+		} else if( $("#chk91").is(':checked') ){
+			frequency = "91";
+		} else {
+			frequency = "19";
+		}
 		
-			"<p>" + dataSet + ", " + frequency + ", " + polarization + "</p>"
-			+ "<p>" + startDate + ", " + endDate + "</p>"
-			+ "<p>" + loctnArray + "</p>"
+		// determine polarization
+		if( $("#chkVertical").is(':checked') ){
+			polarization = "v";
+		} else if( $("#chkHorizontal").is(':checked') ){
+			polarization = "h";
+		} else {
+			polarization = "v";
+		}
+		
+		// determine timeline zoom
+		if( $("#chkDay").is(':checked') ){
+			timelineZoomLevel = "day";
+		} else if( $("#chkMonth").is(':checked') ){
+			timelineZoomLevel = "month";
+		} else if( $("#chkYear").is(':checked') ){
+			timelineZoomLevel = "year";
+		} else {
+			timelineZoomLevel = "day";
+		}
+		
+		startYear = $(".sliderYears").slider("values")[0];
+		endYear = $(".sliderYears").slider("values")[1];
+		startMonth = $(".sliderPattern").slider("values")[0] + 1;
+		endMonth = $(".sliderPattern").slider("values")[1] + 1;
+		
+		startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
+		endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
+
+		document.getElementById("outputResults").innerHTML =
+					
+			"<p>" + dataSet + ", " + frequency + ", " + polarization + ", " + startDate + ", " + endDate + "</p>"
+			+ "<p>timeline zoom: " + timelineZoomLevel + "</p>"
 			+ "<p>layer opacity: " + $(".sliderLayerOpacity").slider("value") + "</p>"
 			+ "<p>marker opacity: " + $(".sliderMarkerOpacity").slider("value") + "</p>"
-			+ "<p>slier years: " + $(".sliderYears").slider("values") + "</p>"
-			+ "<p>slider pattern: " + months[$(".sliderPattern").slider("values")[0]] + " to " + months[$(".sliderPattern").slider("values")[1]] + "</p>";
+			+ "<p>slider years: " + startYear + ", " + endYear + "</p>"
+			+ "<p>slider pattern: " + months[$(".sliderPattern").slider("values")[0]] + " to " + months[$(".sliderPattern").slider("values")[1]] + "</p>"
+			+ "<p>dates: " + startDate + ", " + endDate + "</p>"
+			+ "<p>location array: " + loctnArray[0] + ", " + loctnArray[1] + "</p>";
+		
+		// update anomaly request values
+		anomalyRequest["dsName"] = dataSet;
+		anomalyRequest["dsFreq"] = "s" + frequency + polarization;
+		anomalyRequest["dsPolar"] = polarization;
+		anomalyRequest["sDate"] = startDate;
+		anomalyRequest["eDate"] = endDate;
+		anomalyRequest["locations"] = loctnArray
+	}	
+
+	function updateDateValues() {
+
+		
+		if( $("#chkMonth").is(':checked') ){
+			// months
+			$(".sliderTimeline")
+			.slider({
+				min: 0,
+				max: 11,
+				step: 1,
+				value: 0
+			}).slider("pips", {
+				rest: "label",
+				labels: months
+			});
+		} else if( $("#chkYear").is(':checked') ){
+			// years
+			$(".sliderTimeline")
+			.slider({
+				min: minYear,
+				max: maxYear,
+				step: 1,
+				value: 0
+			}).slider("pips", {
+				rest: "label",
+				step: 1
+			});
+		} else {
+			// days
+			$(".sliderTimeline")
+			.slider({
+				min: 0,
+				max: 9,
+				step: 1,
+				value: 0
+			}).slider("pips", {
+				rest: "label",
+				step: 1
+			});
+		}
+			
 	}
+
+	function sendRequest( anomalyRequest, mode ){
 	
-	updateResults();
+		anomalyRequest["dsName"] = dataSet;
+		anomalyRequest["dsFreq"] = "s" + frequency + polarization;
+		anomalyRequest["dsPolar"] = polarization;
+		anomalyRequest["sDate"] = startDate;
+		anomalyRequest["eDate"] = endDate;
+		anomalyRequest["locations"] = loctnArray
+		
+		console.log("anomalyRequest" + anomalyRequest);
+		
+		localStorage['userQuery'] = JSON.stringify(anomalyRequest);
+		
+		updateDateValues();
+		//parseRequest(); //send and parse results
+		//updateDateValues(); //first 10 days from user query
+	};
+
+	updateResults(anomalyRequest);
 </script>
+
 </body>
 </html>

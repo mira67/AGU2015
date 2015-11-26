@@ -12,37 +12,8 @@
 	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
 
-	<script>
-		var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-		var dataSet = "SSMI";
-		var frequency = "19";
-		var polarization = "h";
-		var startDate = "2010-12-12";
-		var endDate = "2010-12-20";
-
-		var loctnArray = Array();
-		loctnArray[0] = {
-			"longitude": -39.3,
-			"latitude": -42.5
-		};
-		loctnArray[1] = {
-			"longitude": -41.4,
-			"latitude": 136
-		};
+	<script type="text/javascript">
 		
-		var startYear = 1987; // set up as the same for the slider
-		var endYear = 2014;
-		var startMonth = 0;
-		var endMonth = 11;
-
-		anomalyRequest = {
-			"dsName": dataSet,
-			"dsFreq": frequency,
-			"dsPolar": polarization,
-			"sDate": startDate,
-			"eDate": endDate,
-			"locations": loctnArray
-		};
 
 	</script>
 	
@@ -149,9 +120,9 @@
 	<div class="row"><p>Frequency</p></div>	
 	<div class="row">
 		<div class="mutual">
-			19<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>
+			19<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox">
 			22<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">
-			37<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">
+			37<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox" checked>
 			85<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">
 			91<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">
 		</div>
@@ -160,8 +131,8 @@
 	<div class="row"><p>Polarization</p></div>
 	<div class="row">
 		<div class="mutual">
-			vertical<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox">
-			horizontal<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox" checked>
+			vertical<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked>
+			horizontal<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">
 		</div>
 	</div>
 
@@ -221,8 +192,36 @@
 		<div class="slide sliderTimeline"></div>
 	</div>
 </div>
+
 <!-- ///////////////////////////////////////////////////////////////////////////////////////// -->
+
 <script type="text/javascript">
+
+	var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+	var dataSet = "SSMI";
+	var frequency = "19";
+	var polarization = "h";
+	var startDate = "2010-12-12";
+	var endDate = "2010-12-20";
+
+	// bounding box for request
+	var loctnArray = Array();
+	loctnArray[0] = { "longitude": -39.3, "latitude": -42.5 };
+	loctnArray[1] = { "longitude": -41.4, "latitude": 136 };
+	
+	var startYear = 1987; // set up as the same for the slider
+	var endYear = 2014;
+	var startMonth = 0;
+	var endMonth = 11;
+
+	anomalyRequest = {
+		"dsName": dataSet,
+		"dsFreq": frequency,
+		"dsPolar": polarization,
+		"sDate": startDate,
+		"eDate": endDate,
+		"locations": loctnArray
+	};
 
 	// variables that control the timelilne view -- start zoomed to years
 	var minYear = 1987;
@@ -303,7 +302,7 @@
 			max: maxYear,
 			range: true,
 			step: 1,
-			values: [1990, 1992],
+			values: [2009, 2011],
 			//this gets a live reading of the value and prints it on the page
 			slide: function( event, ui ){
 				$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
@@ -463,7 +462,7 @@
 			$(".sliderTimeline")
 			.slider({
 				min: 0,
-				max: 9,
+				max: 31,
 				step: 1,
 				value: 0
 			}).slider("pips", {
@@ -471,7 +470,6 @@
 				step: 1
 			});
 		}
-			
 	}
 
 	function sendRequest( anomalyRequest, mode ){
@@ -484,13 +482,37 @@
 		anomalyRequest["locations"] = loctnArray
 		
 		console.log("anomalyRequest" + anomalyRequest);
-		
 		localStorage['userQuery'] = JSON.stringify(anomalyRequest);
+		console.log("localStorage: " + localStorage['userQuery']);
 		
 		updateDateValues();
+		
+		parseRequest();
 		//parseRequest(); //send and parse results
 		//updateDateValues(); //first 10 days from user query
 	};
+
+	requestReturned = 0;	
+	function parseRequest( e ){
+		console.log("making request....");
+
+		ajaxHandle = $.ajax({
+			type : "POST",
+			contentType : "application/json; charset=utf-8",
+			url : "./anomaly/ajaxRetrvAnomaly.do",
+			data : localStorage["userQuery"],
+			dataType : 'json',
+			async : true,
+			success : function(response) {
+				console.log("ajax success!________________ajax success!");
+				console.log("respones: " + response);
+				//anomalyRequest = response;
+				requestReturned = 1;
+				updatePixels();
+			}
+		});
+	}
+
 
 	updateResults(anomalyRequest);
 </script>

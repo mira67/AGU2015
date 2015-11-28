@@ -10,12 +10,13 @@
 	<script src="openlayers-3.4.0/ol.js"></script>
 	<script src="antarctic-epsg3031.js"></script>
 	
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
     <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
     <script src="js/jquery-ui-slider-pips.js"></script>
 	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
-	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">	
 	
 	<style>
 		html {
@@ -181,28 +182,32 @@
 				<button class="btn lg ghost" onclick="sendRequest(anomalyRequest, 0);">submit query</button>
 			</div>
 			
-				
-			<!-- output results -->
-<div class="row">
-<form clas="form-inline">
-	<label>Geometry type</label>
-	<select id="type">
-		<option value="None">None</option>
-		<option value="Point">Point</option>
-		<option value="Square">Square</option>
-		<option value="Box">Box</option>
-	</select>
-</form>
-</div>
-
-
-
-
-
-
-
-
 			
+			<!-- input selection 
+			<div class="row">
+				<div class="row-fluid">
+					<div class="span12">
+						<div id="map" class="map"></div>
+						<form class="form-inline">
+							<label>Geometry type</label>
+							<select id="type">
+								<option value="None">None</option>
+								<option value="Point">Point</option>
+								<option value="LineString">LineString</option>
+								<option value="Polygon">Polygon</option>
+								<option value="Circle">Circle</option>
+								<option value="Square">Square</option>
+								<option value="Box">Box</option>
+							</select>
+						</form>
+					</div>
+				</div>
+				
+				<label>layer visibility</label><input type="checkbox" id="visible" checked />
+				-->
+			</div><!-- end row -->
+
+			<!-- output results -->			
 			<div class="row"><p>Results:</p></div>
 			<div class="row">
 				<div id="outputResults"></div>
@@ -226,6 +231,8 @@
 
 <script type="text/javascript">
 
+	var visiblity = new ol.dom.Input(document.getElementById('visible'));
+	visible.bindTo('checked', imageLayer, 'visible');
 	var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 	var dataSet = "SSMI";
 	var frequency = "19";
@@ -526,6 +533,7 @@
 		//updateDateValues(); //first 10 days from user query
 	};
 
+	
 	requestReturned = 0;	
 	function parseRequest( e ){
 		console.log("making request....");
@@ -549,11 +557,7 @@
 
 	updateResults(anomalyRequest);
 	
-	
-	
-	
-	
-	
+	//addInteraction();
 	
 </script>
 

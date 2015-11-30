@@ -2,14 +2,13 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>tEsT</title>
+	<title>❄ Antarctica</title>
 
+	<script src="proj4js-2.3.3/proj4.js"></script>
 	<link rel="stylesheet" href="openlayers-3.4.0/ol.css"/>
 	<link rel="stylesheet" href="example.css"/>
-	<script src="proj4js-2.3.3/proj4.js"></script>
 	<script src="openlayers-3.4.0/ol.js"></script>
 	<script src="antarctic-epsg3031.js"></script>
-	
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
@@ -17,7 +16,7 @@
     <script src="js/jquery-ui-slider-pips.js"></script>
 	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">	
-	
+
 	<style>
 		html {
 			//overflow: hidden;
@@ -70,8 +69,7 @@
 			background-color: rgba(255,255,255,0.4);
 			text-align: center;
 			background-color: #bbb;
-		}
-		
+		}		
 		.results {
 			float: right;
 			top: 0;
@@ -86,7 +84,7 @@
 			margin-bottom: 5px;
 		}
 		.row {
-			width: 100%;
+			width: 90%;
 			position: relative;
 			float: left;
 			display: inline-block;
@@ -144,13 +142,10 @@
 			<div class="row"><p>Timeline Zoom</p></div>
 			<div class="row">
 				<div class="mutual">
-					days<input id="chkDay" name="chkDay" type="checkbox" value="vertical" class="checkbox">
+					days<input id="chkDay" name="chkDay" type="checkbox" value="vertical" class="checkbox" checked>
 					months<input id="chkMonth" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">
-					years<input id="chkYear" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox" checked>
+					years<input id="chkYear" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">
 				</div>
-			</div>
-			
-			<div class="row">
 			</div>
 			
 			<div class="row"><p>Layer Opacity</p><p id="layerOpacityText"></p></div>
@@ -159,55 +154,30 @@
 			</div>
 			
 			<div class="row"><p>Marker Opacity</p><p id="markerOpacityText"></p></div>
-				<div class="row">
+			<div class="row">
 				<div class="slide sliderMarkerOpacity"></div>
 			</div>
+			
+			<div class="row"><p>Heatmap Opacity</p><p id="heatmapOpacityText"></p></div>
+			<div class="row">
+				<div class="slide sliderHeatmapOpacity"></div>
+			</div>
+			
 
 			<div class="row"><p>Years</p><p id="yearsText"></p></div>
-				<div class="row">
+			<div class="row">
 				<div class="slide sliderYears"></div>
 			</div>
 
 			<div class="row"><p>Pattern</p><p id="patternText"></p></div>
-				<div class="row">
+			<div class="row">
 				<div class="slide sliderPattern"></div>
 			</div>
 
-			<div class="row"><p>Submit Query</p></div>
-			
-			<!-- old code
-			<input class="myButton" value="Submit Query" onclick="sendRequest(anomalyRequest,0);" type="button">
-			-->
 			<div class="row">
 				<button class="btn lg ghost" onclick="sendRequest(anomalyRequest, 0);">submit query</button>
 			</div>
-			
-			
-			<!-- input selection 
-			<div class="row">
-				<div class="row-fluid">
-					<div class="span12">
-						<div id="map" class="map"></div>
-						<form class="form-inline">
-							<label>Geometry type</label>
-							<select id="type">
-								<option value="None">None</option>
-								<option value="Point">Point</option>
-								<option value="LineString">LineString</option>
-								<option value="Polygon">Polygon</option>
-								<option value="Circle">Circle</option>
-								<option value="Square">Square</option>
-								<option value="Box">Box</option>
-							</select>
-						</form>
-					</div>
-				</div>
-				
-				<label>layer visibility</label><input type="checkbox" id="visible" checked />
-				-->
-			</div><!-- end row -->
 
-			<!-- output results -->			
 			<div class="row"><p>Results:</p></div>
 			<div class="row">
 				<div id="outputResults"></div>
@@ -220,7 +190,7 @@
 		<div id="timelineBox">
 			<div>
 				<div class="row"><p id="timelineText"></p></div>
-					<div class="row">
+				<div class="row">
 					<div class="slide sliderTimeline"></div>
 				</div>
 			</div>
@@ -231,8 +201,8 @@
 
 <script type="text/javascript">
 
-	var visiblity = new ol.dom.Input(document.getElementById('visible'));
-	visible.bindTo('checked', imageLayer, 'visible');
+	//var visiblity = new ol.dom.Input(document.getElementById('visible'));
+	//visible.bindTo('checked', imageLayer, 'visible');
 	var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 	var dataSet = "SSMI";
 	var frequency = "19";
@@ -362,6 +332,7 @@
 			$( updateResults( anomalyRequest ) );
     });
 
+	// slider for patterns of date input
 	$(".sliderPattern")
 		.slider({ 
 			min: 0, 
@@ -385,6 +356,7 @@
 			$( updateResults( anomalyRequest ) );
     });
 
+	// slider for main timeline at bottom of page
 	$(".sliderTimeline")
 		.slider({ 
 			min: sliderTimelineMin,
@@ -407,8 +379,8 @@
 			$( updateResults( anomalyRequest ) );
     });
 
-	function updateResults( anomalyRequest ){
-	
+	// updates the variables that will be input into the query
+	function updateResults( anomalyRequest ){	
 		// determine frequency
 		if( $("#chk19").is(':checked') ){
 			frequency = "19";
@@ -471,9 +443,9 @@
 		anomalyRequest["locations"] = loctnArray
 	}	
 
+	// update labels of timeline pips
 	function updateDateValues() {
 
-		
 		if( $("#chkMonth").is(':checked') ){
 			// months
 			$(".sliderTimeline")

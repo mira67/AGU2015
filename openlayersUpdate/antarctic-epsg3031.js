@@ -1,7 +1,9 @@
 window.onload = function() {
 
+	// definitions
 	proj4.defs("EPSG:3031", "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
 	ol.proj.get("EPSG:3031").setExtent([-4194304, -4194304, 4194304, 4194304]);
+
 	// for outputting the mouse position
 	var mousePositionControl = new ol.control.MousePosition({
 		coordinateFormat: ol.coordinate.createStringXY(4),
@@ -13,6 +15,7 @@ window.onload = function() {
 		undefinedHTML: '&nbsp;'
 	});
 	
+	// create the map
 	map = new ol.Map({
 		controls: ol.control.defaults().extend([mousePositionControl]), // for displaying the mouse
 		view: new ol.View({
@@ -27,27 +30,7 @@ window.onload = function() {
 		renderer: ["canvas","dom"],
 	});
 
-	// for drawing the box <http://openlayers.org/en/v3.8.2/examples/draw-features.html>
-	source = new ol.source.Vector({wrapX: false});
-	vector = new ol.layer.Vector({
-		source: source,
-		style: new ol.style.Style({
-			fill: new ol.style.Fill({
-				color: 'rgba(255, 255, 255, 0.2)'
-			}),
-			stroke: new ol.style.Stroke({
-				color: '#ffcc33',
-				width: 2
-			}),
-			image: new ol.style.Circle({
-				radius: 7,
-				fill: new ol.style.Fill({
-					color: '#ffcc33'
-				})
-			})
-		})
-	});
-	
+	// create layer for binary layers of water, land, and permanent glacier
 	sourceLandWater = new ol.source.WMTS({
 		url: "//map1{a-c}.vis.earthdata.nasa.gov/wmts-antarctic/wmts.cgi",
 		layer: "SCAR_Land_Water_Map", // jpeg 500m
@@ -69,9 +52,11 @@ window.onload = function() {
 		})
 	});
 	layerLandWater = new ol.layer.Tile({source: sourceLandWater});
+	map.addLayer(layerLandWater);
 	
 	// https://wiki.earthdata.nasa.gov/display/GIBS/GIBS+Available+Imagery+Products#expand-EarthatNight1Product
 	// coastline: SCAR antarctic digital database
+	// add picture-like image layer
 	sourceBaseMap = new ol.source.WMTS({
 		opacity: 0.5,
 		url: "//map1{a-c}.vis.earthdata.nasa.gov/wmts-antarctic/wmts.cgi",
@@ -95,7 +80,22 @@ window.onload = function() {
 		})
 	});
 	layerBaseMap = new ol.layer.Tile({source: sourceBaseMap});
+	map.addLayer(layerBaseMap);
 
+	// Create an image layer, <http://www.acuriousanimal.com/thebookofopenlayers3/chapter02_04_image_layer.html>
+	// add layer with the climatology
+	imageLayer = new ol.layer.Image({
+		opacity: 0.7,
+		source: new ol.source.ImageStatic({
+			url: 'images/jan.png',
+			imageSize: [632, 664],
+			projection: map.getView().getProjection(),
+			imageExtent: [-4194304, -3923000, 4194304, 4194304]//[-3929786, -3929786, 3923000, 3923000]
+		})
+	});
+	map.addLayer(imageLayer);
+	
+	// add layer with outlines of coasts and permanent glacier boundaries
 	sourceCoastlines = new ol.source.WMTS({
 		url: "//map1{a-c}.vis.earthdata.nasa.gov/wmts-antarctic/wmts.cgi",
 		layer: "Coastlines", // jpeg 500m
@@ -117,18 +117,9 @@ window.onload = function() {
 		})
 	});
 	layerCoastlines = new ol.layer.Tile({source: sourceCoastlines});
+	map.addLayer(layerCoastlines);
 	
-	// Create an image layer, <http://www.acuriousanimal.com/thebookofopenlayers3/chapter02_04_image_layer.html>
-	imageLayer = new ol.layer.Image({
-		opacity: 0.7,
-		source: new ol.source.ImageStatic({
-			url: 'images/jan.png',
-			imageSize: [632, 664],
-			projection: map.getView().getProjection(),
-			imageExtent: [-4194304, -3923000, 4194304, 4194304]//[-3929786, -3929786, 3923000, 3923000]
-		})
-	});
-
+	// add layer for a heatmap of anomaly points
 	heatmapLayer = new ol.layer.Heatmap({
 		source: new ol.source.GeoJSON({
 			url: 'cities.json',
@@ -138,83 +129,4 @@ window.onload = function() {
 	});
 	map.addLayer(heatmapLayer);
 
-	//map.addLayer(layerLandWater);
-	map.addLayer(layerBaseMap);
-	map.addLayer(layerCoastlines);
-	map.addLayer(imageLayer);
-
-	map.addLayer(vector);
-	
-//////////////////////////////////////////////////////////////////////////////////////////
-/*
-	var source = new ol.source.Vector({wrapX: false});
-	var vector = new ol.layer.Vector({
-		source: source,
-		style: new ol.style.Style({
-			fill: new ol.style.Fill({
-				color: 'rgba(255, 255, 255, 0.2)'
-			}),
-			stroke: new ol.style.Stroke({
-				color: '#ffcc33',
-				width: 2
-			}),
-			image: new ol.style.Circle({
-				radius: 7,
-				fill: new ol.style.Fill({
-				color: '#ffcc33'
-				})
-			})
-		})
-	});
-
-	
-	var map = new ol.Map({
-	  layers: [raster, vector],
-	  target: 'map',
-	  view: new ol.View({
-		center: [-11000000, 4600000],
-		zoom: 4
-	  })
-	});
-
-	var typeSelect = document.getElementById('type');
-
-	var draw; // global so we can remove it later
-	function addInteraction() {
-	  var value = typeSelect.value;
-	  if (value !== 'None') {
-		var geometryFunction, maxPoints;
-		if (value === 'Square') {
-		  value = 'Circle';
-		  geometryFunction = ol.interaction.Draw.createRegularPolygon(4);
-		} else if (value === 'Box') {
-		  value = 'LineString';
-		  maxPoints = 2;
-		  geometryFunction = function(coordinates, geometry) {
-			if (!geometry) {
-			  geometry = new ol.geom.Polygon(null);
-			}
-			var start = coordinates[0];
-			var end = coordinates[1];
-			geometry.setCoordinates([
-			  [start, [start[0], end[1]], end, [end[0], start[1]], start]
-			]);
-			return geometry;
-		  };
-		}
-		draw = new ol.interaction.Draw({
-		  source: source,
-		  type: (value),
-		  geometryFunction: geometryFunction,
-		  maxPoints: maxPoints
-		});
-		map.addInteraction(draw);
-	  }
-	}
-
-	typeSelect.onchange = function(e) {
-	  map.removeInteraction(draw);
-	  addInteraction();
-	};
-*/
 };

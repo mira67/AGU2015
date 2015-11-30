@@ -6,7 +6,7 @@
 
 	<script src="proj4js-2.3.3/proj4.js"></script>
 	<link rel="stylesheet" href="openlayers-3.4.0/ol.css"/>
-	<link rel="stylesheet" href="example.css"/>
+	<link rel="stylesheet" href="css/example.css"/>
 	<script src="openlayers-3.4.0/ol.js"></script>
 	<script src="antarctic-epsg3031.js"></script>
 	
@@ -202,7 +202,8 @@
 				</form>
 				<p id="extent"></p>
 				<!--<button onclick="buttonDrawRectangle();">draw rectangle</button>-->
-				<button onclick="buttonClearRectangle();">clear rectangle</button></div>
+				<button onclick="buttonClearRectangle();">clear rectangle</button>
+			</div>
 			
 			<div class="row">
 				<button class="btn md" onclick="sendRequest(anomalyRequest, 0);">submit query</button>
@@ -611,8 +612,6 @@ for( i = 0; i < dateArray.length; i++ ){
 	}
 
 	updateResults(anomalyRequest);
-	
-	//addInteraction();
 
 /////////////////////////////////////////////////////
 	var draw;
@@ -659,6 +658,7 @@ console.log("4");
 		source.clear();
 	};	
 	
+	addInteraction();
 </script>
 
 </body>

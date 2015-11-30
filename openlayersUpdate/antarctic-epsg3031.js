@@ -14,7 +14,7 @@ window.onload = function() {
 		//target: document.getElementById('mouse-position'),
 		undefinedHTML: '&nbsp;'
 	});
-	
+
 	// create the map
 	map = new ol.Map({
 		controls: ol.control.defaults().extend([mousePositionControl]), // for displaying the mouse
@@ -23,7 +23,7 @@ window.onload = function() {
 			projection: ol.proj.get("EPSG:3031"),
 			extent: [-4194304, -4194304, 4194304, 4194304],
 			center: [0, 0],
-			zoom: 0.5,
+			zoom: 1,
 			maxZoom: 5,
 		}),
 		target: "map",
@@ -121,12 +121,36 @@ window.onload = function() {
 	
 	// add layer for a heatmap of anomaly points
 	heatmapLayer = new ol.layer.Heatmap({
+		opacity: 1.0,
 		source: new ol.source.GeoJSON({
 			url: 'cities.json',
 			projection: 'EPSG:3031'
-		}),
-		opacity: 0.7
+		})
 	});
 	map.addLayer(heatmapLayer);
+
+	// to be used for drawing the selection box
+	source = new ol.source.Vector();
+	vector = new ol.layer.Vector({
+		source: source,
+		style: new ol.style.Style({
+			fill: new ol.style.Fill({
+				color: 'rgba(255, 255, 255, 0.2)'
+			}),
+			stroke: new ol.style.Stroke({
+				color: '#ffffff',
+				width: 2
+			}),
+			image: new ol.style.Circle({
+				radius: 7,
+				fill: new ol.style.Fill({
+					color: '#ffffff'
+				})
+			})
+		})
+	});
+	map.addLayer(vector);
+
+////////////////////////////////////	
 
 };

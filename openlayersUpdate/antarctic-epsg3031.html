@@ -4,11 +4,6 @@
 	<meta charset="utf-8">
 	<title>❄ Antarctica</title>
 
-	<script src="proj4js-2.3.3/proj4.js"></script>
-	<link rel="stylesheet" href="openlayers-3.4.0/ol.css"/>
-	<link rel="stylesheet" href="css/example.css"/>
-	<script src="openlayers-3.4.0/ol.js"></script>
-	<script src="antarctic-epsg3031.js"></script>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
@@ -17,6 +12,12 @@
 	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">	
 
+	<script src="proj4js-2.3.3/proj4.js"></script>
+	<link rel="stylesheet" href="openlayers-3.4.0/ol.css"/>
+	<link rel="stylesheet" href="css/example.css"/>
+	<script src="openlayers-3.8.2/ol.js"></script>
+	<script src="antarctic-epsg3031.js"></script>
+	
 	<style>
 		html {
 			overflow: hidden;
@@ -63,7 +64,7 @@
 			height: 100%;
 			background-color: #999;
 		}
-		#timelineBox{
+		#timelineBox {
 			width: 99vw;
 			height: 10vh;
 			background-color: rgba(255,255,255,0.4);
@@ -116,7 +117,6 @@
 		.md { width: 48%; }
 		.lg { width: 98%; }
 	</style>
-	
 </head>
 <body>
 <div class="background"></div>
@@ -131,12 +131,28 @@
 		<div id="sidebar">
 		
 			<div class="row">
+			<div class="span12">
+				<div id="map" class="map"></div>
+				<form class="form-inline">
+					<label>Draw &nbsp;</label>
+					<select id="type">
+						<option value="None">None</option>
+						<option value="Box">Box</option>
+					</select>
+				</form>
+				<p id="extent"></p>
+				<!--<button onclick="buttonDrawRectangle();">draw rectangle</button>-->
+				<button onclick="buttonClearRectangle();">clear rectangle</button>
+			</div>
+			</div>
+		
+			<div class="row">
 				<div class="mutual">
 					<p>Frequency: 
 					<span id="darkText">
-					19<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox">
+					19<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>
 					22<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">
-					37<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox" checked>
+					37<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">
 					85<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">
 					91<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">
 					</span>
@@ -192,18 +208,6 @@
 				<div class="slide sliderPattern"></div>
 			</div>
 
-			<div class="row">
-				<form class="form-inline">
-					<label>Draw &nbsp;</label>
-					<select id="type">
-						<option value="None">None</option>
-						<option value="Box">Box</option>
-					</select>
-				</form>
-				<p id="extent"></p>
-				<!--<button onclick="buttonDrawRectangle();">draw rectangle</button>-->
-				<button onclick="buttonClearRectangle();">clear rectangle</button>
-			</div>
 			
 			<div class="row">
 				<button class="btn md" onclick="sendRequest(anomalyRequest, 0);">submit query</button>
@@ -224,11 +228,114 @@
 					<div class="slide sliderTimeline"></div>
 				</div>
 			</div>
+					<img src="images/logoNSIDC.png" alt="logo" style="width:50px;height:50px;">
+		<img src="images/logoCU.jpg" alt="logo" style="width:50px;height:50px;"><br>
+
 		</div>
+
 	</div><!-- end bottom -->
 	
 </div><!-- end wrapper -->
 
+<!-- ///////////////////////////////////////////////////////////////////////////////////// -->
+<script type="text/javascript">
+
+	function updateMap(){
+		var k, j = 0;
+		var foo = [];
+		//var sliderValue = 0;
+		
+		// wait for response
+		if( ( requestReturned == 1 ) && ( anomalyResponse.length !== 0 ) ){
+
+			firstAnomaly = new Date(0);
+			firstAnomaly.setUTCSeconds( anomalyResponse[0]["date"] / 1000 );
+
+			secondAnomaly = new Date(0);
+			secondAnomaly.setUTCSeconds( anomalyResponse[anomalyResponse.length - 1]["date"] / 1000 );
+			
+			// troubleshooting output
+			console.log("first anomaly: " + firstAnomaly);
+			console.log("last anomaly: " + secondAnomaly);
+			console.log("...with " + anomalyResponse.length + " anomalies.")
+		
+			//sliderValue = $(".slider").slider("value"); // which selection is highlighted
+			//timeSeconds = (slideDate.getTime()+sliderValue*24*60*60*1000);
+			
+			// http://jsfiddle.net/6RS2z/356/
+			var vectorSource = new ol.source.Vector({
+			  //create empty vector
+			});
+			
+			 //create a bunch of icons and add to source vector
+			for(var k = 0; k < anomalyResponse.length; k++){
+				foo = anomalyResponse[k];
+				longi = foo["longi"];
+				lati = foo["lati"];
+
+				var iconFeature = new ol.Feature({
+					geometry: new ol.geom.Point(ol.proj.transform([longi, lati],'EPSG:4326','EPSG:3031')),
+					name: 'Null Island ' + i,
+					population: 4000,
+					rainfall: 500
+				});
+				vectorSource.addFeature(iconFeature);
+			}
+			
+			//create the style
+			var iconStyle = new ol.style.Style({
+				image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+					anchor: [0.5, 46],
+					anchorXUnits: 'fraction',
+					anchorYUnits: 'pixels',
+					opacity: 0.5,
+					src: 'images/redMarker.jpg'
+				}))
+			});
+			
+			//add the feature vector to the layer vector, and apply a style to whole layer
+			var vectorLayer = new ol.layer.Vector({
+				source: vectorSource,
+				style: iconStyle
+			});
+			map.addLayer(vectorLayer);
+
+			/*
+			//markers3.clearMarkers();
+			
+			for (k = 0; k < anomalyResponse.length; k++) {
+				foo = anomalyResponse[k];
+				num = foo["date"] / 1000;
+				d = new Date(0); // set date to epoch
+				d.setUTCSeconds(num);
+
+				// if the slider day matches any of the json anomalies
+				if( d.getDate() == slDate.getDate() 
+					&& d.getMonth() == slDate.getMonth()
+					&& d.getFullYear() == slDate.getFullYear() ){
+		
+					longi = foo["longi"];
+					lati = foo["lati"];
+
+					var location = new OpenLayers.LonLat(longi, lati).transform(
+						new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+						new OpenLayers.Projection("EPSG:3031") // to Spherical Mercator
+					);
+					var size = new OpenLayers.Size(10, 10);
+					var offset = new OpenLayers.Pixel(-size.w/2, -size.h/2);
+					var icon = new OpenLayers.Icon('images/markerSquare.jpg', size, offset);
+					markers3.addMarker(new OpenLayers.Marker(location, icon.clone()));
+				}
+			} // end loop through anomalyRequest json
+			
+			
+			*/
+		} else { // if request returned is 1
+			console.log("...waiting for the data ____or___ the length of anomalyResponse is zero?!");
+		}
+	}
+</script>
+<!-- ///////////////////////////////////////////////////////////////////////////////////// -->
 <script type="text/javascript">
 
 	//var visiblity = new ol.dom.Input(document.getElementById('visible'));
@@ -244,6 +351,7 @@
 	var loctnArray = Array();
 	loctnArray[0] = { "longitude": -39.3, "latitude": -42.5 };
 	loctnArray[1] = { "longitude": -41.4, "latitude": 136 };
+	var boxCoordinates;
 	
 	var startYear = 1987; // set up as the same for the slider
 	var endYear = 2014;
@@ -267,12 +375,6 @@
 	var sliderTimelineStep = 1;
 	var sliderTimelineValue = 1;
 	var timelineZoomLevel = "day";
-/*
-	$('button').click(function () {
-		$(this).css('border', '5px solid #444');
-		$(this).css('background', '#eee');
-	});
-*/
 	
 	// http://jsfiddle.net/3TssG/
 	$('.mutual .checkbox').click( function( ){
@@ -449,8 +551,6 @@
 			frequency = "85";
 		} else if( $("#chk91").is(':checked') ){
 			frequency = "91";
-		} else {
-			frequency = "19";
 		}
 		
 		// determine polarization
@@ -458,8 +558,6 @@
 			polarization = "v";
 		} else if( $("#chkHorizontal").is(':checked') ){
 			polarization = "h";
-		} else {
-			polarization = "v";
 		}
 		
 		// determine timeline zoom
@@ -469,8 +567,6 @@
 			timelineZoomLevel = "month";
 		} else if( $("#chkYear").is(':checked') ){
 			timelineZoomLevel = "year";
-		} else {
-			timelineZoomLevel = "day";
 		}
 		
 		startYear = $(".sliderYears").slider("values")[0];
@@ -488,8 +584,9 @@
 			//+ "marker opacity: " + $(".sliderMarkerOpacity").slider("value") + "</p>"
 			+ "slider years: " + startYear + ", " + endYear + "<br>"
 			+ "slider pattern: " + months[$(".sliderPattern").slider("values")[0]] + " to " + months[$(".sliderPattern").slider("values")[1]] + "<br>"
-			+ "dates: " + startDate + ", " + endDate + "</p>"
+			+ "dates: " + startDate + ", " + endDate + "<br>"
 			//+ "location array: " + loctnArray[0] + ", " + loctnArray[1] + "</p>";
+			+ "coordinates: " + boxCoordinates + "</p>"
 		
 		// update anomaly request values
 		anomalyRequest["dsName"] = dataSet;
@@ -589,8 +686,8 @@ for( i = 0; i < dateArray.length; i++ ){
 		//updateDateValues(); //first 10 days from user query
 	};
 
-	
-	requestReturned = 0;	
+	var requestReturned = 0;
+	var anomalyResponse = [];
 	function parseRequest( e ){
 		console.log("making request....");
 
@@ -604,9 +701,9 @@ for( i = 0; i < dateArray.length; i++ ){
 			success : function(response) {
 				console.log("ajax success!________________ajax success!");
 				console.log("respones: " + response);
-				//anomalyRequest = response;
-				//requestReturned = 1;
-				//updatePixels();
+				anomalyResponse = response;
+				requestReturned = 1;
+				updateMap();
 			}
 		});
 	}
@@ -621,10 +718,8 @@ for( i = 0; i < dateArray.length; i++ ){
 		value = typeSelect.value;
 console.log("value: " + value);
 		if( value !== 'None' ){
-console.log("2");
 			var geometryFunction, maxPoints;
 			if( value === 'Box' ){
-console.log("3");
 				value = 'LineString';
 				maxPoints = 2;
 				geometryFunction = function( coordinates, geometry ){
@@ -634,7 +729,8 @@ console.log("3");
 					var start = coordinates[0];
 					var end = coordinates[1];
 					geometry.setCoordinates([[start, [start[0], end[1]], end, [end[0], start[1]], start]]);
-console.log("coordinates" + coordinates);					
+console.log("coordinates" + coordinates);
+					boxCoordinates = coordinates; // add coordinates to the var
 					return geometry;
 				};
 			}
@@ -646,7 +742,6 @@ console.log("coordinates" + coordinates);
 			});
 			map.addInteraction(draw);
 		}
-console.log("4");
 	}
 
 	typeSelect.onchange = function(e) {
@@ -656,10 +751,12 @@ console.log("4");
 
 	buttonClearRectangle = function(){
 		source.clear();
+		console.log("cleared rectangle");
 	};	
 	
 	addInteraction();
 </script>
+<!-- ///////////////////////////////////////////////////////////////////////////////////// -->
 
 </body>
 </html>

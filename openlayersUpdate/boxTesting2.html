@@ -108,8 +108,8 @@
 			tileSize: 512
 		})
 	});
-	layerLandWater = new ol.layer.Tile({source: sourceLandWater});	
 	
+	layerLandWater = new ol.layer.Tile({source: sourceLandWater});	
 		sourceCoastlines = new ol.source.WMTS({
 		url: "//map1{a-c}.vis.earthdata.nasa.gov/wmts-antarctic/wmts.cgi",
 		layer: "Coastlines", // jpeg 500m
@@ -132,8 +132,18 @@
 	});
 	layerCoastlines = new ol.layer.Tile({source: sourceCoastlines});
 
+	// add layer for a heatmap of anomaly points
+	heatmapLayer = new ol.layer.Heatmap({
+		opacity: 1.0,
+		source: new ol.source.Vector({
+			url: 'cities.json',
+			format: new ol.format.GeoJSON()
+		})
+	});
+	
 	map.addLayer(layerLandWater);
 	map.addLayer(layerCoastlines);
+	map.addLayer(heatmapLayer);
 	map.addLayer(vector);
 	
 	var typeSelect = document.getElementById('type');
@@ -156,7 +166,7 @@ console.log("2");
 					var start = coordinates[0];
 					var end = coordinates[1];
 					geometry.setCoordinates([[start, [start[0], end[1]], end, [end[0], start[1]], start]]);
-console.log("coordinates" + coordinates);					
+console.log("coordinates" + coordinates);
 					return geometry;
 				};
 			}
@@ -168,7 +178,6 @@ console.log("coordinates" + coordinates);
 			});
 			map.addInteraction(draw);
 		}
-console.log("4");
 	}
 
 	typeSelect.onchange = function(e) {
@@ -185,12 +194,8 @@ console.log("4");
 	buttonClearRectangle = function(){
 		source.clear();
 	};	
-	//addInteraction();
+	addInteraction();
 	
-	// prints the extent
-	function updateExtent(){
-		map.getView().calculateExtent(map.getSize());
-	}
 </script>
 
 </body>

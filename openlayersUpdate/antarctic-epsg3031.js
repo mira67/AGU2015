@@ -5,7 +5,7 @@ window.onload = function() {
 	ol.proj.get("EPSG:3031").setExtent([-4194304, -4194304, 4194304, 4194304]);
 
 	// for outputting the mouse position
-	var mousePositionControl = new ol.control.MousePosition({
+	mousePositionControl = new ol.control.MousePosition({
 		coordinateFormat: ol.coordinate.createStringXY(4),
 		projection: 'EPSG:4346',
 		// comment the following two lines to have the mouse position
@@ -122,9 +122,9 @@ window.onload = function() {
 	// add layer for a heatmap of anomaly points
 	heatmapLayer = new ol.layer.Heatmap({
 		opacity: 1.0,
-		source: new ol.source.GeoJSON({
+		source: new ol.source.Vector({
 			url: 'cities.json',
-			projection: 'EPSG:3031'
+			format: new ol.format.GeoJSON()
 		})
 	});
 	map.addLayer(heatmapLayer);
@@ -150,6 +150,7 @@ window.onload = function() {
 		})
 	});
 	map.addLayer(vector);
+
 
 ////////////////////////////////////	
 

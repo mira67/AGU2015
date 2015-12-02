@@ -23,7 +23,7 @@ window.onload = function() {
 			projection: ol.proj.get("EPSG:3031"),
 			extent: [-4194304, -4194304, 4194304, 4194304], // original
 			center: [0, 0],
-			zoom: 0,
+			zoom: 0.5,
 			maxZoom: 10,
 		}),
 		target: "map",

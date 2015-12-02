@@ -71,6 +71,19 @@
 			text-align: center;
 			background-color: #bbb;
 		}
+		#logo {
+			position: absolute;
+			float: left;
+			top: 10px;
+			z-index: 2;
+		}
+		#logo img {
+			margin-left: 5px;
+		}
+		.ol-zoom { /* controls the position of the zoom button */
+			left: auto;
+			right: 8px
+		}
 		p {
 			color: #fff;
 			font-size: 1em;
@@ -122,6 +135,12 @@
 <div class="background"></div>
 <div id="wrapper">
 
+	<div id="logo">
+		<img src="images/logoNSIDC.png" alt="logo" style="width:100px;height:100px;">
+		<img src="images/logoCU.jpg" alt="logo" style="width:100px;height:100px;">
+	</div>
+
+
 	<div id="top">
 		
 		<div id="mapContainer">
@@ -129,28 +148,12 @@
 		</div>
 		
 		<div id="sidebar">
-		
-			<div class="row">
-			<div class="span12">
-				<div id="map" class="map"></div>
-				<form class="form-inline">
-					<label>Draw &nbsp;</label>
-					<select id="type">
-						<option value="None">None</option>
-						<option value="Box">Box</option>
-					</select>
-				</form>
-				<p id="extent"></p>
-				<!--<button onclick="buttonDrawRectangle();">draw rectangle</button>-->
-				<button onclick="buttonClearRectangle();">clear rectangle</button>
-			</div>
-			</div>
-		
+							
 			<div class="row">
 				<div class="mutual">
 					<p>Frequency: 
 					<span id="darkText">
-					19<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>
+					19<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox">
 					22<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">
 					37<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">
 					85<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">
@@ -164,7 +167,7 @@
 				<div class="mutual">
 					<p>Polarization: 
 					<span id="darkText">
-					vertical<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked>
+					vertical<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox">
 					horizontal<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">
 					</span>
 					</p>
@@ -182,7 +185,34 @@
 					</p>
 				</div>
 			</div>
+
+			<div class="row">
+				<div class="span12">
+					<div id="map" class="map"></div>
+					<form class="form-inline">
+						<label>Draw &nbsp;</label>
+						<select id="type">
+							<option value="None">None</option>
+							<option value="Box">Box</option>
+						</select>
+					</form>
+					<p id="extent"></p>
+					<!--<button onclick="buttonDrawRectangle();">draw rectangle</button>-->
+					<button onclick="buttonClearRectangle();">clear rectangle</button>
+				</div>
+			</div>
+
 			
+			<div class="row"><p>Yearly Pattern</p><p id="patternText"></p></div>
+			<div class="row">
+				<div class="slide sliderPattern"></div>
+			</div>
+			
+			<div class="row"><p>Range of Years</p><p id="yearsText"></p></div>
+			<div class="row">
+				<div class="slide sliderYears"></div>
+			</div>
+
 			<div class="row"><p>Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
 			<div class="row">
 				<div class="slide sliderLayerOpacity"></div>
@@ -196,16 +226,6 @@
 			<div class="row"><p>Heatmap Opacity</p><p id="heatmapOpacityText"></p></div>
 			<div class="row">
 				<div class="slide sliderHeatmapOpacity"></div>
-			</div>
-			
-			<div class="row"><p>Range of Years</p><p id="yearsText"></p></div>
-			<div class="row">
-				<div class="slide sliderYears"></div>
-			</div>
-
-			<div class="row"><p>Pattern</p><p id="patternText"></p></div>
-			<div class="row">
-				<div class="slide sliderPattern"></div>
 			</div>
 
 			
@@ -228,8 +248,6 @@
 					<div class="slide sliderTimeline"></div>
 				</div>
 			</div>
-					<img src="images/logoNSIDC.png" alt="logo" style="width:50px;height:50px;">
-		<img src="images/logoCU.jpg" alt="logo" style="width:50px;height:50px;"><br>
 
 		</div>
 
@@ -716,7 +734,7 @@ for( i = 0; i < dateArray.length; i++ ){
 	var typeSelect = document.getElementById('type');
 	
 	function addInteraction( ){
-		var locationArray;
+		var locationArray = Array();
 		locationArray[0] = { "longitude": -39.3, "latitude": -42.5 };
 		locationArray[1] = { "longitude": -41.4, "latitude": 136 };
 	

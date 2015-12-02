@@ -7,7 +7,7 @@ window.onload = function() {
 	// for outputting the mouse position
 	mousePositionControl = new ol.control.MousePosition({
 		coordinateFormat: ol.coordinate.createStringXY(4),
-		projection: 'EPSG:4346',
+		projection: 'EPSG:4326',
 		// comment the following two lines to have the mouse position
 		// be placed within the map.
 		//className: 'custom-mouse-position',
@@ -21,10 +21,10 @@ window.onload = function() {
 		view: new ol.View({
 			maxResolution: 8192.0,
 			projection: ol.proj.get("EPSG:3031"),
-			extent: [-4194304, -4194304, 4194304, 4194304],
+			extent: [-4194304, -4194304, 4194304, 4194304], // original
 			center: [0, 0],
-			zoom: 1,
-			maxZoom: 5,
+			zoom: 0,
+			maxZoom: 10,
 		}),
 		target: "map",
 		renderer: ["canvas","dom"],
@@ -91,6 +91,7 @@ window.onload = function() {
 			imageSize: [632, 664],
 			projection: map.getView().getProjection(),
 			imageExtent: [-4194304, -3923000, 4194304, 4194304]//[-3929786, -3929786, 3923000, 3923000]
+			//imageExtent: [-3929786, -3929786, 3923000, 4323674] // not sure why last number is 43...
 		})
 	});
 	map.addLayer(imageLayer);

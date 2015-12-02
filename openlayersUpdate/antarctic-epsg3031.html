@@ -254,82 +254,52 @@
 			secondAnomaly = new Date(0);
 			secondAnomaly.setUTCSeconds( anomalyResponse[anomalyResponse.length - 1]["date"] / 1000 );
 			
-			// troubleshooting output
 			console.log("first anomaly: " + firstAnomaly);
 			console.log("last anomaly: " + secondAnomaly);
 			console.log("...with " + anomalyResponse.length + " anomalies.")
-		
-			//sliderValue = $(".slider").slider("value"); // which selection is highlighted
-			//timeSeconds = (slideDate.getTime()+sliderValue*24*60*60*1000);
 			
 			// http://jsfiddle.net/6RS2z/356/
-			var vectorSource = new ol.source.Vector({
+			vectorSource = new ol.source.Vector({
 			  //create empty vector
 			});
 			
 			 //create a bunch of icons and add to source vector
 			for(var k = 0; k < anomalyResponse.length; k++){
+				if(k == 0){ vectorSource.clear(); }
 				foo = anomalyResponse[k];
 				longi = foo["longi"];
 				lati = foo["lati"];
 
+				var locations = ol.proj.transform([longi, lati], 'EPSG:4326', 'EPSG:3031');
+
 				var iconFeature = new ol.Feature({
-					geometry: new ol.geom.Point(ol.proj.transform([longi, lati],'EPSG:4326','EPSG:3031')),
-					name: 'Null Island ' + i,
-					population: 4000,
+					//geometry: new ol.geom.Point(ol.proj.transform([lati, longi],'EPSG:4326','EPSG:3031')),
+					geometry: new ol.geom.Point(locations),
+					name: 'Null Island',
+					population: 400,
 					rainfall: 500
 				});
 				vectorSource.addFeature(iconFeature);
 			}
 			
 			//create the style
-			var iconStyle = new ol.style.Style({
+			iconStyle = new ol.style.Style({
 				image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-					anchor: [0.5, 46],
+					anchor: [.01, .1],
 					anchorXUnits: 'fraction',
-					anchorYUnits: 'pixels',
-					opacity: 0.5,
+					anchorYUnits: 'fraction',
 					src: 'images/redMarker.jpg'
 				}))
 			});
 			
 			//add the feature vector to the layer vector, and apply a style to whole layer
-			var vectorLayer = new ol.layer.Vector({
+			vectorLayer = new ol.layer.Vector({
 				source: vectorSource,
 				style: iconStyle
 			});
+			
 			map.addLayer(vectorLayer);
 
-			/*
-			//markers3.clearMarkers();
-			
-			for (k = 0; k < anomalyResponse.length; k++) {
-				foo = anomalyResponse[k];
-				num = foo["date"] / 1000;
-				d = new Date(0); // set date to epoch
-				d.setUTCSeconds(num);
-
-				// if the slider day matches any of the json anomalies
-				if( d.getDate() == slDate.getDate() 
-					&& d.getMonth() == slDate.getMonth()
-					&& d.getFullYear() == slDate.getFullYear() ){
-		
-					longi = foo["longi"];
-					lati = foo["lati"];
-
-					var location = new OpenLayers.LonLat(longi, lati).transform(
-						new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-						new OpenLayers.Projection("EPSG:3031") // to Spherical Mercator
-					);
-					var size = new OpenLayers.Size(10, 10);
-					var offset = new OpenLayers.Pixel(-size.w/2, -size.h/2);
-					var icon = new OpenLayers.Icon('images/markerSquare.jpg', size, offset);
-					markers3.addMarker(new OpenLayers.Marker(location, icon.clone()));
-				}
-			} // end loop through anomalyRequest json
-			
-			
-			*/
 		} else { // if request returned is 1
 			console.log("...waiting for the data ____or___ the length of anomalyResponse is zero?!");
 		}
@@ -350,8 +320,10 @@
 	// bounding box for request
 	var loctnArray = Array();
 	loctnArray[0] = { "longitude": -39.3, "latitude": -42.5 };
+	//loctnArray[0] = { "longitude": -40, "latitude": -40 };
 	loctnArray[1] = { "longitude": -41.4, "latitude": 136 };
-	var boxCoordinates;
+	//loctnArray[1] = { "longitude": -90, "latitude": 0 };
+	var boxCoordinates = loctnArray;
 	
 	var startYear = 1987; // set up as the same for the slider
 	var endYear = 2014;
@@ -586,7 +558,9 @@
 			+ "slider pattern: " + months[$(".sliderPattern").slider("values")[0]] + " to " + months[$(".sliderPattern").slider("values")[1]] + "<br>"
 			+ "dates: " + startDate + ", " + endDate + "<br>"
 			//+ "location array: " + loctnArray[0] + ", " + loctnArray[1] + "</p>";
-			+ "coordinates: " + boxCoordinates + "</p>"
+			+ "coordinates top-left: " + boxCoordinates[0]["latitude"] + ", " + boxCoordinates[0]["longitude"] + "<br>" 
+			+ "coordinates bottom-right: " + boxCoordinates[1]["latitude"] + ", " + boxCoordinates[1]["longitude"] 
+			+ "</p>"
 		
 		// update anomaly request values
 		anomalyRequest["dsName"] = dataSet;
@@ -688,6 +662,8 @@ for( i = 0; i < dateArray.length; i++ ){
 
 	var requestReturned = 0;
 	var anomalyResponse = [];
+	var aggregateAnomalyResponse = [];
+	// anomaly results
 	function parseRequest( e ){
 		console.log("making request....");
 
@@ -695,7 +671,8 @@ for( i = 0; i < dateArray.length; i++ ){
 			type : "POST",
 			contentType : "application/json; charset=utf-8",
 			url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvAnomaly.do",
-			data : localStorage["userQuery"],
+			//data : localStorage["userQuery"], // don't need localstorage anymore
+			data : JSON.stringify(anomalyRequest),
 			dataType : 'json',
 			async : true,
 			success : function(response) {
@@ -707,14 +684,42 @@ for( i = 0; i < dateArray.length; i++ ){
 			}
 		});
 	}
+	
+	// aggregate results
+	function parseRequestAggregate( e ){
+		console.log("making aggregate request....");
+
+		ajaxHandle = $.ajax({
+			type : "POST",
+			contentType : "application/json; charset=utf-8",
+			url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvAggAnomaly.do",
+			//data : localStorage["userQuery"], // don't need localstorage anymore
+			data : JSON.stringify(anomalyRequest),
+			dataType : 'json',
+			async : true,
+			success : function(response) {
+				console.log("ajax success!________________ajax success!");
+				console.log("respones: " + response);
+				aggregateAnomalyResponse = response;
+//////
+				requestReturned = 1;
+				updateMap();
+			}
+		});
+		
+	}
 
 	updateResults(anomalyRequest);
 
 /////////////////////////////////////////////////////
 	var draw;
-	var typeSelect = document.getElementById('type');	
+	var typeSelect = document.getElementById('type');
 	
 	function addInteraction( ){
+		var locationArray;
+		locationArray[0] = { "longitude": -39.3, "latitude": -42.5 };
+		locationArray[1] = { "longitude": -41.4, "latitude": 136 };
+	
 		value = typeSelect.value;
 console.log("value: " + value);
 		if( value !== 'None' ){
@@ -730,7 +735,14 @@ console.log("value: " + value);
 					var end = coordinates[1];
 					geometry.setCoordinates([[start, [start[0], end[1]], end, [end[0], start[1]], start]]);
 console.log("coordinates" + coordinates);
-					boxCoordinates = coordinates; // add coordinates to the var
+
+// lots of things might be screwed up here!
+					locationArray[0]["longitude"] = coordinates[0][1]/100000;
+					locationArray[0]["latitude"] = coordinates[0][0]/100000;
+					locationArray[1]["longitude"] = coordinates[1][1]/100000;
+					locationArray[1]["latitude"] = coordinates[1][0]/100000;
+					
+					boxCoordinates = locationArray; // add coordinates to the var
 					return geometry;
 				};
 			}

@@ -17,7 +17,7 @@
 	<script src="openlayers-3.8.2/ol.js"></script>
 
 	<!-- Place these declarations last so they overwrite previous -->
-	<link rel="stylesheet" href="css/main.css"/>
+	<link rel="stylesheet" href="css/core.css"/>
 	<script src="js/antarctic-epsg3031.js"></script>
 	
 	<!-- css style -->
@@ -80,11 +80,8 @@
 
 			<div class="row"><p>Selection for Sub-Region</p></div>
 			<div class="row">
-				<div>
-					<p id="extent"></p>
-					<button onclick="buttonDrawRectangle();">draw rectangle</button>
-					<button onclick="source.clear();">clear rectangle</button>
-				</div>
+				<button onclick="buttonDrawRectangle();">draw rectangle</button>
+				<button onclick="source.clear();">clear rectangle</button>
 			</div>
 			
 			<div class="row"><p>Yearly Pattern</p><p id="patternText"></p></div>
@@ -142,9 +139,7 @@
 <script src="js/core.js"></script>
 	
 <script type="text/javascript">
-
 	updateResults(anomalyRequest);
-	
 </script>
 <!-- ///////////////////////////////////////////////////////////////////////////////////// -->
 

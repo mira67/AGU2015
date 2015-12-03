@@ -87,7 +87,7 @@ window.onload = function() {
 	imageLayer = new ol.layer.Image({
 		opacity: 0.7,
 		source: new ol.source.ImageStatic({
-			url: 'images/jan.png',
+			url: 'images/feb.png',
 			imageSize: [632, 664],
 			projection: map.getView().getProjection(),
 			imageExtent: [-4194304, -3923000, 4194304, 4194304]//[-3929786, -3929786, 3923000, 3923000]
@@ -124,7 +124,7 @@ window.onload = function() {
 	heatmapLayer = new ol.layer.Heatmap({
 		opacity: 1.0,
 		source: new ol.source.Vector({
-			url: 'cities.json',
+			url: 'data/cities.json',
 			format: new ol.format.GeoJSON()
 		})
 	});

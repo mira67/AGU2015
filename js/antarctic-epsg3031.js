@@ -134,6 +134,7 @@ window.onload = function() {
 	source = new ol.source.Vector();
 	vector = new ol.layer.Vector({
 		source: source,
+		//projection: 'EPSG:3031',
 		style: new ol.style.Style({
 			fill: new ol.style.Fill({
 				color: 'rgba(255, 255, 255, 0.2)'

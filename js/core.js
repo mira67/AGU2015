@@ -25,6 +25,16 @@ function updateMap(){
 		// http://jsfiddle.net/6RS2z/356/
 		vectorSource = new ol.source.Vector(); //create empty vec
 		
+		/*
+		heatmapSource = new ol.source.Vector({
+			features: [];
+		});
+		heatmap = new ol.layer.Heatmap({
+			source: heatmapSource
+		});
+		*/
+	
+		
 		 //create a bunch of icons and add to source vector
 		for(var k = 0; k < anomalyResponse.length; k++){
 			
@@ -43,6 +53,7 @@ function updateMap(){
 				rainfall: 500
 			});
 			vectorSource.addFeature(iconFeature);
+			
 		}
 		
 		//create the style
@@ -51,7 +62,7 @@ function updateMap(){
 				anchor: [.01, .1],
 				anchorXUnits: 'fraction',
 				anchorYUnits: 'fraction',
-				src: '../images/redMarker.jpg'
+				src: 'images/redMarker.jpg'
 			}))
 		});
 		
@@ -505,13 +516,13 @@ function addInteraction( ){
 		var end = coordinates[1];
 		geometry.setCoordinates([[start, [start[0], end[1]], end, [end[0], start[1]], start]]);
 		
-console.log("coordinates" + coordinates);
+		locationArray[0]["longitude"] = ol.proj.transform([coordinates[0][0], coordinates[0][1]], 'EPSG:3031', 'EPSG:4326')[0].toFixed(2);
+		locationArray[0]["latitude"] = ol.proj.transform([coordinates[0][0], coordinates[0][1]], 'EPSG:3031', 'EPSG:4326')[1].toFixed(2);
+		
+		locationArray[1]["longitude"] = ol.proj.transform([coordinates[1][0], coordinates[1][1]], 'EPSG:3031', 'EPSG:4326')[0].toFixed(2);
+		locationArray[1]["latitude"] = ol.proj.transform([coordinates[1][0], coordinates[1][1]], 'EPSG:3031', 'EPSG:4326')[1].toFixed(2);
 
-// lots of things might be screwed up here!
-		locationArray[0]["longitude"] = (coordinates[0][1]/100000).toFixed(2);
-		locationArray[0]["latitude"] = (coordinates[0][0]/100000).toFixed(2);
-		locationArray[1]["longitude"] = (coordinates[1][1]/100000).toFixed(2);
-		locationArray[1]["latitude"] = (coordinates[1][0]/100000).toFixed(2);
+		console.log("coordinates" + locationArray[0] + ", " + locationArray[1]);
 		
 		boxCoordinates = locationArray; // add coordinates to the var
 		loctnArray = locationArray;
@@ -530,7 +541,10 @@ console.log("coordinates" + coordinates);
 	
 	// return cursor to user after finishing drawing
 	draw.on("drawend", function(){
+		//var a = draw.getGeometry().getCoordinates();
+		//$('#tempOutput').text(a);
 		console.log("here");
+		//console.log("coor:" + draw.getGeometry().getcoordinates());
 		map.removeInteraction(draw);
 	});
 	

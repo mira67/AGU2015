@@ -153,6 +153,4 @@ window.onload = function() {
 	});
 	map.addLayer(vector);
 
-////////////////////////////////////	
-
 };

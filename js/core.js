@@ -11,7 +11,7 @@ function updateMap(){
 
 	// wait for response
 	if( ( requestReturned == 1 ) && ( anomalyResponse.length !== 0 ) ){
-
+// need to reset request returned at some point
 		firstAnomaly = new Date(0);
 		firstAnomaly.setUTCSeconds( anomalyResponse[0]["date"] / 1000 );
 
@@ -52,8 +52,7 @@ function updateMap(){
 				population: 400,
 				rainfall: 500
 			});
-			vectorSource.addFeature(iconFeature);
-			
+			vectorSource.addFeature(iconFeature);			
 		}
 		
 		//create the style
@@ -78,6 +77,71 @@ function updateMap(){
 		console.log("...waiting for the data ____or___ the length of anomalyResponse is zero?!");
 	}
 } // end updateMap
+
+// add anomalies to the map
+function updateMapAggregate(){
+	var k, j = 0; // loop vars
+	var foo = []; // each entry on list
+
+	// wait for response
+	if( ( requestReturned == 1 ) && ( aggregateAnomalyResponse.length !== 0 ) ){
+// need to reset request returned at some point
+		firstAnomaly = new Date(0);
+		firstAnomaly.setUTCSeconds( aggregateAnomalyResponse[0]["date"] / 1000 );
+
+		secondAnomaly = new Date(0);
+		secondAnomaly.setUTCSeconds( aggregateAnomalyResponse[aggregateAnomalyResponse.length - 1]["date"] / 1000 );
+		
+		console.log("first anomaly: " + firstAnomaly);
+		console.log("last anomaly: " + secondAnomaly);
+		console.log("...with " + aggregateAnomalyResponse.length + " anomalies.")
+		
+		// http://jsfiddle.net/6RS2z/356/
+		vectorSource = new ol.source.Vector(); //create empty vec
+		
+		 //create a bunch of icons and add to source vector
+		for(var k = 0; k < aggregateAnomalyResponse.length; k++){
+			
+			if(k == 0){ vectorSource.clear(); }
+			foo = aggregateAnomalyResponse[k];
+			longi = foo["longi"];
+			lati = foo["lati"];
+
+			var locations = ol.proj.transform([longi, lati], 'EPSG:4326', 'EPSG:3031');
+
+			var iconFeature = new ol.Feature({
+				//geometry: new ol.geom.Point(ol.proj.transform([lati, longi],'EPSG:4326','EPSG:3031')),
+				geometry: new ol.geom.Point(locations),
+				name: 'Null Island',
+				population: 400,
+				rainfall: 500
+			});
+			vectorSource.addFeature(iconFeature);			
+		}
+		
+		//create the style
+		iconStyle = new ol.style.Style({
+			image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+				anchor: [.01, .1],
+				anchorXUnits: 'fraction',
+				anchorYUnits: 'fraction',
+				src: 'images/blueMarker.jpg'
+			}))
+		});
+		
+		//add the feature vector to the layer vector, and apply a style to whole layer
+		vectorLayer = new ol.layer.Vector({
+			source: vectorSource,
+			style: iconStyle
+		});
+		
+		map.addLayer(vectorLayer);
+
+	} else { // if request returned is 1
+		console.log("...waiting for the data or the length of aggregate anomaly request is zero?!");
+	}
+} // end updateMapAggregate
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -426,30 +490,31 @@ for( i = 0; i < dateArray.length; i++ ){
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-function sendRequest( anomalyRequest, mode ){
+var requestReturned = 0;
+var anomalyResponse = [];
+var aggregateAnomalyResponse = [];
 
+// if mode is '0' parse daily results, if mode is '1' parse aggregate
+function sendRequest( anomalyRequest, mode ){
 	anomalyRequest["dsName"] = dataSet;
 	anomalyRequest["dsFreq"] = "s" + frequency + polarization;
 	anomalyRequest["dsPolar"] = polarization;
 	anomalyRequest["sDate"] = "2012-12-01";//startDate;
 	anomalyRequest["eDate"] = "2012-12-31";//endDate;
 	anomalyRequest["locations"] = loctnArray
-	
+
 	console.log("anomalyRequest" + anomalyRequest);
-	localStorage['userQuery'] = JSON.stringify(anomalyRequest);
-	console.log("localStorage: " + localStorage['userQuery']);
 	
 	updateDateValues();
-	
-	parseRequest();
-	//parseRequest(); //send and parse results
-	//updateDateValues(); //first 10 days from user query
-};
+	if( mode == 0 ){
+		parseRequest();
+	} else if( mode == 1 ){
+		parseRequestAggregate();
+	} else {
+		console.log("error with request");
+	}
 
-var requestReturned = 0;
-var anomalyResponse = [];
-var aggregateAnomalyResponse = [];
-// anomaly results
+};
 
 function parseRequest( e ){
 	console.log("making request....");
@@ -480,17 +545,15 @@ function parseRequestAggregate( e ){
 		type : "POST",
 		contentType : "application/json; charset=utf-8",
 		url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvAggAnomaly.do",
-		//data : localStorage["userQuery"], // don't need localstorage anymore
 		data : JSON.stringify(anomalyRequest),
 		dataType : 'json',
 		async : true,
-		success : function(response) {
-			console.log("ajax success!________________ajax success!");
+		success : function( response ){
+			console.log("ajax success! ajax success!");
 			console.log("respones: " + response);
 			aggregateAnomalyResponse = response;
-//////
 			requestReturned = 1;
-			updateMap();
+			updateMapAggregate();
 		}
 	});
 }

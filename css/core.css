@@ -100,11 +100,11 @@ p {
 	padding: 0;
 	margin: 10px;
 	font-size: 1em;
-	letter-spacing: 3px;
+	letter-spacing: 2px;
 }
 .btn:active {
 	font-size: 1.1em;
-	letter-spacing: 4px;
+	letter-spacing: 2.2px;
 }
 .sm { width: 19%; }
 .thr { width: 32%; }

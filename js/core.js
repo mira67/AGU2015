@@ -86,57 +86,63 @@ function updateMapAggregate(){
 	// wait for response
 	if( ( requestReturned == 1 ) && ( aggregateAnomalyResponse.length !== 0 ) ){
 // need to reset request returned at some point
-		firstAnomaly = new Date(0);
-		firstAnomaly.setUTCSeconds( aggregateAnomalyResponse[0]["date"] / 1000 );
-
-		secondAnomaly = new Date(0);
-		secondAnomaly.setUTCSeconds( aggregateAnomalyResponse[aggregateAnomalyResponse.length - 1]["date"] / 1000 );
-		
-		console.log("first anomaly: " + firstAnomaly);
-		console.log("last anomaly: " + secondAnomaly);
 		console.log("...with " + aggregateAnomalyResponse.length + " anomalies.")
 		
-		// http://jsfiddle.net/6RS2z/356/
-		vectorSource = new ol.source.Vector(); //create empty vec
+		// http://openlayers.org/en/v3.6.0/examples/cluster.html
+		features = new Array( aggregateAnomalyResponse.length-1);
 		
-		 //create a bunch of icons and add to source vector
 		for(var k = 0; k < aggregateAnomalyResponse.length; k++){
 			
-			if(k == 0){ vectorSource.clear(); }
 			foo = aggregateAnomalyResponse[k];
 			longi = foo["longi"];
 			lati = foo["lati"];
-
-			var locations = ol.proj.transform([longi, lati], 'EPSG:4326', 'EPSG:3031');
-
-			var iconFeature = new ol.Feature({
-				//geometry: new ol.geom.Point(ol.proj.transform([lati, longi],'EPSG:4326','EPSG:3031')),
-				geometry: new ol.geom.Point(locations),
-				name: 'Null Island',
-				population: 400,
-				rainfall: 500
-			});
-			vectorSource.addFeature(iconFeature);			
+			
+			coordinates = ol.proj.transform([longi, lati], 'EPSG:4326', 'EPSG:3031');
+			features[k] = new ol.Feature(new ol.geom.Point(coordinates));
 		}
-		
-		//create the style
-		iconStyle = new ol.style.Style({
-			image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-				anchor: [.01, .1],
-				anchorXUnits: 'fraction',
-				anchorYUnits: 'fraction',
-				src: 'images/blueMarker.jpg'
-			}))
+			
+		sourceAggregate = new ol.source.Vector({
+		  features: features
 		});
 		
-		//add the feature vector to the layer vector, and apply a style to whole layer
-		vectorLayer = new ol.layer.Vector({
-			source: vectorSource,
-			style: iconStyle
+		clusterSource = new ol.source.Cluster({
+		  distance: 40,
+		  source: sourceAggregate
 		});
-		
-		map.addLayer(vectorLayer);
 
+		styleCache = {};
+		clusters = new ol.layer.Vector({
+		  source: clusterSource,
+		  style: function(feature, resolution) {
+			var size = feature.get('features').length;
+			var style = styleCache[size];
+			if (!style) {
+			  style = [new ol.style.Style({
+				image: new ol.style.Circle({
+				  radius: 10,
+				  stroke: new ol.style.Stroke({
+					color: '#fff'
+				  }),
+				  fill: new ol.style.Fill({
+					color: '#3399CC'
+				  })
+				}),
+				text: new ol.style.Text({
+				  text: size.toString(),
+				  fill: new ol.style.Fill({
+					color: '#fff'
+				  })
+				})
+			  })];
+			  styleCache[size] = style;
+			}
+			return style;
+		  }
+		});
+		
+		map.addLayer(clusters);
+		
+		
 	} else { // if request returned is 1
 		console.log("...waiting for the data or the length of aggregate anomaly request is zero?!");
 	}
@@ -544,7 +550,9 @@ function parseRequestAggregate( e ){
 	ajaxHandle = $.ajax({
 		type : "POST",
 		contentType : "application/json; charset=utf-8",
-		url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvAggAnomaly.do",
+		url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvYearlyAggAnomaly.do",
+		// to query monthly, just change the string 
+		//url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvYearlyAggAnomaly.do",
 		data : JSON.stringify(anomalyRequest),
 		dataType : 'json',
 		async : true,
@@ -556,6 +564,8 @@ function parseRequestAggregate( e ){
 			updateMapAggregate();
 		}
 	});
+	
+	// [{"longi":168.17851, "lati":-55.5503, "mean":2061.5, "frequency":2},{"longi":153.50965, "lati":-51.8394, "mean":2002, "frequency":1}]
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

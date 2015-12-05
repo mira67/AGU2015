@@ -129,8 +129,9 @@ window.onload = function() {
 		})
 	});
 	map.addLayer(heatmapLayer);
+		
 
-	// to be used for drawing the selection box
+	// for drawing the selection box
 	source = new ol.source.Vector();
 	vector = new ol.layer.Vector({
 		source: source,

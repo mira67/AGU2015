@@ -22,18 +22,8 @@ function updateMap(){
 		console.log("last anomaly: " + secondAnomaly);
 		console.log("...with " + anomalyResponse.length + " anomalies.")
 		
-		// http://jsfiddle.net/6RS2z/356/
 		vectorSource = new ol.source.Vector(); //create empty vec
-		
-		/*
-		heatmapSource = new ol.source.Vector({
-			features: [];
-		});
-		heatmap = new ol.layer.Heatmap({
-			source: heatmapSource
-		});
-		*/
-	
+		source.clear();
 		
 		 //create a bunch of icons and add to source vector
 		for(var k = 0; k < anomalyResponse.length; k++){
@@ -61,7 +51,7 @@ function updateMap(){
 				anchor: [.01, .1],
 				anchorXUnits: 'fraction',
 				anchorYUnits: 'fraction',
-				src: 'images/redMarker.jpg'
+				src: 'images/greenMarker.jpg'
 			}))
 		});
 		
@@ -72,6 +62,7 @@ function updateMap(){
 		});
 		
 		map.addLayer(vectorLayer);
+		requestReturned = 0; // reset for next time
 
 	} else { // if request returned is 1
 		console.log("...waiting for the data ____or___ the length of anomalyResponse is zero?!");
@@ -90,6 +81,9 @@ function updateMapAggregate(){
 		
 		// http://openlayers.org/en/v3.6.0/examples/cluster.html
 		features = new Array( aggregateAnomalyResponse.length-1);
+
+
+// layerConstituencies.addFeatures(constituencyFeatures)
 		
 		for(var k = 0; k < aggregateAnomalyResponse.length; k++){
 			
@@ -105,14 +99,9 @@ function updateMapAggregate(){
 		  features: features
 		});
 		
-		clusterSource = new ol.source.Cluster({
-		  distance: 40,
-		  source: sourceAggregate
-		});
-
 		styleCache = {};
 		clusters = new ol.layer.Vector({
-		  source: clusterSource,
+		  source: sourceAggregate,
 		  style: function(feature, resolution) {
 			var size = feature.get('features').length;
 			var style = styleCache[size];
@@ -141,7 +130,7 @@ function updateMapAggregate(){
 		});
 		
 		map.addLayer(clusters);
-		
+		requestReturned = 0; // reset for next time
 		
 	} else { // if request returned is 1
 		console.log("...waiting for the data or the length of aggregate anomaly request is zero?!");

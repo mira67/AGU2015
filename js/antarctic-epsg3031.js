@@ -121,6 +121,7 @@ window.onload = function() {
 	map.addLayer(layerCoastlines);
 	
 	// add layer for a heatmap of anomaly points
+/*
 	heatmapLayer = new ol.layer.Heatmap({
 		opacity: 1.0,
 		source: new ol.source.Vector({
@@ -129,7 +130,7 @@ window.onload = function() {
 		})
 	});
 	map.addLayer(heatmapLayer);
-		
+*/	
 
 	// for drawing the selection box
 	source = new ol.source.Vector();

@@ -37,10 +37,10 @@ function updateMap(){
 
 			var iconFeature = new ol.Feature({
 				//geometry: new ol.geom.Point(ol.proj.transform([lati, longi],'EPSG:4326','EPSG:3031')),
-				geometry: new ol.geom.Point(locations),
-				name: 'Null Island',
-				population: 400,
-				rainfall: 500
+				geometry: new ol.geom.Point(locations)//,
+				//name: 'Null Island',
+				//population: 400,
+				//rainfall: 500
 			});
 			vectorSource.addFeature(iconFeature);			
 		}
@@ -57,6 +57,7 @@ function updateMap(){
 		
 		//add the feature vector to the layer vector, and apply a style to whole layer
 		vectorLayer = new ol.layer.Vector({
+			opacity: 0.25,
 			source: vectorSource,
 			style: iconStyle
 		});
@@ -79,57 +80,69 @@ function updateMapAggregate(){
 // need to reset request returned at some point
 		console.log("...with " + aggregateAnomalyResponse.length + " anomalies.")
 		
-		// http://openlayers.org/en/v3.6.0/examples/cluster.html
-		features = new Array( aggregateAnomalyResponse.length-1);
-
-
-// layerConstituencies.addFeatures(constituencyFeatures)
-		
+		redVectorSource = new ol.source.Vector();
+		blueVectorSource = new ol.source.Vector();
+		source.clear();
+			
 		for(var k = 0; k < aggregateAnomalyResponse.length; k++){
 			
+			if( k == 0 ){
+				redVectorSource.clear();
+				blueVectorSource.clear();
+			}
 			foo = aggregateAnomalyResponse[k];
 			longi = foo["longi"];
 			lati = foo["lati"];
+			mean = foo["mean"];
+			frequency = foo["frequency"];
+
+			var locations = ol.proj.transform([longi, lati], 'EPSG:4326', 'EPSG:3031');
+
+			var iconFeature = new ol.Feature({
+				geometry: new ol.geom.Point(locations)
+			});
 			
-			coordinates = ol.proj.transform([longi, lati], 'EPSG:4326', 'EPSG:3031');
-			features[k] = new ol.Feature(new ol.geom.Point(coordinates));
+			if( mean > 2000 ){
+				console.log("red");
+				redVectorSource.addFeature(iconFeature);
+			} else {
+				blueVectorSource.addFeature(iconFeature);
+				console.log("blue");
+			}
 		}
 			
-		sourceAggregate = new ol.source.Vector({
-		  features: features
+		//create the style for hot and then cold
+		redIconStyle = new ol.style.Style({
+			image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+				anchor: [1, 1],
+				anchorXUnits: 'fraction',
+				anchorYUnits: 'fraction',
+				src: 'images/redMarker.jpg'
+			}))
+		});
+		blueIconStyle = new ol.style.Style({
+			image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+				anchor: [1, 1],//anchor: [.01, .1],
+				anchorXUnits: 'fraction',
+				anchorYUnits: 'fraction',
+				src: 'images/blueMarker.jpg'
+			}))
+		});
+
+		
+		redVectorLayer = new ol.layer.Vector({
+			opacity: 0.25,
+			source: redVectorSource,
+			style: redIconStyle
+		});
+		blueVectorLayer = new ol.layer.Vector({
+			opacity: 0.25,
+			source: blueVectorSource,
+			style: blueIconStyle
 		});
 		
-		styleCache = {};
-		clusters = new ol.layer.Vector({
-		  source: sourceAggregate,
-		  style: function(feature, resolution) {
-			var size = feature.get('features').length;
-			var style = styleCache[size];
-			if (!style) {
-			  style = [new ol.style.Style({
-				image: new ol.style.Circle({
-				  radius: 10,
-				  stroke: new ol.style.Stroke({
-					color: '#fff'
-				  }),
-				  fill: new ol.style.Fill({
-					color: '#3399CC'
-				  })
-				}),
-				text: new ol.style.Text({
-				  text: size.toString(),
-				  fill: new ol.style.Fill({
-					color: '#fff'
-				  })
-				})
-			  })];
-			  styleCache[size] = style;
-			}
-			return style;
-		  }
-		});
-		
-		map.addLayer(clusters);
+		map.addLayer(redVectorLayer);
+		map.addLayer(blueVectorLayer);
 		requestReturned = 0; // reset for next time
 		
 	} else { // if request returned is 1
@@ -166,6 +179,10 @@ anomalyRequest = {
 	"dsPolar": polarization,
 	"sDate": startDate,
 	"eDate": endDate,
+	"sMonth": 1,
+	"eMonth": 12,
+	"sYear": startYear,
+	"eYear": endYear,
 	"locations": loctnArray
 };
 
@@ -247,6 +264,7 @@ $(".sliderMarkerOpacity")
 });
 
 // sliderHeatmapOpacity
+/*
 $(".sliderHeatmapOpacity")
 .slider({
 	min: 0,
@@ -271,6 +289,41 @@ $(".sliderHeatmapOpacity")
 	$( heatmapLayer.setOpacity( ui.value ) );
 	$( updateResults( anomalyRequest ) );
 });
+*/
+
+// slider hot and cold anomalies
+
+$(".sliderAnomalyOpacity")
+.slider({
+	min: 0,
+	max: 1,
+	step: 0.05,
+	value: 0.25,
+	slide: function( event, ui ){
+		//$("#markerOpacityText").text( ui.value );
+		$( redVectorLayer.setOpacity( ui.value ) );
+		$( blueVectorLayer.setOpacity( ui.value ) );
+		$( vectorLayer.setOpacity( ui.value ) );
+	},
+	change: function( event, ui ){
+		//$("#markerOpacityText").text( ui.value );
+		$( redVectorLayer.setOpacity( ui.value ) );
+		$( blueVectorLayer.setOpacity( ui.value ) );
+		$( vectorLayer.setOpacity( ui.value ) );
+	}
+})
+.slider("pips", {
+	rest: "label",
+	step: 5
+})
+.on("slidechange", function( event, ui ){
+	//$("#markerOpacityText").text( ui.value );
+	$( redVectorLayer.setOpacity( ui.value ) );
+	$( blueVectorLayer.setOpacity( ui.value ) );
+	$( vectorLayer.setOpacity( ui.value ) );
+	$( updateResults( anomalyRequest ) );
+});
+
 
 // user input of the date
 $(".sliderYears")
@@ -279,7 +332,7 @@ $(".sliderYears")
 		max: maxYear,
 		range: true,
 		step: 1,
-		values: [2001, 2011],
+		values: [2001, 2003],
 		//this gets a live reading of the value and prints it on the page
 		slide: function( event, ui ){
 			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
@@ -406,6 +459,10 @@ function updateResults( anomalyRequest ){
 	anomalyRequest["dsPolar"] = polarization;
 	anomalyRequest["sDate"] = startDate;
 	anomalyRequest["eDate"] = endDate;
+	anomalyRequest["sYear"] = startYear;
+	anomalyRequest["eYear"] = endYear;
+	anomalyRequest["sMonth"] = $(".sliderPattern").slider("values")[0] + 1;
+	anomalyRequest["eMonth"] = $(".sliderPattern").slider("values")[1] + 1;
 	anomalyRequest["locations"] = loctnArray
 }
 
@@ -540,6 +597,31 @@ function parseRequestAggregate( e ){
 		type : "POST",
 		contentType : "application/json; charset=utf-8",
 		url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvYearlyAggAnomaly.do",
+		// to query monthly, just change the string 
+		//url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvYearlyAggAnomaly.do",
+		data : JSON.stringify(anomalyRequest),
+		dataType : 'json',
+		async : true,
+		success : function( response ){
+			console.log("ajax success! ajax success!");
+			console.log("respones: " + response);
+			aggregateAnomalyResponse = response;
+			requestReturned = 1;
+			updateMapAggregate();
+		}
+	});
+	
+	// [{"longi":168.17851, "lati":-55.5503, "mean":2061.5, "frequency":2},{"longi":153.50965, "lati":-51.8394, "mean":2002, "frequency":1}]
+}
+
+// aggregate results
+function parseRequestAggregateMonthly( e ){
+	console.log("making aggregate request....");
+
+	ajaxHandle = $.ajax({
+		type : "POST",
+		contentType : "application/json; charset=utf-8",
+		url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvMonthlyAggAnomaly.do",
 		// to query monthly, just change the string 
 		//url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvYearlyAggAnomaly.do",
 		data : JSON.stringify(anomalyRequest),

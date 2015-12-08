@@ -106,7 +106,7 @@ p {
 	letter-spacing: 2px;
 }
 .btn:active {
-	font-size: 1.1em;
+	font-size: 0.9em;
 	letter-spacing: 2.2px;
 }
 .sm { width: 19%; }

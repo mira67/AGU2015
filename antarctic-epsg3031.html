@@ -94,9 +94,14 @@
 			<div class="row">
 				<div class="slide sliderYears"></div>
 			</div>
-			
+
+			<div class="row"><p>Query Threshold - Lower to Upper [Kelvin]</p><p id="thresholdText"></p></div>
 			<div class="row">
-				<button class="btn thr" onclick="sendRequest(anomalyRequest, 0);">submit query</button>
+				<div class="slide sliderThreshold"></div>
+			</div>
+
+			<div class="row">
+				<button class="btn thr" onclick="sendRequest(anomalyRequest, 0);">anomalies</button>
 				<button class="btn thr" onclick="sendRequest(anomalyRequest, 1);">aggregate</button>
 			</div>
 			
@@ -115,14 +120,22 @@
 				<div class="slide sliderHeatmapOpacity"></div>
 			</div>
 -->
-			<div class="row"><p>Results Opacity</p></div>
+
+			<div class="row"><p>Results Opacity</p><p id="markerOpacityText"></p></div>
 			<div class="row">
 				<div class="slide sliderAnomalyOpacity"></div>
 			</div>
+			
+			<div class="row">
+				<button class="btn thr" onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">clear results</button>
+			</div>
 
+
+<!-- add back soon
 			<div class="row outputResultsBack">
 				<div id="outputResults"></div>
 			</div>
+-->
 		
 		</div>
 	</div><!-- end top -->

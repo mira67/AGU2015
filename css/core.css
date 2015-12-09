@@ -69,7 +69,7 @@ body {
 p {
 	color: #fff;
 	font-size: 0.8em;
-	text-align: left;
+	text-align: center;
 }
 #darkText {
 	color: #999;
@@ -84,13 +84,12 @@ p {
 }
 .row {
 	width: 92%;
-	margin-left: 3%;
 	position: relative;
 	float: left;
 	display: inline-block;
 	text-align: center;
 	padding: 0;
-	margin: 0;
+	margin-left: 5%;
 }
 .slide {
 	margin: 0 2% 0 2%;

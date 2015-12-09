@@ -22,7 +22,6 @@ function updateMap(){
 		console.log("last anomaly: " + secondAnomaly);
 		console.log("...with " + anomalyResponse.length + " anomalies.")
 		
-		vectorSource = new ol.source.Vector(); //create empty vec
 		source.clear();
 		
 		 //create a bunch of icons and add to source vector
@@ -44,24 +43,7 @@ function updateMap(){
 			});
 			vectorSource.addFeature(iconFeature);			
 		}
-		
-		//create the style
-		iconStyle = new ol.style.Style({
-			image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-				anchor: [.01, .1],
-				anchorXUnits: 'fraction',
-				anchorYUnits: 'fraction',
-				src: 'images/greenMarker.jpg'
-			}))
-		});
-		
-		//add the feature vector to the layer vector, and apply a style to whole layer
-		vectorLayer = new ol.layer.Vector({
-			opacity: 0.25,
-			source: vectorSource,
-			style: iconStyle
-		});
-		
+			
 		map.addLayer(vectorLayer);
 		requestReturned = 0; // reset for next time
 
@@ -80,8 +62,6 @@ function updateMapAggregate(){
 // need to reset request returned at some point
 		console.log("...with " + aggregateAnomalyResponse.length + " anomalies.")
 		
-		redVectorSource = new ol.source.Vector();
-		blueVectorSource = new ol.source.Vector();
 		source.clear();
 			
 		for(var k = 0; k < aggregateAnomalyResponse.length; k++){
@@ -101,45 +81,16 @@ function updateMapAggregate(){
 			var iconFeature = new ol.Feature({
 				geometry: new ol.geom.Point(locations)
 			});
-			
-			if( mean > 2000 ){
-				console.log("red");
+
+//$(".sliderThreshold").slider("values")[1]*10
+			console.log("threshold: greater than " + $(".sliderThreshold").slider("values")[0] + ", and less than " + $(".sliderThreshold").slider("values")[1] );
+			if( mean > $(".sliderThreshold").slider("values")[0]*10 && mean < $(".sliderThreshold").slider("values")[1]*10 ){
 				redVectorSource.addFeature(iconFeature);
 			} else {
 				blueVectorSource.addFeature(iconFeature);
-				console.log("blue");
 			}
 		}
-			
-		//create the style for hot and then cold
-		redIconStyle = new ol.style.Style({
-			image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-				anchor: [1, 1],
-				anchorXUnits: 'fraction',
-				anchorYUnits: 'fraction',
-				src: 'images/redMarker.jpg'
-			}))
-		});
-		blueIconStyle = new ol.style.Style({
-			image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-				anchor: [1, 1],//anchor: [.01, .1],
-				anchorXUnits: 'fraction',
-				anchorYUnits: 'fraction',
-				src: 'images/blueMarker.jpg'
-			}))
-		});
-
 		
-		redVectorLayer = new ol.layer.Vector({
-			opacity: 0.25,
-			source: redVectorSource,
-			style: redIconStyle
-		});
-		blueVectorLayer = new ol.layer.Vector({
-			opacity: 0.25,
-			source: blueVectorSource,
-			style: blueIconStyle
-		});
 		
 		map.addLayer(redVectorLayer);
 		map.addLayer(blueVectorLayer);
@@ -336,9 +287,11 @@ $(".sliderYears")
 		//this gets a live reading of the value and prints it on the page
 		slide: function( event, ui ){
 			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
+			$( updateResults( anomalyRequest ) );
 		},
 		change: function( event, ui ){
 			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
+			$( updateResults( anomalyRequest ) );
 		}
 	})
 	.slider("pips", {
@@ -373,6 +326,31 @@ $(".sliderPattern")
 		//$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
 		$( updateResults( anomalyRequest ) );
 });
+
+// thresholds for the results to return
+$(".sliderThreshold")
+	.slider({
+		min: 50,
+		max: 350,
+		range: true,
+		step: 10,
+		values: [50, 350],
+		slide: function( event, ui ){
+			$( updateResults( anomalyRequest ) );
+		},
+		change: function( event, ui ){
+			$( updateResults( anomalyRequest ) );
+		}
+	})
+	.slider("pips", {
+		rest: "label",
+		step: 3
+	})
+	.on("slidechange", function( event, ui ){
+		$( updateResults( anomalyRequest ) );
+});
+
+
 
 // slider for main timeline at bottom of page
 $(".sliderTimeline")
@@ -440,6 +418,7 @@ function updateResults( anomalyRequest ){
 	startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
 	endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
 
+/*
 	document.getElementById("outputResults").innerHTML =
 		"<p>" + dataSet + ", " + frequency + ", " + polarization + ", " + startDate + ", " + endDate + "<br>"
 		//+ "timeline zoom: " + timelineZoomLevel + "</p>"
@@ -452,6 +431,7 @@ function updateResults( anomalyRequest ){
 		+ "slider years: " + startYear + ", " + endYear + "<br>"
 		+ "slider pattern: " + months[$(".sliderPattern").slider("values")[0]] + " to " + months[$(".sliderPattern").slider("values")[1]]
 		+ "</p>";
+*/
 	
 	// update anomaly request values
 	anomalyRequest["dsName"] = dataSet;
@@ -551,8 +531,8 @@ function sendRequest( anomalyRequest, mode ){
 	anomalyRequest["dsName"] = dataSet;
 	anomalyRequest["dsFreq"] = "s" + frequency + polarization;
 	anomalyRequest["dsPolar"] = polarization;
-	anomalyRequest["sDate"] = "2012-12-01";//startDate;
-	anomalyRequest["eDate"] = "2012-12-31";//endDate;
+	anomalyRequest["sDate"] = startDate;
+	anomalyRequest["eDate"] = endDate;
 	anomalyRequest["locations"] = loctnArray
 
 	console.log("anomalyRequest" + anomalyRequest);
@@ -563,7 +543,7 @@ function sendRequest( anomalyRequest, mode ){
 	} else if( mode == 1 ){
 		parseRequestAggregate();
 	} else {
-		console.log("error with request");
+		console.log("error with request...");
 	}
 
 };
@@ -687,7 +667,6 @@ function addInteraction( ){
 	draw.on("drawend", function(){
 		//var a = draw.getGeometry().getCoordinates();
 		//$('#tempOutput').text(a);
-		console.log("here");
 		//console.log("coor:" + draw.getGeometry().getcoordinates());
 		map.removeInteraction(draw);
 	});

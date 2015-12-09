@@ -155,4 +155,57 @@ window.onload = function() {
 	});
 	map.addLayer(vector);
 
+
+// for drawing anomalies
+	vectorSource = new ol.source.Vector(); //create empty vec
+	//create the style
+	iconStyle = new ol.style.Style({
+		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+			anchor: [.01, .1],
+			anchorXUnits: 'fraction',
+			anchorYUnits: 'fraction',
+			src: 'images/greenMarker.jpg'
+		}))
+	});
+	//add the feature vector to the layer vector, and apply a style to whole layer
+	vectorLayer = new ol.layer.Vector({
+		opacity: 0.25,
+		source: vectorSource,
+		style: iconStyle
+	});
+
+// for drawing aggregate results	
+	redVectorSource = new ol.source.Vector();
+	blueVectorSource = new ol.source.Vector();
+	//create the style for hot and then cold
+	redIconStyle = new ol.style.Style({
+		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+			anchor: [1, 1],
+			anchorXUnits: 'fraction',
+			anchorYUnits: 'fraction',
+			src: 'images/redMarker.jpg'
+		}))
+	});
+	blueIconStyle = new ol.style.Style({
+		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+			anchor: [1, 1],//anchor: [.01, .1],
+			anchorXUnits: 'fraction',
+			anchorYUnits: 'fraction',
+			src: 'images/blueMarker.jpg'
+		}))
+	});
+
+	
+	redVectorLayer = new ol.layer.Vector({
+		opacity: 0.25,
+		source: redVectorSource,
+		style: redIconStyle
+	});
+	blueVectorLayer = new ol.layer.Vector({
+		opacity: 0.25,
+		source: blueVectorSource,
+		style: blueIconStyle
+	});
+
+	
 };

@@ -34,7 +34,7 @@ window.onload = function() {
 	sourceLandWater = new ol.source.WMTS({
 		url: "//map1{a-c}.vis.earthdata.nasa.gov/wmts-antarctic/wmts.cgi",
 		layer: "SCAR_Land_Water_Map", // jpeg 500m
-		extent: [-3923000, -3923000, 3923000, 3923000],//[-4194304, -4194304, 4194304, 4194304],
+		extent: [-4194304, -4194304, 4194304, 4194304],
 		format: "image/png",
 		matrixSet: "EPSG3031_250m",
 		tileGrid: new ol.tilegrid.WMTS({
@@ -90,7 +90,7 @@ window.onload = function() {
 			url: 'images/feb.png',
 			imageSize: [632, 664],
 			projection: map.getView().getProjection(),
-			imageExtent: [-4194304, -3923000, 4194304, 4194304]//[-3929786, -3929786, 3923000, 3923000]
+			imageExtent: [-4094304, -4194304, 4194304, 4194304]//[-3929786, -3929786, 3923000, 3923000]
 			//imageExtent: [-3929786, -3929786, 3923000, 4323674] // not sure why last number is 43...
 		})
 	});
@@ -121,7 +121,7 @@ window.onload = function() {
 	map.addLayer(layerCoastlines);
 	
 	// add layer for a heatmap of anomaly points
-/*
+
 	heatmapLayer = new ol.layer.Heatmap({
 		opacity: 1.0,
 		source: new ol.source.Vector({
@@ -130,7 +130,7 @@ window.onload = function() {
 		})
 	});
 	map.addLayer(heatmapLayer);
-*/	
+	
 
 	// for drawing the selection box
 	source = new ol.source.Vector();
@@ -207,5 +207,8 @@ window.onload = function() {
 		style: blueIconStyle
 	});
 
+	
+	
+	
 	
 };

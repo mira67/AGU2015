@@ -168,7 +168,7 @@ $(".sliderLayerOpacity")
 	min: 0,
 	max: 1,
 	step: 0.05,
-	value: 1,
+	value: 0.5,
 	slide: function( event, ui ){
 		//$("#layerOpacityText").text( ui.value );
 		$( layerBaseMap.setOpacity( ui.value) );

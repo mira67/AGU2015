@@ -5,7 +5,7 @@ body {
 	font-family: 'Roboto', 'Helvetica', 'Arial', 'Sans Serif';
 	max-width: 100%;
 	overflow-x: hidden;
-	background: url('../images/snow2.jpg') no-repeat center center fixed;
+	/*background: url('../images/snow2.jpg') no-repeat center center fixed;*/
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -23,12 +23,12 @@ body {
 #top {
 	clear: left;
 	width: 100vw;
-	height: 90vh;
+	height: 100vh;
 }
 #bottom {
 	clear: left;
 	width: 90vw;
-	height: 18vh;
+	height: 1vh;
 }
 #mapContainer {
 	float: left;

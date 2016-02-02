@@ -23,7 +23,7 @@ window.onload = function() {
 			projection: ol.proj.get("EPSG:3031"),
 			extent: [-4194304, -4194304, 4194304, 4194304], // original
 			center: [0, 0],
-			zoom: 0.5,
+			zoom: 0,
 			maxZoom: 10,
 		}),
 		target: "map",
@@ -129,7 +129,7 @@ window.onload = function() {
 			format: new ol.format.GeoJSON()
 		})
 	});
-	map.addLayer(heatmapLayer);
+	//map.addLayer(heatmapLayer);
 	
 
 	// for drawing the selection box

@@ -25,16 +25,19 @@
 	
 	<!-- css style -->
 	<style>
-		div.scroll {
-			background-color: rgba(0,0,0,0.5);
-			width: 70px;
-			height: 400px;
-			overflow: scroll;
+		#sidebarChild {
+			height: 100%;
+			width: 100%;
+			overflow: auto;
+			padding-right: 15px;
+			margin: 0;
 		}
-		.container .content { background-color: rgba(6,4,2,0.5); }
-		.container .header { background-color: rgba(1,7,2,0.5); padding: 10px; cursor: pointer; font-weight: bold; }
-		.container .content { display: none; padding: 0px; }
-		label { display: block; color: WindowText; rgba(0,0,0,0.5): Window; margin: 0; padding: 0; width: 100%; }
+		#sidebarChild .content1 {
+			height: 100%;
+			width: 100%;
+			overflow: hidden;
+		}
+
 	</style>
 	
 </head>
@@ -52,6 +55,7 @@
 	</div>
 
 	<div id="sidebar" class="scroll">
+	<div id="sidebarChild">
 
 		<!--<div class="text">Anomaly Detection for Satellite Data</div>-->
 	
@@ -62,7 +66,7 @@
 		<div>
 		<div class="container">
 			<div class="header"><span>Frequency</span></div>
-			<div class="content">
+			<div class="content1">
 				  <select multiple="multiple" name="sel" size="5">
 					<option value="1">91</option>
 					<option value="2">85</option>
@@ -89,18 +93,45 @@
 			  </select>
 			</div>
 			
-			<div class="header"><span>Other Options</span></span></div>
+			<div class="header"><span>Select Subregion</span></span></div>
 			<div class="content1">
 				  <select multiple="multiple" name="sel" size="5">
-					<option value="1">First</option>
-					<option value="2">Second</option>
-					<option value="3">Third</option>
-					<option value="4">Fourth</option>
-					<option value="5">Fifth</option>
-					<option value="6">Sixth</option>
-					<option value="7">Seventh</option>
+					<option value="1">draw rectangle</option>
+					<option value="2">clear rectangle</option>
 				  </select>
 			</div>
+
+			<div class="header"><span>Query Data</span></span></div>
+			<div class="content1">
+				  <select multiple="multiple" name="sel" size="5">
+					<option value="1">Anomalies by period</option>
+					<option value="2">Anomalies Aggregated</option>
+				  </select>
+			</div>
+			
+			<div class="header"><span>Query Data</span></span></div>
+			<div class="content1">
+				  <select multiple="multiple" name="sel" size="5">
+					<option value="1">Anomalies by period</option>
+					<option value="2">Anomalies Aggregated</option>
+				  </select>
+			</div>
+			
+			<div class="header"><span>Upper - Color Palette</span></span></div>
+			<div class="content1">
+				<img src="images/colors.png" alt="logo" style="width:175px;height:100px;">
+			</div>
+
+			<div class="header"><span>Lower - Color Palette</span></span></div>
+			<div class="content1">
+				<img src="images/colors.png" alt="logo" style="width:175px;height:100px;">
+			</div>
+			
+			<div class="header"><span>Results Histogram</span></span></div>
+			<div class="content1">
+				<img src="images/hist.jpg" alt="logo" style="width:175px;height:100px;">
+			</div>
+
 			
 		</div>	
 		</div>
@@ -128,7 +159,7 @@
 		</span>
 
 		<p>Rectangle Selection</p>
-		<button onclick="buttonDrawRectangle();">rect</button>
+		<button onclick="buttonDrawRectangle();">draw rectangle</button>
 		<button onclick="source.clear();">clear</button>
 		
 
@@ -136,7 +167,7 @@
 		<div class="slide sliderThreshold"></div>
 		
 		<button onclick="sendRequest(anomalyRequest, 0);">anomalies</button>
-		<button onclick="sendRequest(anomalyRequest, 1);">agg</button>
+		<button onclick="sendRequest(anomalyRequest, 1);">aggregate</button>
 
 		<p>Yearly Pattern</p>
 		<div class="slide sliderPattern"></div>
@@ -159,6 +190,7 @@
 
 -->
 	</div>
+	</div><!-- end sidebar -->
 	
 	<div id="timelineBox">
 		<div class="timelineBoxInternal">
@@ -193,6 +225,8 @@
 
 	});
 </script>
+
+<!-- add google analytics -->
 <!-- ///////////////////////////////////////////////////////////////////////////////////// -->
 
 </body>

@@ -6,12 +6,12 @@ window.onload = function() {
 
 	// for outputting the mouse position
 	mousePositionControl = new ol.control.MousePosition({
-		coordinateFormat: ol.coordinate.createStringXY(4),
+		coordinateFormat: ol.coordinate.createStringXY(2),
 		projection: 'EPSG:4326',
 		// comment the following two lines to have the mouse position
 		// be placed within the map.
-		//className: 'custom-mouse-position',
-		//target: document.getElementById('mouse-position'),
+		className: 'custom-mouse-position',
+		target: document.getElementById('mouse-position'),
 		undefinedHTML: '&nbsp;'
 	});
 
@@ -23,13 +23,13 @@ window.onload = function() {
 			projection: ol.proj.get("EPSG:3031"),
 			extent: [-4194304, -4194304, 4194304, 4194304], // original
 			center: [0, 0],
-			zoom: 0,
+			zoom: 2,
 			maxZoom: 10,
 		}),
 		target: "map",
 		renderer: ["canvas","dom"],
 	});
-
+	
 	// create layer for binary layers of water, land, and permanent glacier
 	sourceLandWater = new ol.source.WMTS({
 		url: "//map1{a-c}.vis.earthdata.nasa.gov/wmts-antarctic/wmts.cgi",
@@ -87,14 +87,15 @@ window.onload = function() {
 	imageLayer = new ol.layer.Image({
 		opacity: 0.7,
 		source: new ol.source.ImageStatic({
-			url: 'images/feb.png',
+			url: 'images/mar.png',
 			imageSize: [632, 664],
 			projection: map.getView().getProjection(),
-			imageExtent: [-4094304, -4194304, 4194304, 4194304]//[-3929786, -3929786, 3923000, 3923000]
+			// extent [minx, miny, maxx, maxy]
+			imageExtent: [-3929786, -4394304, -3929786, 4323674]//[-3929786, -3929786, 3923000, 3923000]
 			//imageExtent: [-3929786, -3929786, 3923000, 4323674] // not sure why last number is 43...
 		})
 	});
-	map.addLayer(imageLayer);
+	//map.addLayer(imageLayer);
 	
 	// add layer with outlines of coasts and permanent glacier boundaries
 	sourceCoastlines = new ol.source.WMTS({
@@ -129,9 +130,8 @@ window.onload = function() {
 			format: new ol.format.GeoJSON()
 		})
 	});
-	//map.addLayer(heatmapLayer);
+	map.addLayer(heatmapLayer);
 	
-
 	// for drawing the selection box
 	source = new ol.source.Vector();
 	vector = new ol.layer.Vector({
@@ -194,7 +194,6 @@ window.onload = function() {
 			src: 'images/blueMarker.jpg'
 		}))
 	});
-
 	
 	redVectorLayer = new ol.layer.Vector({
 		opacity: 0.25,
@@ -207,8 +206,4 @@ window.onload = function() {
 		style: blueIconStyle
 	});
 
-	
-	
-	
-	
 };

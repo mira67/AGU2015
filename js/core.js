@@ -90,8 +90,7 @@ function updateMapAggregate(){
 				blueVectorSource.addFeature(iconFeature);
 			}
 		}
-		
-		
+			
 		map.addLayer(redVectorLayer);
 		map.addLayer(blueVectorLayer);
 		requestReturned = 0; // reset for next time
@@ -333,7 +332,6 @@ $(".sliderThreshold")
 		min: 50,
 		max: 350,
 		range: true,
-		step: 10,
 		values: [50, 350],
 		slide: function( event, ui ){
 			$( updateResults( anomalyRequest ) );
@@ -343,8 +341,7 @@ $(".sliderThreshold")
 		}
 	})
 	.slider("pips", {
-		rest: "label",
-		step: 3
+		rest: false
 	})
 	.on("slidechange", function( event, ui ){
 		$( updateResults( anomalyRequest ) );
@@ -454,6 +451,7 @@ Date.prototype.addDays = function ( days ){
 	dat.setDate(dat.getDate() + days);
 	return dat;
 }
+
 function getDates( startDate, stopDate ){
 	var dateArray = new Array();
 	var currentDate = startDate;
@@ -516,7 +514,6 @@ for( i = 0; i < dateArray.length; i++ ){
 		});
 	}
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////

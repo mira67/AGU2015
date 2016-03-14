@@ -34,6 +34,7 @@ body {
 	margin: 0; padding: 0;
 	height: 100%;
 }
+/*
 #logo {
 	position: absolute;
 	z-index: 2;
@@ -43,15 +44,17 @@ body {
 #logo img {
 	margin: 10px 0px 0px 10px;
 }
+*/
 #sidebar {
 	position: absolute;
 	z-index: 3;
-	top: 140px;
+	top: 20px;
 	left: 20px;
 	width: 220px;
-	bottom: 140px;
+	bottom: 20px;
 	background-color: rgba(0,0,0,0.5);
 }
+/*
 #smallMap{
 	position: absolute;
 	z-index: 3;
@@ -60,6 +63,7 @@ body {
 	width: 220px;
 	height: 100px;
 }
+*/
 #timelineBox {
 	position: absolute;
 	z-index: 3;
@@ -126,7 +130,7 @@ p {
 div.scroll {
 	background-color: rgba(0,0,0,0.5);
 	width: 70px;
-	height: 70%;
+	/*height: 95%;*/
 	overflow: hidden;
 }
 .container .content1 { background-color: rgba(6,4,2,0.5); }

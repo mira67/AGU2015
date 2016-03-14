@@ -2,12 +2,13 @@ window.onload = function() {
 
 	// definitions
 	proj4.defs("EPSG:3031", "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
-	ol.proj.get("EPSG:3031").setExtent([-4194304, -4194304, 4194304, 4194304]);
+	ol.proj.get("EPSG:3031").setExtent([-3929786, -3929786, 3923000, 3923674]);//[-4194304, -4194304, 4194304, 4194304]);
 
 	// for outputting the mouse position
 	mousePositionControl = new ol.control.MousePosition({
 		coordinateFormat: ol.coordinate.createStringXY(2),
-		projection: 'EPSG:4326',
+		//projection: 'EPSG:4326',
+		projection: 'EPSG:3031',
 		// comment the following two lines to have the mouse position
 		// be placed within the map.
 		className: 'custom-mouse-position',
@@ -23,8 +24,8 @@ window.onload = function() {
 			projection: ol.proj.get("EPSG:3031"),
 			extent: [-4194304, -4194304, 4194304, 4194304], // original
 			center: [0, 0],
-			zoom: 2,
-			maxZoom: 10,
+			zoom: 0,
+			maxZoom: 11,
 		}),
 		target: "map",
 		renderer: ["canvas","dom"],
@@ -34,7 +35,7 @@ window.onload = function() {
 	sourceLandWater = new ol.source.WMTS({
 		url: "//map1{a-c}.vis.earthdata.nasa.gov/wmts-antarctic/wmts.cgi",
 		layer: "SCAR_Land_Water_Map", // jpeg 500m
-		extent: [-4194304, -4194304, 4194304, 4194304],
+		extent: [-3929786, -3929786, 3923000, 3923674],//[-4194304, -4194304, 4194304, 4194304],
 		format: "image/png",
 		matrixSet: "EPSG3031_250m",
 		tileGrid: new ol.tilegrid.WMTS({
@@ -58,7 +59,7 @@ window.onload = function() {
 	// coastline: SCAR antarctic digital database
 	// add picture-like image layer
 	sourceBaseMap = new ol.source.WMTS({
-		opacity: 0.5,
+		opacity: 0.1,
 		url: "//map1{a-c}.vis.earthdata.nasa.gov/wmts-antarctic/wmts.cgi",
 		//layer: "MODIS_Terra_CorrectedReflectance_TrueColor", // png 250m
 		layer: "BlueMarble_ShadedRelief_Bathymetry", // jpeg 500m
@@ -82,21 +83,7 @@ window.onload = function() {
 	layerBaseMap = new ol.layer.Tile({source: sourceBaseMap});
 	map.addLayer(layerBaseMap);
 
-	// Create an image layer, <http://www.acuriousanimal.com/thebookofopenlayers3/chapter02_04_image_layer.html>
-	// add layer with the climatology
-	imageLayer = new ol.layer.Image({
-		opacity: 0.7,
-		source: new ol.source.ImageStatic({
-			url: 'images/mar.png',
-			imageSize: [632, 664],
-			projection: map.getView().getProjection(),
-			// extent [minx, miny, maxx, maxy]
-			imageExtent: [-3929786, -4394304, -3929786, 4323674]//[-3929786, -3929786, 3923000, 3923000]
-			//imageExtent: [-3929786, -3929786, 3923000, 4323674] // not sure why last number is 43...
-		})
-	});
-	//map.addLayer(imageLayer);
-	
+
 	// add layer with outlines of coasts and permanent glacier boundaries
 	sourceCoastlines = new ol.source.WMTS({
 		url: "//map1{a-c}.vis.earthdata.nasa.gov/wmts-antarctic/wmts.cgi",
@@ -121,8 +108,29 @@ window.onload = function() {
 	layerCoastlines = new ol.layer.Tile({source: sourceCoastlines});
 	map.addLayer(layerCoastlines);
 	
+		// Create an image layer, <http://www.acuriousanimal.com/thebookofopenlayers3/chapter02_04_image_layer.html>
+	// add layer with the climatology
+	imageLayer = new ol.layer.Image({
+		opacity: 0.5,
+		source: new ol.source.ImageStatic({
+			url: 'images/oct.png',
+			imageSize: [632, 664],
+			//projection: map.getView().getProjection(),
+			// extent [minx, miny, maxx, maxy]
+			//imageExtent: [-3929786, -2929786, -2029786, 13523674]
+			imageExtent: [-4194304, -4194304, 4194304, 4194304]//[ -3933134, -3333134, -3933134, 3933134]
+			//imageExtent: [-3929786, -3929786, 3923000, 3923674] // not sure why last number is 43...
+			//imageExtent: [-4000000, -3700000, -3000000, 4100000]
+			// [1] [2] 40-moves right side right [3] [4]
+		}),
+		extent: [-4194304, -4194304, 4194304, 4294304]
+	});
+	visible: true;
+	map.addLayer(imageLayer);
+	
+	
 	// add layer for a heatmap of anomaly points
-
+/*
 	heatmapLayer = new ol.layer.Heatmap({
 		opacity: 1.0,
 		source: new ol.source.Vector({
@@ -131,7 +139,8 @@ window.onload = function() {
 		})
 	});
 	map.addLayer(heatmapLayer);
-	
+*/
+
 	// for drawing the selection box
 	source = new ol.source.Vector();
 	vector = new ol.layer.Vector({

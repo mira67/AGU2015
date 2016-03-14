@@ -48,12 +48,12 @@
 	<div id="content">
 		<div id="map"></div>
 	</div>
-
+<!--
 	<div id="logo">
-		<img src="images/logoNSIDC.png" alt="logo" style="width:100px;height:100px;">
-		<img src="images/logoCU.png" alt="logo" style="width:100px;height:100px;">
+		<img src="images/logoNSIDC.png" alt="logo" style="width:100px; height:100px;">
+		<img src="images/logoCU.png" alt="logo" style="width:100px; height:100px;">
 	</div>
-
+-->
 	<div id="sidebar" class="scroll">
 	<div id="sidebarChild">
 
@@ -67,38 +67,38 @@
 		<div class="container">
 			<div class="header"><span>Frequency</span></div>
 			<div class="content1">
-				  <select multiple="multiple" name="sel" size="5">
+				<select multiple="multiple" name="sel" size="5">
 					<option value="1">91</option>
 					<option value="2">85</option>
 					<option value="3">37</option>
 					<option value="4">22</option>
 					<option value="5">19</option>
-				  </select>
+				</select>
 			</div>
 
 			<div class="header"><span>Polarization</span></span></div>
 			<div class="content1">
-				  <select multiple="multiple" name="sel" size="2">
+				<select multiple="multiple" name="sel" size="2">
 					<option value="1">vertical</option>
 					<option value="2">horizontal</option>
-				  </select>
+				</select>
 			</div>
 
 			<div class="header"><span>Timeline Zoom</span></span></div>
 			<div class="content1">
-			  <select name="sel" size="3">
-				<option>Days</option>
-				<option>Months</option>
-				<option>Years</option>
-			  </select>
+				<select name="sel" size="3">
+					<option>Days</option>
+					<option>Months</option>
+					<option>Years</option>
+				</select>
 			</div>
 			
 			<div class="header"><span>Select Subregion</span></span></div>
 			<div class="content1">
-				  <select multiple="multiple" name="sel" size="5">
+				<select multiple="multiple" name="sel" size="5">
 					<option value="1">draw rectangle</option>
 					<option value="2">clear rectangle</option>
-				  </select>
+				</select>
 			</div>
 
 			<div class="header"><span>Query Data</span></span></div>
@@ -132,7 +132,6 @@
 				<img src="images/hist.jpg" alt="logo" style="width:175px;height:100px;">
 			</div>
 
-			
 		</div>	
 		</div>
 
@@ -172,6 +171,26 @@
 		<p>Yearly Pattern</p>
 		<div class="slide sliderPattern"></div>
 
+		<div class="row"><p>Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
+		<div class="row">
+			<div class="slide sliderLayerOpacity"></div>
+		</div>
+
+		<div class="row"><p>Climatology Opacity</p><p id="markerOpacityText"></p></div>
+		<div class="row">
+			<div class="slide sliderMarkerOpacity"></div>
+		</div>
+		
+		<div class="row"><p>Results Opacity</p><p id="markerOpacityText"></p></div>
+		<div class="row">
+			<div class="slide sliderAnomalyOpacity"></div>
+		</div>
+		
+		<div class="row">
+			<button class="btn thr" onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">clear results</button>
+		</div>
+
+
 <!--				
 		<p>Range of Years</p>
 		<div class="slide sliderYears"></div>
@@ -191,12 +210,14 @@
 -->
 	</div>
 	</div><!-- end sidebar -->
-	
+
+<!--	
 	<div id="timelineBox">
 		<div class="timelineBoxInternal">
 			<div class="slide sliderTimeline"></div>
 		</div>
 	</div>
+-->
 	
 </div><!-- end wrapper -->
 

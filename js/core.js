@@ -201,6 +201,7 @@ $(".sliderMarkerOpacity")
 	change: function( event, ui ){
 		//$("#markerOpacityText").text( ui.value );
 		$( imageLayer.setOpacity( ui.value ) );
+		console.log("ui.value" + ui.value);
 	}
 })
 .slider("pips", {

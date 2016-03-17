@@ -283,7 +283,7 @@ $(".sliderYears")
 		max: maxYear,
 		range: true,
 		step: 1,
-		values: [2001, 2003],
+		values: [1992, 1997],
 		//this gets a live reading of the value and prints it on the page
 		slide: function( event, ui ){
 			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
@@ -295,8 +295,9 @@ $(".sliderYears")
 		}
 	})
 	.slider("pips", {
-		rest: "label",
-		step: 3
+		first: 1987,
+		last: 2014,
+		rest: "pips"
 	})
 	.on("slidechange", function( event, ui ){
 		//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );

@@ -8,8 +8,8 @@ window.onload = function() {
 	// for outputting the mouse position
 	mousePositionControl = new ol.control.MousePosition({
 		coordinateFormat: ol.coordinate.createStringXY(2),
-		//projection: 'EPSG:4326',
-		projection: 'EPSG:3031',
+		projection: 'EPSG:4326',
+		//projection: 'EPSG:3031',
 		//displayProjection: "EPSG:4326",
 		className: 'custom-mouse-position',					// comment the following two lines to have the mouse position
 		target: document.getElementById('mouse-position'),	// be placed within the map.
@@ -24,7 +24,7 @@ window.onload = function() {
 			projection: ol.proj.get("EPSG:3031"),
 			extent: [-4194304, -4194304, 4194304, 4194304], // original
 			center: [0, 0],
-			zoom: 0,
+			zoom: 1,
 			maxZoom: 11,
 		}),
 		target: "map",

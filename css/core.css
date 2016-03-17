@@ -50,9 +50,10 @@ body {
 	z-index: 3;
 	top: 20px;
 	left: 20px;
-	width: 220px;
+	width: 275px;
 	bottom: 20px;
 	background-color: rgba(0,0,0,0.5);
+	font-size: 1.2em;
 }
 /*
 #smallMap{
@@ -97,6 +98,9 @@ p {
 	height: 100px;
 	overflow: scroll;
 	font-size: 0.7em;
+}
+#row {
+	color: #fff;
 }
 .row input{
 	float: left;

@@ -100,6 +100,52 @@ function updateMapAggregate(){
 	}
 } // end updateMapAggregate
 
+// need to work on this ...i just threw it in!
+function updateResults( anomalyRequest ){	
+	// determine frequency
+	if( $("#chk19").is(':checked') ){
+		frequency = "19";
+	} else if( $("#chk22").is(':checked') ){
+		frequency = "22";
+	} else if( $("#chk37").is(':checked') ){
+		frequency = "37";
+	} else if( $("#chk85").is(':checked') ){
+		frequency = "85";
+	} else if( $("#chk91").is(':checked') ){
+		frequency = "91";
+	}
+	
+	// determine polarization
+	if( $("#chkVertical").is(':checked') ){
+		polarization = "v";
+	} else if( $("#chkHorizontal").is(':checked') ){
+		polarization = "h";
+	}
+	
+	// determine timeline zoom
+	if( $("#chkDay").is(':checked') ){
+		timelineZoomLevel = "day";
+	} else if( $("#chkMonth").is(':checked') ){
+		timelineZoomLevel = "month";
+	} else if( $("#chkYear").is(':checked') ){
+		timelineZoomLevel = "year";
+	}
+	
+	startYear = $(".sliderYears").slider("values")[0];
+	endYear = $(".sliderYears").slider("values")[1];
+	startMonth = $(".sliderPattern").slider("values")[0] + 1;
+	endMonth = $(".sliderPattern").slider("values")[1] + 1;
+	
+	startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
+	endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
+
+	document.getElementById("outputResults").innerHTML =
+		"<p>" + dataSet + ", " + frequency + ", " + polarization + ", " + startDate + ", " + endDate + "<br>"
+		+ "dates: " + startDate + ", " + endDate + "<br>"
+		+ "coordinates top-left: " + boxCoordinates[0]["latitude"] + ",   " + boxCoordinates[0]["longitude"] + "<br>"
+		+ "coordinates bottom-right: " + boxCoordinates[1]["latitude"] + ",   " + boxCoordinates[1]["longitude"] + "<br>"
+		+ "</p>";
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////

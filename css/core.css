@@ -50,7 +50,7 @@ body {
 	z-index: 3;
 	top: 20px;
 	left: 20px;
-	width: 275px;
+	width: 300px;
 	bottom: 20px;
 	background-color: rgba(0,0,0,0.5);
 	font-size: 1.2em;
@@ -101,6 +101,8 @@ p {
 }
 #row {
 	color: #fff;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 .row input{
 	float: left;

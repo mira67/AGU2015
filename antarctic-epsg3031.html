@@ -25,6 +25,9 @@
 	
 	<!-- css style -->
 	<style>
+		#sidebar {
+			height: 50%;
+		}
 		#sidebarChild {
 			height: 100%;
 			width: 100%;
@@ -41,7 +44,7 @@
 		.bottomRight {
 			z-index: 5;
 			position: absolute;
-			bottom: 0;
+			bottom: 150px;
 			right: 0;
 			background-color: rgba(0,0,0,0.5);
 			color: #fff;
@@ -148,7 +151,8 @@
 		</div>	
 		</div>
 
-<br><br>
+<br>
+<hr>
 		<div id="row">
 			<p>Frequencies</p>
 			<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>19
@@ -157,63 +161,91 @@
 			<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">85
 			<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">91
 		</div>
-
-<br><br>
+<br>
+<hr>
 		<p>Polarization</p>
-		<span id="row">
+		<div id="row">
 			<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked>Vertical<br>
 			<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">Horizontal
-		</span>
-
-<br><br>
+		</div>
+<br>
+<hr>
 		<p>Timeline Zoom</p>
-		<span id="row">
-			<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox" checked>Day
-			<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month
-		</span>
-
-<br><br>
-		<p>Rectangle Selection</p>
-		<button onclick="buttonDrawRectangle();">draw rectangle</button>
-		<br><br>
-		<button onclick="source.clear();">clear</button>
-		
-		<br><br>
-		<p>Query Threshold</p>
-		<div class="slide sliderThreshold"></div>
-<br>		
+		<div id="row">
+			<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox" checked>Day<br>
+			<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month<br>
+			<input id="chkYear" name="chkYear" type="checkbox" value="month" class="checkbox">Year
+		</div>
+<br>
+<hr>
+		<p>Rectangle Selection - draw box</p>
+		<div id="row">
+			<button onclick="buttonDrawRectangle();">draw rectangle</button>
+			<br>
+			<button onclick="source.clear();">clear rectangle</button> <!-- should only appear when rectangle is present -->
+		</div>
+<br>
+<hr>
+		<p>Rectangle Selection - manual input</p>
+		<div id="row">
+			<form action="update_coordinates.asp">
+				north: <input type="text" name="northCoordinate" value="-60.00"><br>
+				west: <input type="text" name="westCoordinate" value="-90.00"><br>
+				east: <input type="text" name="eastCoordinate" value="+90.00"><br>
+				south: <input type="text" name="southCoordinate" value="-60.00"><br>
+				<input type="submit" value="Submit">
+			</form>
+		</div>
+<br>
+<hr>
+		<p>Query Threshold - specify upper & lower bound</p>
+		<div id="row">
+			<div class="slide sliderThreshold"></div>
+		</div>
+<br>
+<hr>
 		<p>Anomaly Search</p>
-		<button onclick="sendRequest(anomalyRequest, 0);">Daily Anomalies</button>
-		<br><br>
-		<button onclick="sendRequest(anomalyRequest, 1);">All Anomalies</button>
-		<br><br>
-		<button onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">clear results</button>
-
-<br><br>
-		<div class="row"><p>Start and End Years</p><p id="yearsText"></p></div>
+		<div id="row">
+			<button onclick="sendRequest(anomalyRequest, 0);">Daily Anomalies</button>
+			<br><br>
+			<button onclick="sendRequest(anomalyRequest, 1);">All Anomalies</button>
+			<br><br>
+			<button onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">clear results</button><!-- only show up if there are values drawn on the map -->
+		</div>
+<br>
+<hr>
+		<p>Start and End Years</p>
 		<div class="row">
 			<div class="slide sliderYears"></div>
 		</div>
-<br><br>
+<br>
 		<p>Month Selection</p>
-		<div class="slide sliderPattern"></div>
-<br><br>
+		<div id="row">
+			<div class="slide sliderPattern"></div>
+		</div>
+<br>
+<hr>
 		<div class="row"><p>Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
 		<div class="row">
 			<div class="slide sliderLayerOpacity"></div>
 		</div>
-<br><br>
+<br>
 		<div class="row"><p>Climatology Opacity</p><p id="markerOpacityText"></p></div>
 		<div class="row">
 			<div class="slide sliderMarkerOpacity"></div>
 		</div>
-<br><br>
+<br>
 		<div class="row"><p>Results Opacity</p><p id="markerOpacityText"></p></div>
 		<div class="row">
 			<div class="slide sliderAnomalyOpacity"></div>
 		</div>
-<br><br>
-
+<hr>
+<br>
+		<div class="row">
+			<div id="outputResults"></div>
+		</div>
+<hr>
+<br>
 
 <!--				
 		<p>Range of Years</p>
@@ -246,6 +278,18 @@
 	<div class="bottomRight">
 		<p id="mouse-position">coordinates</p>
 	</div>
+	
+	<div id="bottomCenter">
+		<div id="timelineBox">
+			<div>
+				<div class="row"><p id="timelineText"></p></div>
+				<div class="row">
+					<div class="slide sliderTimeline"></div>
+				</div>
+			</div>
+
+		</div>
+	</div><!-- end bottom -->
 
 	
 </div><!-- end wrapper -->

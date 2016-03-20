@@ -21,126 +21,265 @@
 	<link rel="stylesheet" href="css/core.css"/>
 	<script src="js/antarctic-epsg3031.js"></script>
 	
+	<link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+	
 	<!-- css style -->
-	<style></style>
+	<style>
+		#sidebar {
+			height: 50%;
+		}
+		#sidebarChild {
+			height: 100%;
+			width: 100%;
+			overflow: auto;
+			padding-right: 15px;
+			margin: 0;
+			font-size: 1.2em;
+		}
+		#sidebarChild .content1 {
+			height: 100%;
+			width: 100%;
+			overflow: hidden;
+		}
+		.bottomRight {
+			z-index: 5;
+			position: absolute;
+			bottom: 150px;
+			right: 0;
+			background-color: rgba(0,0,0,0.5);
+			color: #fff;
+			text-align: right;
+			font-size: 3em;
+		}
+
+	</style>
 	
 </head>
 <body>
 <div class="background"></div>
 <div id="wrapper">
 
-	<div id="logo">
-		<img src="images/logoNSIDC.png" alt="logo" style="width:100px;height:100px;">
-		<img src="images/logoCU.png" alt="logo" style="width:100px;height:100px;">
+	<div id="content">
+		<div id="map"></div>
 	</div>
-
-	<div id="top">
-		
-		<div id="mapContainer">
-			<div id="map"></div>
-		</div>
-		
-		<div id="sidebar">
-							
-			<div class="row">
-				<div class="mutual">
-					<p>Frequency: 
-					<span id="darkText">
-					19<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>
-					22<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">
-					37<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">
-					85<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">
-					91<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">
-					</span>
-					</p>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="mutual">
-					<p>Polarization: 
-					<span id="darkText">
-					vertical<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked>
-					horizontal<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">
-					</span>
-					</p>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="mutual">
-					<p>Timeline Zoom: 
-					<span id="darkText">
-					days<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox" checked>
-					months<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">
-					</span>
-					</p>
-				</div>
-			</div>
-
-			<div class="row"><p>Rectangle Selection for Sub-Region</p></div>
-			<div class="row">
-				<p id="tempOutput"></p>
-				<button onclick="buttonDrawRectangle();">draw rectangle</button>
-				<button onclick="source.clear();">clear rectangle</button>
-			</div>
-			
-			<div class="row"><p>Yearly Pattern</p><p id="patternText"></p></div>
-			<div class="row">
-				<div class="slide sliderPattern"></div>
-			</div>
-			
-			<div class="row"><p>Range of Years</p><p id="yearsText"></p></div>
-			<div class="row">
-				<div class="slide sliderYears"></div>
-			</div>
-
-			<div class="row"><p>Query Threshold - Lower to Upper [Kelvin]</p><p id="thresholdText"></p></div>
-			<div class="row">
-				<div class="slide sliderThreshold"></div>
-			</div>
-
-			<div class="row">
-				<button class="btn thr" onclick="sendRequest(anomalyRequest, 0);">anomalies</button>
-				<button class="btn thr" onclick="sendRequest(anomalyRequest, 1);">aggregate</button>
-			</div>
-			
-			<div class="row"><p>Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
-			<div class="row">
-				<div class="slide sliderLayerOpacity"></div>
-			</div>
-			
-			<div class="row"><p>Climatology Opacity</p><p id="markerOpacityText"></p></div>
-			<div class="row">
-				<div class="slide sliderMarkerOpacity"></div>
-			</div>
-<!--		
-			<div class="row"><p>Heatmap Opacity</p><p id="heatmapOpacityText"></p></div>
-			<div class="row">
-				<div class="slide sliderHeatmapOpacity"></div>
-			</div>
+<!--
+	<div id="logo">
+		<img src="images/logoNSIDC.png" alt="logo" style="width:100px; height:100px;">
+		<img src="images/logoCU.png" alt="logo" style="width:100px; height:100px;">
+	</div>
 -->
+	<div id="sidebar" class="scroll">
+	<div id="sidebarChild">
 
-			<div class="row"><p>Results Opacity</p><p id="markerOpacityText"></p></div>
-			<div class="row">
-				<div class="slide sliderAnomalyOpacity"></div>
-			</div>
-			
-			<div class="row">
-				<button class="btn thr" onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">clear results</button>
-			</div>
-
-
-<!-- add back soon
-			<div class="row outputResultsBack">
-				<div id="outputResults"></div>
-			</div>
--->
-		
-		</div>
-	</div><!-- end top -->
+		<!--<div class="text">Anomaly Detection for Satellite Data</div>-->
 	
-	<div id="bottom">
+	<!--
+		<div class="row">
+			<p id="mouse-position">coordinates</p>
+		</div>
+	-->
+
+		<div>
+		<div class="container">
+			<div class="header"><span>Frequency</span></div>
+			<div class="content1">
+				<select multiple="multiple" name="sel" size="5">
+					<option value="1">91</option>
+					<option value="2">85</option>
+					<option value="3">37</option>
+					<option value="4">22</option>
+					<option value="5">19</option>
+				</select>
+			</div>
+
+			<div class="header"><span>Polarization</span></span></div>
+			<div class="content1">
+				<select multiple="multiple" name="sel" size="2">
+					<option value="1">vertical</option>
+					<option value="2">horizontal</option>
+				</select>
+			</div>
+
+			<div class="header"><span>Timeline Zoom</span></span></div>
+			<div class="content1">
+				<select name="sel" size="3">
+					<option>Days</option>
+					<option>Months</option>
+					<option>Years</option>
+				</select>
+			</div>
+			
+			<div class="header"><span>Select Subregion</span></span></div>
+			<div class="content1">
+				<select multiple="multiple" name="sel" size="5">
+					<option value="1">draw rectangle</option>
+					<option value="2">clear rectangle</option>
+				</select>
+			</div>
+
+			<div class="header"><span>Query Data</span></span></div>
+			<div class="content1">
+				  <select multiple="multiple" name="sel" size="5">
+					<option value="1">Anomalies by period</option>
+					<option value="2">Anomalies Aggregated</option>
+				  </select>
+			</div>
+			
+			<div class="header"><span>Query Data</span></span></div>
+			<div class="content1">
+				  <select multiple="multiple" name="sel" size="5">
+					<option value="1">Anomalies by period</option>
+					<option value="2">Anomalies Aggregated</option>
+				  </select>
+			</div>
+			
+			<div class="header"><span>Upper - Color Palette</span></span></div>
+			<div class="content1">
+				<img src="images/colors.png" alt="logo" style="width:175px;height:100px;">
+			</div>
+
+			<div class="header"><span>Lower - Color Palette</span></span></div>
+			<div class="content1">
+				<img src="images/colors.png" alt="logo" style="width:175px;height:100px;">
+			</div>
+			
+			<div class="header"><span>Results Histogram</span></span></div>
+			<div class="content1">
+				<img src="images/hist.jpg" alt="logo" style="width:175px;height:100px;">
+			</div>
+
+		</div>	
+		</div>
+
+<br>
+<hr>
+		<div id="row">
+			<p>Frequencies</p>
+			<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>19
+			<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">22
+			<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">37<br>
+			<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">85
+			<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">91
+		</div>
+<br>
+<hr>
+		<p>Polarization</p>
+		<div id="row">
+			<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked>Vertical<br>
+			<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">Horizontal
+		</div>
+<br>
+<hr>
+		<p>Timeline Zoom</p>
+		<div id="row">
+			<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox" checked>Day<br>
+			<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month<br>
+			<input id="chkYear" name="chkYear" type="checkbox" value="month" class="checkbox">Year
+		</div>
+<br>
+<hr>
+		<p>Rectangle Selection - draw box</p>
+		<div id="row">
+			<button onclick="buttonDrawRectangle();">draw rectangle</button>
+			<br>
+			<button onclick="source.clear();">clear rectangle</button> <!-- should only appear when rectangle is present -->
+		</div>
+<br>
+<hr>
+		<p>Rectangle Selection - manual input</p>
+		<div id="row">
+			<form action="update_coordinates.asp">
+				north: <input type="text" name="northCoordinate" value="-60.00"><br>
+				west: <input type="text" name="westCoordinate" value="-90.00"><br>
+				east: <input type="text" name="eastCoordinate" value="+90.00"><br>
+				south: <input type="text" name="southCoordinate" value="-60.00"><br>
+				<input type="submit" value="Submit">
+			</form>
+		</div>
+<br>
+<hr>
+		<p>Query Threshold - specify upper & lower bound</p>
+		<div id="row">
+			<div class="slide sliderThreshold"></div>
+		</div>
+<br>
+<hr>
+		<p>Anomaly Search</p>
+		<div id="row">
+			<button onclick="sendRequest(anomalyRequest, 0);">Daily Anomalies</button>
+			<br><br>
+			<button onclick="sendRequest(anomalyRequest, 1);">All Anomalies</button>
+			<br><br>
+			<button onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">clear results</button><!-- only show up if there are values drawn on the map -->
+		</div>
+<br>
+<hr>
+		<p>Start and End Years</p>
+		<div class="row">
+			<div class="slide sliderYears"></div>
+		</div>
+<br>
+		<p>Month Selection</p>
+		<div id="row">
+			<div class="slide sliderPattern"></div>
+		</div>
+<br>
+<hr>
+		<div class="row"><p>Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
+		<div class="row">
+			<div class="slide sliderLayerOpacity"></div>
+		</div>
+<br>
+		<div class="row"><p>Climatology Opacity</p><p id="markerOpacityText"></p></div>
+		<div class="row">
+			<div class="slide sliderMarkerOpacity"></div>
+		</div>
+<br>
+		<div class="row"><p>Results Opacity</p><p id="markerOpacityText"></p></div>
+		<div class="row">
+			<div class="slide sliderAnomalyOpacity"></div>
+		</div>
+<hr>
+<br>
+		<div class="row">
+			<div id="outputResults"></div>
+		</div>
+<hr>
+<br>
+
+<!--				
+		<p>Range of Years</p>
+		<div class="slide sliderYears"></div>
+
+
+		<p>Baseline Image Opacity</p>
+		<div class="slide sliderLayerOpacity"></div>
+		
+		<p>Climatology Opacity</p>
+		<div class="slide sliderMarkerOpacity"></div>
+		
+		<p>Results Opacity</p>
+		<div class="slide sliderAnomalyOpacity"></div>
+		
+		<button onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">clear results</button>
+
+-->
+	</div>
+	</div><!-- end sidebar -->
+
+<!--	
+	<div id="timelineBox">
+		<div class="timelineBoxInternal">
+			<div class="slide sliderTimeline"></div>
+		</div>
+	</div>
+-->
+
+	<div class="bottomRight">
+		<p id="mouse-position">coordinates</p>
+	</div>
+	
+	<div id="bottomCenter">
 		<div id="timelineBox">
 			<div>
 				<div class="row"><p id="timelineText"></p></div>
@@ -150,8 +289,8 @@
 			</div>
 
 		</div>
-
 	</div><!-- end bottom -->
+
 	
 </div><!-- end wrapper -->
 
@@ -161,6 +300,27 @@
 <script type="text/javascript">
 	updateResults(anomalyRequest);
 </script>
+
+<script type="text/javascript">
+	$(".header").click(function () {
+
+    $header = $(this);
+    //getting the next element
+    $content = $header.next();
+    //open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
+    $content.slideToggle(500, function () {
+        //execute this after slideToggle is done
+        //change text of header based on visibility of content div
+        $header.text(function () {
+            //change text based on condition
+            // //return $content.is(":visible") ? "Collapse" : "Expand";
+        });
+    });
+
+	});
+</script>
+
+<!-- add google analytics -->
 <!-- ///////////////////////////////////////////////////////////////////////////////////// -->
 
 </body>

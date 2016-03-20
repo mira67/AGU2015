@@ -90,8 +90,7 @@ function updateMapAggregate(){
 				blueVectorSource.addFeature(iconFeature);
 			}
 		}
-		
-		
+			
 		map.addLayer(redVectorLayer);
 		map.addLayer(blueVectorLayer);
 		requestReturned = 0; // reset for next time
@@ -101,6 +100,52 @@ function updateMapAggregate(){
 	}
 } // end updateMapAggregate
 
+// need to work on this ...i just threw it in!
+function updateResults( anomalyRequest ){	
+	// determine frequency
+	if( $("#chk19").is(':checked') ){
+		frequency = "19";
+	} else if( $("#chk22").is(':checked') ){
+		frequency = "22";
+	} else if( $("#chk37").is(':checked') ){
+		frequency = "37";
+	} else if( $("#chk85").is(':checked') ){
+		frequency = "85";
+	} else if( $("#chk91").is(':checked') ){
+		frequency = "91";
+	}
+	
+	// determine polarization
+	if( $("#chkVertical").is(':checked') ){
+		polarization = "v";
+	} else if( $("#chkHorizontal").is(':checked') ){
+		polarization = "h";
+	}
+	
+	// determine timeline zoom
+	if( $("#chkDay").is(':checked') ){
+		timelineZoomLevel = "day";
+	} else if( $("#chkMonth").is(':checked') ){
+		timelineZoomLevel = "month";
+	} else if( $("#chkYear").is(':checked') ){
+		timelineZoomLevel = "year";
+	}
+	
+	startYear = $(".sliderYears").slider("values")[0];
+	endYear = $(".sliderYears").slider("values")[1];
+	startMonth = $(".sliderPattern").slider("values")[0] + 1;
+	endMonth = $(".sliderPattern").slider("values")[1] + 1;
+	
+	startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
+	endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
+
+	document.getElementById("outputResults").innerHTML =
+		"<p>" + dataSet + ", " + frequency + ", " + polarization + ", " + startDate + ", " + endDate + "<br>"
+		+ "dates: " + startDate + ", " + endDate + "<br>"
+		+ "coordinates top-left: " + boxCoordinates[0]["latitude"] + ",   " + boxCoordinates[0]["longitude"] + "<br>"
+		+ "coordinates bottom-right: " + boxCoordinates[1]["latitude"] + ",   " + boxCoordinates[1]["longitude"] + "<br>"
+		+ "</p>";
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -202,6 +247,7 @@ $(".sliderMarkerOpacity")
 	change: function( event, ui ){
 		//$("#markerOpacityText").text( ui.value );
 		$( imageLayer.setOpacity( ui.value ) );
+		console.log("ui.value" + ui.value);
 	}
 })
 .slider("pips", {
@@ -283,7 +329,7 @@ $(".sliderYears")
 		max: maxYear,
 		range: true,
 		step: 1,
-		values: [2001, 2003],
+		values: [1992, 1997],
 		//this gets a live reading of the value and prints it on the page
 		slide: function( event, ui ){
 			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
@@ -295,8 +341,9 @@ $(".sliderYears")
 		}
 	})
 	.slider("pips", {
-		rest: "label",
-		step: 3
+		first: 1987,
+		last: 2014,
+		rest: "pips"
 	})
 	.on("slidechange", function( event, ui ){
 		//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
@@ -333,7 +380,6 @@ $(".sliderThreshold")
 		min: 50,
 		max: 350,
 		range: true,
-		step: 10,
 		values: [50, 350],
 		slide: function( event, ui ){
 			$( updateResults( anomalyRequest ) );
@@ -343,8 +389,7 @@ $(".sliderThreshold")
 		}
 	})
 	.slider("pips", {
-		rest: "label",
-		step: 3
+		rest: false
 	})
 	.on("slidechange", function( event, ui ){
 		$( updateResults( anomalyRequest ) );
@@ -454,6 +499,7 @@ Date.prototype.addDays = function ( days ){
 	dat.setDate(dat.getDate() + days);
 	return dat;
 }
+
 function getDates( startDate, stopDate ){
 	var dateArray = new Array();
 	var currentDate = startDate;
@@ -516,7 +562,6 @@ for( i = 0; i < dateArray.length; i++ ){
 		});
 	}
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////

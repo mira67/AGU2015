@@ -41,17 +41,10 @@
 			width: 100%;
 			overflow: hidden;
 		}
-		.bottomRight {
-			z-index: 5;
-			position: absolute;
-			bottom: 150px;
-			right: 0;
-			background-color: rgba(0,0,0,0.5);
-			color: #fff;
-			text-align: right;
-			font-size: 3em;
-		}
 
+		#dailyAnomRes, #aggAnomRes {
+			color: #ffa500;
+		}
 	</style>
 	
 </head>
@@ -147,47 +140,45 @@
 			<div class="content1">
 				<img src="images/hist.jpg" alt="logo" style="width:175px;height:100px;">
 			</div>
-
 		</div>	
 		</div>
-
 <br>
 <hr>
 		<div id="row">
+			<center>
 			<p>Frequencies</p>
 			<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>19
 			<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">22
 			<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">37<br>
 			<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">85
 			<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">91
+			</center>
 		</div>
 <br>
 <hr>
-		<p>Polarization</p>
 		<div id="row">
+			<center>
+			<p>Polarization</p>
 			<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked>Vertical<br>
 			<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">Horizontal
+			</center>
 		</div>
 <br>
-<hr>
-		<p>Timeline Zoom</p>
+<hr>	
 		<div id="row">
-			<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox" checked>Day<br>
-			<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month<br>
+			<center>
+			<p>Timeline Zoom</p>
+			<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox">Day
+			<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month
 			<input id="chkYear" name="chkYear" type="checkbox" value="month" class="checkbox">Year
+			</center>
 		</div>
 <br>
 <hr>
-		<p>Rectangle Selection - draw box</p>
+		
 		<div id="row">
-			<button onclick="buttonDrawRectangle();">draw rectangle</button>
-			<br>
-			<button onclick="source.clear();">clear rectangle</button> <!-- should only appear when rectangle is present -->
-		</div>
-<br>
-<hr>
-		<p>Rectangle Selection - manual input</p>
-		<div id="row">
+			<center>
+			<p>Rectangle Selection - manual input</p>
 			<form action="update_coordinates.asp">
 				north: <input type="text" name="northCoordinate" value="-60.00"><br>
 				west: <input type="text" name="westCoordinate" value="-90.00"><br>
@@ -195,56 +186,90 @@
 				south: <input type="text" name="southCoordinate" value="-60.00"><br>
 				<input type="submit" value="Submit">
 			</form>
+			</center>
 		</div>
 <br>
 <hr>
-		<p>Query Threshold - specify upper & lower bound</p>
 		<div id="row">
+			<center>
+			<p>Query Threshold<br>[ specify upper & lower bound ]</p>
 			<div class="slide sliderThreshold"></div>
+			</center>
 		</div>
 <br>
 <hr>
-		<p>Anomaly Search</p>
 		<div id="row">
-			<button onclick="sendRequest(anomalyRequest, 0);">Daily Anomalies</button>
-			<br><br>
-			<button onclick="sendRequest(anomalyRequest, 1);">All Anomalies</button>
-			<br><br>
-			<button onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">clear results</button><!-- only show up if there are values drawn on the map -->
+			<center>
+			<p>Rectangle Selection - draw box</p>
+			<button onclick="buttonDrawRectangle();">draw rectangle</button>
+			<br>
+			<button onclick="source.clear();">clear rectangle</button> <!-- should only appear when rectangle is present -->
+			</center>
 		</div>
 <br>
 <hr>
-		<p>Start and End Years</p>
+		
+		<div id="row">
+			<center>
+			<p>Anomaly Search</p>
+			<button onclick="sendRequest(anomalyRequest, 0);">Find Daily Anomalies</button>
+			<p id="dailyAnomRes"></p>
+			<button>previous day</button>
+			<button>next day</button><br>
+			<br><hr>
+			<button onclick="sendRequest(anomalyRequest, 1);">View All Anomalies</button>
+			<p id="aggAnomRes"></p>
+			<hr><br>
+			<button onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">clear results from map</button><!-- only show up if there are values drawn on the map -->
+			
+			</center>
+		</div>
+<br>
+<hr>
 		<div class="row">
-			<div class="slide sliderYears"></div>
+				<center><p>Start and End Years<br>[ moved to bottom of page ]</p></center>
+			
+			<!-- <div class="slide sliderYears"></div> -->
 		</div>
 <br>
-		<p>Month Selection</p>
 		<div id="row">
+		<center>
+			<p>Month Selection</p>
 			<div class="slide sliderPattern"></div>
+			<p><br>jan | feb | mar | apr | may | jun<br>
+			jul | aug | sep | oct | nov | dec</p>
+		</center>
 		</div>
 <br>
 <hr>
+<center>
 		<div class="row"><p>Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
 		<div class="row">
 			<div class="slide sliderLayerOpacity"></div>
 		</div>
+</center>
 <br>
+<center>
 		<div class="row"><p>Climatology Opacity</p><p id="markerOpacityText"></p></div>
 		<div class="row">
 			<div class="slide sliderMarkerOpacity"></div>
 		</div>
+</center>
 <br>
+<center>
 		<div class="row"><p>Results Opacity</p><p id="markerOpacityText"></p></div>
 		<div class="row">
 			<div class="slide sliderAnomalyOpacity"></div>
 		</div>
+</center>
 <hr>
+<!--
 <br>
 		<div class="row">
 			<div id="outputResults"></div>
 		</div>
 <hr>
+-->
 <br>
 
 <!--				
@@ -278,13 +303,15 @@
 	<div class="bottomRight">
 		<p id="mouse-position">coordinates</p>
 	</div>
+
 	
 	<div id="bottomCenter">
 		<div id="timelineBox">
 			<div>
 				<div class="row"><p id="timelineText"></p></div>
 				<div class="row">
-					<div class="slide sliderTimeline"></div>
+					<div class="slide sliderYears"></div>
+					<!--<div class="slide sliderTimeline"></div>-->
 				</div>
 			</div>
 

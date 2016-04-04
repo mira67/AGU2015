@@ -12,6 +12,8 @@ function updateMap(){
 	// wait for response
 	if( ( requestReturned == 1 ) && ( anomalyResponse.length !== 0 ) ){
 // need to reset request returned at some point
+		document.getElementById("dailyAnomRes").innerHTML = anomalyResponse.length + " anomalies found!";
+
 		firstAnomaly = new Date(0);
 		firstAnomaly.setUTCSeconds( anomalyResponse[0]["date"] / 1000 );
 
@@ -61,9 +63,10 @@ function updateMapAggregate(){
 	if( ( requestReturned == 1 ) && ( aggregateAnomalyResponse.length !== 0 ) ){
 // need to reset request returned at some point
 		console.log("...with " + aggregateAnomalyResponse.length + " anomalies.")
+		document.getElementById("aggAnomRes").innerHTML = aggregateAnomalyResponse.length + " anomalies found!";
 		
 		source.clear();
-			
+		
 		for(var k = 0; k < aggregateAnomalyResponse.length; k++){
 			
 			if( k == 0 ){
@@ -295,7 +298,7 @@ $(".sliderAnomalyOpacity")
 	min: 0,
 	max: 1,
 	step: 0.05,
-	value: 0.25,
+	value: 0.75,
 	slide: function( event, ui ){
 		//$("#markerOpacityText").text( ui.value );
 		$( redVectorLayer.setOpacity( ui.value ) );
@@ -322,12 +325,34 @@ $(".sliderAnomalyOpacity")
 });
 
 
+// slider for main timeline at bottom of page
+$(".sliderTimeline")
+	.slider({ 
+		min: sliderTimelineMin,
+		max: sliderTimelineMax,
+		step: sliderTimelineStep,
+		values: [sliderTimelineMin, sliderTimelineMax],
+		slide: function( event, ui ){
+			//$("#timelineText").text( ui.value );
+		},
+		change: function( event, ui ){
+			//$("#timelineText").text( ui.value );
+		}
+	})
+	.slider("pips", {
+		rest: "label",
+		step: 1
+	})
+	.on("slidechange", function( event ,ui ){
+		//$("#timelineText").text( ui.value );
+		$( updateResults( anomalyRequest ) );
+});
+
 // user input of the date
 $(".sliderYears")
 	.slider({
 		min: minYear,
 		max: maxYear,
-		range: true,
 		step: 1,
 		values: [1992, 1997],
 		//this gets a live reading of the value and prints it on the page
@@ -341,9 +366,8 @@ $(".sliderYears")
 		}
 	})
 	.slider("pips", {
-		first: 1987,
-		last: 2014,
-		rest: "pips"
+		rest: "label",
+		step: 1
 	})
 	.on("slidechange", function( event, ui ){
 		//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
@@ -397,28 +421,6 @@ $(".sliderThreshold")
 
 
 
-// slider for main timeline at bottom of page
-$(".sliderTimeline")
-	.slider({ 
-		min: sliderTimelineMin,
-		max: sliderTimelineMax,
-		step: sliderTimelineStep,
-		values: [sliderTimelineMin, sliderTimelineMax],
-		slide: function( event, ui ){
-			//$("#timelineText").text( ui.value );
-		},
-		change: function( event, ui ){
-			//$("#timelineText").text( ui.value );
-		}
-	})
-	.slider("pips", {
-		rest: "label",
-		step: 1
-	})
-	.on("slidechange", function( event ,ui ){
-		//$("#timelineText").text( ui.value );
-		$( updateResults( anomalyRequest ) );
-});
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////

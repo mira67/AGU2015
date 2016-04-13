@@ -21,6 +21,42 @@
 		margin: 10px;
 	}
 	.sliderYears { margin: 20px; }
+	
+	/* Center the loader */
+#loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#searchImage {
+  display: none;
+  text-align: center;
+}
+#loader {
+	display: none;
+}
 	</style>
 	
 </head>
@@ -32,6 +68,7 @@
 	<p>Timer</p>
 	<div id="currentTime"></div>
 	<button onclick="searchDatabase();">Search Database</button>
+	<div id="loader"></div>
 	<div id="searchImage"></div>
 </div>
 
@@ -147,6 +184,8 @@
 		startYear = Math.min($(".sliderYears").slider("values")[0], $(".sliderYears").slider("values")[1]);
 		endYear = Math.max($(".sliderYears").slider("values")[0], $(".sliderYears").slider("values")[1]);
 		//
+		console.log("start: " + startYear);
+		console.log("start: " + startYear);
 		//startMonth = $(".sliderPattern").slider("values")[0] + 1;
 		//endMonth = $(".sliderPattern").slider("values")[1] + 1;
 		
@@ -283,8 +322,17 @@ console.log("requestDate: " + aReq.getDate() + " "+ (aReq.getMonth()+1) + " " + 
 var searchImage = new Image();
 searchImage.src = "images/penguinSearch.gif";
 function searchDatabase(){
-	document.getElementById("searchImage").appendChild(searchImage);
+	//document.getElementById("searchImage").appendChild(searchImage);
 	// sleep random
+	document.getElementById("loader").style.display = "block";
+	myVar = setTimeout(showImage, 2000);
+	document.getElementById("loader").style.display = "none";
+}
+
+function showPage() {
+  document.getElementById("loader").style.display = "none";
+  //document.getElementById("searchImage").style.display = "block";
+  document.getElementById("searchImage").appendChild(searchImage);
 }
 
 function startTimer() {

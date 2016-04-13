@@ -45,6 +45,49 @@
 		#dailyAnomRes, #aggAnomRes {
 			color: #ffa500;
 		}
+		
+		.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0.2;
+    transition: opacity 1s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+	.ui-slider-label {
+		color: rgb(255, 255, 255);
+	}
 	</style>
 	
 </head>
@@ -100,6 +143,27 @@
 					<option>Months</option>
 					<option>Years</option>
 				</select>
+				
+				<!-- day month year -->
+				<div id="tile">
+					<form autocomplete="off">
+						<div class="mx-button">
+							<input type="radio" name="timelineZoom" id="day" checked>
+							<label for="day">day</label>
+						</div>
+						<div class="mx-button">
+							<input type="radio" name="timelineZoom" id="month">
+							<label for="month">month</label>
+						</div>
+						<div class="mx-button">
+							<input type="radio" name="timelineZoom" id="year">
+							<label for="year">year</label>
+						</div>
+						<p id="timelineZoomSelection"></p>
+					</form>
+				</div>
+
+				
 			</div>
 			
 			<div class="header"><span>Select Subregion</span></span></div>
@@ -158,7 +222,8 @@
 <hr>
 		<div id="row">
 			<center>
-			<p>Polarization</p>
+			<div class="tooltip"><p>Polarization</p><span class="tooltiptext">Polarization is the orientation in which the waves oscillate</span></div>
+			<br>
 			<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked>Vertical<br>
 			<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">Horizontal
 			</center>
@@ -167,7 +232,8 @@
 <hr>	
 		<div id="row">
 			<center>
-			<p>Timeline Zoom</p>
+			<div class="tooltip"><p>Timeline Zoom</p><span class="tooltiptext">Changes the level of zoom that the data can be explorered</span></div>
+			<br>
 			<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox">Day
 			<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month
 			<input id="chkYear" name="chkYear" type="checkbox" value="month" class="checkbox">Year

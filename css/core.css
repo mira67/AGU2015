@@ -34,17 +34,16 @@ body {
 	margin: 0; padding: 0;
 	height: 100%;
 }
-/*
+
 #logo {
 	position: absolute;
-	z-index: 2;
+	z-index: 6;
 	top: 10px;
-	left: 10px;
+	right: 80px;
 }
 #logo img {
 	margin: 10px 0px 0px 10px;
 }
-*/
 #sidebar {
 	position: absolute;
 	z-index: 3;
@@ -65,14 +64,32 @@ body {
 	height: 100px;
 }
 */
+#nameTimelineBox {
+	position: absolute;
+	z-index: 4;
+	bottom: 20px;
+	left: 20px;
+	width: 80px;
+	height: 60px;
+	background-color: rgba(0,0,0,0.5);
+	border: white 1px solid;
+}
+#nameTimelineBoxText {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #00BFFF;
+	font-size: 1.5em;
+}
 #timelineBox {
 	position: absolute;
 	z-index: 3;
 	bottom: 20px;
-	left: 20px;
+	left: 120px;
 	right: 20px;
 	height: 60px;
 	background-color: rgba(0,0,0,0.5);
+	border: white 1px solid;
 }
 .timelineBoxInternal {
 	position: relative;
@@ -104,11 +121,14 @@ p {
 	position: absolute;
 	bottom: 90px;
 	right: 20px;
+	width: 200px;
+	height: 70px;
 	background-color: rgba(0,0,0,0.5);
-	color: #fff;
-	text-align: right;
-	font-size: 2em;
-	padding: 10px;
+	font-size: 1.5em;
+}
+.bottomRightText {
+	color: #00BFFF;
+	margin: 5px;
 }
 
 .outputResultsBack {

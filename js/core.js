@@ -216,7 +216,7 @@ $(".sliderLayerOpacity")
 	min: 0,
 	max: 1,
 	step: 0.05,
-	value: 0.5,
+	value: 1.0,
 	slide: function( event, ui ){
 		//$("#layerOpacityText").text( ui.value );
 		$( layerBaseMap.setOpacity( ui.value) );
@@ -242,7 +242,7 @@ $(".sliderMarkerOpacity")
 	min: 0,
 	max: 1,
 	step: 0.05,
-	value: 0.75,
+	value: 0.0,
 	slide: function( event, ui ){
 		//$("#markerOpacityText").text( ui.value );
 		$( imageLayer.setOpacity( ui.value ) );

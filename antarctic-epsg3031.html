@@ -47,47 +47,88 @@
 		}
 		
 		.tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
-}
-
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 200px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -100px;
-    opacity: 0.2;
-    transition: opacity 1s;
-}
-
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-}
-
-	.ui-slider-label {
-		color: rgb(255, 255, 255);
-	}
+			position: relative;
+			display: inline-block;
+			border-bottom: 1px dotted black;
+		}
+		.tooltip .tooltiptext {
+			visibility: hidden;
+			width: 200px;
+			background-color: #555;
+			color: #fff;
+			text-align: center;
+			border-radius: 6px;
+			padding: 5px 0;
+			position: absolute;
+			z-index: 1;
+			bottom: 125%;
+			left: 50%;
+			margin-left: -100px;
+			opacity: 0.2;
+			transition: opacity 1s;
+		}
+		.tooltip .tooltiptext::after {
+			content: "";
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			margin-left: -5px;
+			border-width: 5px;
+			border-style: solid;
+			border-color: #555 transparent transparent transparent;
+		}
+		.tooltip:hover .tooltiptext {
+			visibility: visible;
+			opacity: 1;
+		}
+		.ui-slider-label {
+			color: rgb(255, 255, 255);
+		}
+		
+		.myButton {
+			-moz-box-shadow:inset 0px 1px 0px 0px #bee2f9;
+			-webkit-box-shadow:inset 0px 1px 0px 0px #bee2f9;
+			box-shadow:inset 0px 1px 0px 0px #bee2f9;
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #63b8ee), color-stop(1, #468ccf));
+			background:-moz-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+			background:-webkit-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+			background:-o-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+			background:-ms-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+			background:linear-gradient(to bottom, #63b8ee 5%, #468ccf 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf',GradientType=0);
+			background-color:#63b8ee;
+			-moz-border-radius:6px;
+			-webkit-border-radius:6px;
+			border-radius:6px;
+			border:1px solid #3866a3;
+			display:inline-block;
+			cursor:pointer;
+			color:#ebf2fa;
+			font-family:Arial;
+			font-size:15px;
+			font-weight:bold;
+			padding:6px 24px;
+			text-decoration:none;
+			text-shadow:0px 1px 0px #7cacde;
+			margin: 5px;
+		}
+		.myButton:hover {
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #468ccf), color-stop(1, #63b8ee));
+			background:-moz-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+			background:-webkit-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+			background:-o-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+			background:-ms-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+			background:linear-gradient(to bottom, #468ccf 5%, #63b8ee 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee',GradientType=0);
+			background-color:#468ccf;
+		}
+		.myButton:active {
+			position:relative;
+			top:1px;
+		}
+		#highlight {
+			color: #00BFFF;
+		}
 	</style>
 	
 </head>
@@ -98,12 +139,12 @@
 	<div id="content">
 		<div id="map"></div>
 	</div>
-<!--
+
 	<div id="logo">
-		<img src="images/logoNSIDC.png" alt="logo" style="width:100px; height:100px;">
-		<img src="images/logoCU.png" alt="logo" style="width:100px; height:100px;">
+		<img src="images/logoNSIDC.png" alt="logo" style="width:70px; height:70px;">
+		<img src="images/logoCU.png" alt="logo" style="width:70px; height:70px;">
 	</div>
--->
+
 	<div id="sidebar" class="scroll">
 	<div id="sidebarChild">
 
@@ -115,8 +156,10 @@
 		</div>
 	-->
 
+<!--
 		<div>
 		<div class="container">
+
 			<div class="header"><span>Frequency</span></div>
 			<div class="content1">
 				<select multiple="multiple" name="sel" size="5">
@@ -144,7 +187,7 @@
 					<option>Years</option>
 				</select>
 				
-				<!-- day month year -->
+	
 				<div id="tile">
 					<form autocomplete="off">
 						<div class="mx-button">
@@ -204,13 +247,16 @@
 			<div class="content1">
 				<img src="images/hist.jpg" alt="logo" style="width:175px;height:100px;">
 			</div>
+
 		</div>	
 		</div>
+-->
+
 <br>
 <hr>
 		<div id="row">
 			<center>
-			<p>Frequencies</p>
+			<p id="highlight">Frequencies</p>
 			<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>19
 			<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">22
 			<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">37<br>
@@ -222,7 +268,7 @@
 <hr>
 		<div id="row">
 			<center>
-			<div class="tooltip"><p>Polarization</p><span class="tooltiptext">Polarization is the orientation in which the waves oscillate</span></div>
+			<div class="tooltip"><p id="highlight">Polarization</p><span class="tooltiptext">Polarization is the orientation in which the waves oscillate</span></div>
 			<br>
 			<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked>Vertical<br>
 			<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">Horizontal
@@ -232,7 +278,7 @@
 <hr>	
 		<div id="row">
 			<center>
-			<div class="tooltip"><p>Timeline Zoom</p><span class="tooltiptext">Changes the level of zoom that the data can be explorered</span></div>
+			<div class="tooltip"><p id="highlight">Timeline Zoom</p><span class="tooltiptext">Changes the level of zoom that the data can be explorered</span></div>
 			<br>
 			<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox">Day
 			<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month
@@ -244,7 +290,7 @@
 		
 		<div id="row">
 			<center>
-			<p>Rectangle Selection - manual input</p>
+			<p id="highlight">Rectangle Selection - manual input</p>
 			<form action="update_coordinates.asp">
 				north: <input type="text" name="northCoordinate" value="-60.00"><br>
 				west: <input type="text" name="westCoordinate" value="-90.00"><br>
@@ -258,49 +304,48 @@
 <hr>
 		<div id="row">
 			<center>
-			<p>Query Threshold<br>[ specify upper & lower bound ]</p>
+			<p id="highlight">Query Threshold<br>[ specify upper & lower bound ]</p>
 			<div class="slide sliderThreshold"></div>
 			</center>
 		</div>
-<br>
 <hr>
 		<div id="row">
 			<center>
-			<p>Rectangle Selection - draw box</p>
-			<button onclick="buttonDrawRectangle();">draw rectangle</button>
-			<br>
-			<button onclick="source.clear();">clear rectangle</button> <!-- should only appear when rectangle is present -->
+			<p id="highlight">Rectangle Selection - draw box</p>
+			<!--<button onclick="buttonDrawRectangle();">draw rectangle</button>-->
+			<a href="#" class="myButton" onclick="buttonDrawRectangle();">draw rectangle</a>
+			<!--<button onclick="source.clear();">clear rectangle</button>--> <!-- should only appear when rectangle is present -->
+			<a href="#" class="myButton" onclick="source.clear();">clear rectangle</a>
 			</center>
 		</div>
-<br>
 <hr>
 		
 		<div id="row">
 			<center>
-			<p>Anomaly Search</p>
-			<button onclick="sendRequest(anomalyRequest, 0);">Find Daily Anomalies</button>
+			<p id="highlight">Anomaly Search</p>
+			<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Find Daily Anomalies</a>
 			<p id="dailyAnomRes"></p>
-			<button>previous day</button>
-			<button>next day</button><br>
-			<br><hr>
-			<button onclick="sendRequest(anomalyRequest, 1);">View All Anomalies</button>
+			<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Previous</a> | 
+			<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Next</a>
+			<hr>
+			<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 1);">View All Anomalies</a>
 			<p id="aggAnomRes"></p>
 			<hr><br>
-			<button onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">clear results from map</button><!-- only show up if there are values drawn on the map -->
+			<a href="#" class="myButton" onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">Clear Results from Map</a>
 			
 			</center>
 		</div>
 <br>
 <hr>
 		<div class="row">
-				<center><p>Start and End Years<br>[ moved to bottom of page ]</p></center>
+				<center><p id="highlight">Start and End Years<br>[ moved to bottom of page ]</p></center>
 			
 			<!-- <div class="slide sliderYears"></div> -->
 		</div>
 <br>
 		<div id="row">
 		<center>
-			<p>Month Selection</p>
+			<p id="highlight">Month Selection</p>
 			<div class="slide sliderPattern"></div>
 			<p><br>jan | feb | mar | apr | may | jun<br>
 			jul | aug | sep | oct | nov | dec</p>
@@ -309,21 +354,21 @@
 <br>
 <hr>
 <center>
-		<div class="row"><p>Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
+		<div class="row"><p id="highlight">Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
 		<div class="row">
 			<div class="slide sliderLayerOpacity"></div>
 		</div>
 </center>
 <br>
 <center>
-		<div class="row"><p>Climatology Opacity</p><p id="markerOpacityText"></p></div>
+		<div class="row"><p id="highlight">Climatology Opacity</p><p id="markerOpacityText"></p></div>
 		<div class="row">
 			<div class="slide sliderMarkerOpacity"></div>
 		</div>
 </center>
 <br>
 <center>
-		<div class="row"><p>Results Opacity</p><p id="markerOpacityText"></p></div>
+		<div class="row"><p id="highlight">Results Opacity</p><p id="markerOpacityText"></p></div>
 		<div class="row">
 			<div class="slide sliderAnomalyOpacity"></div>
 		</div>
@@ -367,15 +412,23 @@
 -->
 
 	<div class="bottomRight">
-		<p id="mouse-position">coordinates</p>
+		<div class="bottomRightText">
+			<center>
+			<span id="mouse-position">coordinates</span>
+			</center>
+		</div>
 	</div>
 
 	
 	<div id="bottomCenter">
+		<div id="nameTimelineBox">
+			<div id="nameTimelineBoxText">
+				<center>YEAR</center>
+			</div>
+		</div>
 		<div id="timelineBox">
 			<div>
-				<div class="row"><p id="timelineText"></p></div>
-				<div class="row">
+				<div class="row">
 					<div class="slide sliderYears"></div>
 					<!--<div class="slide sliderTimeline"></div>-->
 				</div>

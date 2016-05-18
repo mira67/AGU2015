@@ -63,6 +63,9 @@
 #block { margin: 10px; overflow: auto;  }
 .node:hover { background-color: pink; }
 .node:active { background-color: red; }
+
+
+<!-- width: calc(100% - 300px); -->
 	</style>
 	
 </head>
@@ -368,27 +371,25 @@ function checkTime(i) {
     return i;
 }
 //////////////////////////////////////////////////////////////////					
-
-
+/// key binding to help traverse timeline
+increment = 0;
 $(document).keydown(function(e){
     if( e.which == 37 ){
-		document.getElementById('keyPressed').innerHTML = "left";
-    } else if( e.which == 38 ){
-		document.getElementById('keyPressed').innerHTML = "up";
+		//document.getElementById('keyPressed').innerHTML = "left";
+		increment = increment - 1;
 	} else if( e.which == 39 ){
-		document.getElementById('keyPressed').innerHTML = "right";
-	} else if( e.which == 40 ){
-		document.getElementById('keyPressed').innerHTML = "down";
-	} else if( e.which == 13 ){
-		document.getElementById('keyPressed').innerHTML = "enter";
-	} else {
-		document.getElementById('keyPressed').innerHTML = "NA";
+		//document.getElementById('keyPressed').innerHTML = "right";
+		increment = increment + 1;
 	}
+	document.getElementById('keyPressed').innerHTML = increment;
 });
 
 $('body').keyup(function (event) {
   console.log(event.keyCode);
 });
+
+// to change the color using class
+// document.getElementsByClassName("node")[1].style.backgroundColor = "red";
 
 	
 </script>

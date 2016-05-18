@@ -12,9 +12,50 @@
 	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
 
+	<script type="text/javascript">
+	days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+	months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+	timelineZoom = "day";
+	minYear = 1987;
+	startYear = 1990;
+	maxYear = 2014;
+	endYear = 1992;
+	
+	dataSet = "SSMI";
+	frequency = "19";
+	polarization = "h";
+	
+	increment = 0; // holder for which day to highlight
+	
+	// @param {int} The month number, 0 based
+	// @param {int} The year, not zero based, required to account for leap years
+	// @return {Date[]} List with date objects for each day of the month
+	function getDaysInMonth( month, year ){
+		var date = new Date(year, month, 1);
+		var days = [];
+		while( date.getMonth() === month ){
+			days.push(new Date(date));
+			date.setDate(date.getDate() + 1);
+		}
+		return days;
+	}
+	// @param {int} The year, not zero based, required to account for leap years
+	// @return {Date[]} List with date objects for each day of the year
+	function getDaysInYear( year ) {
+		var date = new Date(year, 0, 1);
+		var days = [];
+		while( date.getFullYear() === year ){
+			days.push( new Date(date) );
+			date.setDate( date.getDate() + 1 );
+		}
+		return days;
+	}
+
+	</script>
 	
 	<!-- css style -->
 	<style>
+	body { background-color: grey; }
 	#tile {
 		border: 1px solid black;
 		outline-color: blue;
@@ -58,12 +99,14 @@
 	display: none;
 }
 
-.node { height: 50px; width: 10px; background-color: blue; margin-right: 1px;}
+.node { height: 40px; width: 3px; background-color: #00BFFF; margin-right: 1px; }
+.nodeSpacer { height: 50px; width: 1px; background-color: black; margin-right: 1px; }
 #block .node { float: left; }
+//#block .nodeSpacer { float: left; }
 #block { margin: 10px; overflow: auto;  }
-.node:hover { background-color: pink; }
-.node:active { background-color: red; }
-
+#monthName { font-size: 0.9em; float: left; }
+.node:hover { background-color: white; }
+.node:active { background-color: pink; }
 
 <!-- width: calc(100% - 300px); -->
 	</style>
@@ -78,16 +121,22 @@
 </div>
 
 <script type="text/javascript">
-	function multiplyNodes(){
-		for( var i = 0; i < 100; i++ ){
+	function multiplyNodes( ){
+		// accommodates leap years to determine the number of days in year
+		arrayOfDays = getDaysInYear(startYear)
+		for( var i = 0; i < arrayOfDays.length; i++ ){
+			if( arrayOfDays[i].getDate() === 1 ){
+				//$("#block").append('<div class="nodeSpacer" id="node' + i + '"></div>');
+				$("#block").append('<p id="monthName">' + months[arrayOfDays[i].getMonth()] + '</p>' );
+			}
 			$("#block").append('<div class="node" id="node' + i + '"></div>');
 		}
 	}
-	multiplyNodes();
+	multiplyNodes(); // outputs the timeline of days in a year partitioned by months
 </script>
 
 <div id="tile">
-	<div id="keyPressed">NA</div>
+	<div id="keyPressed">0</div>
 </div>
 
 <div id="tile">
@@ -153,17 +202,6 @@
 
 <script type="text/javascript">
 
-	days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-	months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-	timelineZoom = "day";
-	minYear = 1987;
-	startYear = 1990;
-	maxYear = 2014;
-	endYear = 1992;
-	
-	dataSet = "SSMI";
-	frequency = "19";
-	polarization = "h";
 	
 	startDate = startYear + "-01-01";
 	endDate = endYear + "-12-31";
@@ -372,24 +410,34 @@ function checkTime(i) {
 }
 //////////////////////////////////////////////////////////////////					
 /// key binding to help traverse timeline
-increment = 0;
+
 $(document).keydown(function(e){
+	document.getElementsByClassName("node")[increment].style.backgroundColor = "blue"
     if( e.which == 37 ){
 		//document.getElementById('keyPressed').innerHTML = "left";
 		increment = increment - 1;
+		if( increment < 0 ){
+			increment = 0;
+		}
 	} else if( e.which == 39 ){
 		//document.getElementById('keyPressed').innerHTML = "right";
 		increment = increment + 1;
+		if( increment > (document.getElementsByClassName("node").length - 1) ){
+			increment = (document.getElementsByClassName("node").length - 1);
+		}
 	}
 	document.getElementById('keyPressed').innerHTML = increment;
+	document.getElementsByClassName("node")[increment].style.backgroundColor = "pink"
 });
 
 $('body').keyup(function (event) {
-  console.log(event.keyCode);
+  //console.log(event.keyCode);
 });
 
 // to change the color using class
 // document.getElementsByClassName("node")[1].style.backgroundColor = "red";
+
+
 
 	
 </script>

@@ -1,19 +1,18 @@
 <!doctype html>
 <html>
 <head>
-	<meta charset="utf-8">
+<meta charset="utf-8">
+<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"><!-- tell robots to go away! -->
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
-	
-    <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
-    <script src="js/jquery-ui-slider-pips.js"></script>
-	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
-	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script src="js/jquery-ui-slider-pips.js"></script>
 
-	<script type="text/javascript">
-	days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
+
+<script type="text/javascript">
+	<!--days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];-->
 	months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 	timelineZoom = "day";
 	minYear = 1987;
@@ -25,11 +24,9 @@
 	frequency = "19";
 	polarization = "h";
 	
-	increment = 0; // holder for which day to highlight
-	
-	// @param {int} The month number, 0 based
-	// @param {int} The year, not zero based, required to account for leap years
-	// @return {Date[]} List with date objects for each day of the month
+	increment = 0; // cursor for which day to highlight
+
+	// given month, return all days within that month
 	function getDaysInMonth( month, year ){
 		var date = new Date(year, month, 1);
 		var days = [];
@@ -39,8 +36,7 @@
 		}
 		return days;
 	}
-	// @param {int} The year, not zero based, required to account for leap years
-	// @return {Date[]} List with date objects for each day of the year
+	// given year, return all days within that year
 	function getDaysInYear( year ) {
 		var date = new Date(year, 0, 1);
 		var days = [];
@@ -50,11 +46,9 @@
 		}
 		return days;
 	}
-
-	</script>
-	
-	<!-- css style -->
-	<style>
+</script>
+<!-- css style -->
+<style>
 	body { background-color: grey; }
 	#tile {
 		border: 1px solid black;
@@ -64,52 +58,48 @@
 	.sliderYears { margin: 20px; }
 	
 	/* Center the loader */
-#loader {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  width: 150px;
-  height: 150px;
-  margin: -75px 0 0 -75px;
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
-}
+	#loader {
+	  position: absolute;
+	  left: 50%;
+	  top: 50%;
+	  z-index: 1;
+	  width: 150px;
+	  height: 150px;
+	  margin: -75px 0 0 -75px;
+	  border: 16px solid #f3f3f3;
+	  border-radius: 50%;
+	  border-top: 16px solid #3498db;
+	  width: 120px;
+	  height: 120px;
+	  -webkit-animation: spin 2s linear infinite;
+	  animation: spin 2s linear infinite;
+	}
 
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-#searchImage {
-  display: none;
-  text-align: center;
-}
-#loader {
-	display: none;
-}
-
-.node { height: 40px; width: 3px; background-color: #00BFFF; margin-right: 1px; }
-.nodeSpacer { height: 50px; width: 1px; background-color: black; margin-right: 1px; }
-#block .node { float: left; }
-//#block .nodeSpacer { float: left; }
-#block { margin: 10px; overflow: auto;  }
-#monthName { font-size: 0.9em; float: left; }
-.node:hover { background-color: white; }
-.node:active { background-color: pink; }
-
-<!-- width: calc(100% - 300px); -->
-	</style>
+	@-webkit-keyframes spin {
+	  0% { -webkit-transform: rotate(0deg); }
+	  100% { -webkit-transform: rotate(360deg); }
+	}
+	@keyframes spin {
+	  0% { transform: rotate(0deg); }
+	  100% { transform: rotate(360deg); }
+	}
+	#searchImage {
+	  display: none;
+	  text-align: center;
+	}
+	#loader {
+		display: none;
+	}
+	.node { height: 40px; width: 3px; background-color: #00BFFF; margin-right: 1px; }
+	.nodeSpacer { height: 50px; width: 1px; background-color: black; margin-right: 1px; }
+	#block .node { float: left; }
+	//#block .nodeSpacer { float: left; }
+	#block { margin: 10px; overflow: auto;  }
+	#monthName { font-size: 0.9em; float: left; }
+	.node:hover { background-color: white; }
+	.node:active { background-color: pink; }
+	<!-- width: calc(100% - 300px); -->
+</style>
 	
 </head>
 <body>
@@ -146,8 +136,6 @@
 	<div id="loader"></div>
 	<div id="searchImage"></div>
 </div>
-
-
 
 <!-- day month year -->
 <div id="tile">
@@ -426,7 +414,9 @@ $(document).keydown(function(e){
 			increment = (document.getElementsByClassName("node").length - 1);
 		}
 	}
-	document.getElementById('keyPressed').innerHTML = increment;
+	document.getElementById('keyPressed').innerHTML = startYear + " "
+		+ months[getDaysInYear(startYear)[increment].getMonth()] + " "
+		+ getDaysInYear(startYear)[increment].getDate();
 	document.getElementsByClassName("node")[increment].style.backgroundColor = "pink"
 });
 

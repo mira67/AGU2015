@@ -1,6 +1,4 @@
-html {
-	overflow: hidden;
-}
+html { overflow: hidden; }
 body {
 	font-family: 'Roboto', 'Helvetica', 'Arial', 'Sans Serif';
 	max-width: 100%;
@@ -19,7 +17,7 @@ body {
 	width: 100%;
 	height: 100%;
 	background-color: rgba(0, 0, 0, 0.5);
-}
+}	
 #content {
 	clear: left;
 	width: 100vw;
@@ -33,37 +31,29 @@ body {
 	background-size: cover;
 	margin: 0; padding: 0;
 	height: 100%;
+	background-color: #000;
 }
+/* controls the position of openlayers map zoom and attribute buttons */
+.ol-zoom { position: absolute; left: auto; right: 10px; top: 40px; }
+.ol-zoom button { background: rgba(40, 40, 40, 0.8); }
+.ol-zoom button:hover { background: rgb(255, 255, 255); color: rgb(40, 40, 40); }
+.ol-attribution { display: none; }
 
-#logo {
-	position: absolute;
-	z-index: 6;
-	top: 10px;
-	right: 80px;
-}
-#logo img {
-	margin: 10px 0px 0px 10px;
-}
+/* logo placement upper right */
+#logo { position: absolute; z-index: 6; top: 30px; right: 60px; }
+#logo img { margin: 10px 0px 0px 10px; }
+
+/* side scrollbar on left hand side */
 #sidebar {
 	position: absolute;
 	z-index: 3;
-	top: 40px;
+	top: 50px;
 	left: 20px;
 	width: 300px;
 	bottom: 20px;
 	background-color: rgba(0,0,0,0.5);
 	font-size: 1.2em;
 }
-/*
-#smallMap{
-	position: absolute;
-	z-index: 3;
-	top: 660px;
-	left: 20px;
-	width: 220px;
-	height: 100px;
-}
-*/
 #nameTimelineBox {
 	position: absolute;
 	z-index: 4;
@@ -96,12 +86,6 @@ body {
 	top: 50%;
 	transform: translateY(-50%);
 }
-.ol-zoom { /* controls the position of the zoom button */
-	position: absolute;
-	left: auto;
-	right: 20px;
-	top: 20px;
-}
 headsUp {
 	position: absolute;
 	left: auto;
@@ -109,13 +93,8 @@ headsUp {
 	top: 20px;
 
 }
-p {
-	color: #fff;
-	font-size: 0.7em;
-	/*text-align: center;
-	line-height: 80%;*/
-}
-/* output for coordinates */
+p {	color: #fff; font-size: 0.7em; }
+/* output for coordinates on bottom right */
 .bottomRight {
 	z-index: 5;
 	position: absolute;
@@ -126,11 +105,7 @@ p {
 	background-color: rgba(0,0,0,0.5);
 	font-size: 1.5em;
 }
-.bottomRightText {
-	color: #00BFFF;
-	margin: 5px;
-}
-
+.bottomRightText { color: #00BFFF; margin: 5px; }
 .outputResultsBack {
 	background-color: "#00FF00";
 	float: right;
@@ -144,12 +119,8 @@ p {
 	margin-left: 10px;
 	margin-right: 10px;
 }
-.row input{
-	float: left;
-}
-.slide {
-	margin: 0 2% 0 2%;
-}
+.row input{ float: left; }
+.slide { margin: 0 2% 0 2%; }
 .btn {
 	display: inline-block;
 	border-radius: 5px;
@@ -184,4 +155,83 @@ div.scroll {
 .container .content1 { display: none; padding: 0px; }
 label { display: block; rgba(0,0,0,0.5): Window; margin: 0; padding: 0; width: 100%; }
 .container { color: #fff; }
-/* end */
+
+.myButton {
+	-moz-box-shadow:inset 0px 1px 0px 0px #bee2f9;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #bee2f9;
+	box-shadow:inset 0px 1px 0px 0px #bee2f9;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #63b8ee), color-stop(1, #468ccf));
+	background:-moz-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+	background:-webkit-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+	background:-o-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+	background:-ms-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+	background:linear-gradient(to bottom, #63b8ee 5%, #468ccf 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf',GradientType=0);
+	background-color:#63b8ee;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #3866a3;
+	display:inline-block;
+	cursor:pointer;
+	color:#ebf2fa;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #7cacde;
+	margin: 5px;
+}
+.myButton:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #468ccf), color-stop(1, #63b8ee));
+	background:-moz-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+	background:-webkit-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+	background:-o-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+	background:-ms-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+	background:linear-gradient(to bottom, #468ccf 5%, #63b8ee 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee',GradientType=0);
+	background-color:#468ccf;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+
+/* need to fix tooltips because they suck */
+.tooltip {
+	position: relative;
+	display: inline-block;
+	border-bottom: 1px dotted black;
+}
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 200px;
+	background-color: #555;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 0;
+	position: absolute;
+	z-index: 1;
+	bottom: 125%;
+	left: 50%;
+	margin-left: -100px;
+	opacity: 0.2;
+	transition: opacity 1s;
+}
+.tooltip .tooltiptext::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: #555 transparent transparent transparent;
+}
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+	opacity: 1;
+}

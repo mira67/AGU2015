@@ -2,16 +2,17 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW"><!-- tell robots to go away! -->
+	<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"><!-- tell robots to go away! -->
+
 	<title>Antarctica</title>
 	<link rel="icon" type="image/png" href="images/antarctica.png">
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
-    <script src="js/jquery-ui-slider-pips.js"></script>
+	<script src="js/jquery-2.1.4.min.js"></script>
+	<script src="js/jquery-ui.js"></script>
+	<script src="js/jquery-ui-slider-pips.js"></script>
+
 	<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
-	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
+	<link rel="stylesheet" href="css/jquery-ui.css">
 
 	<script src="proj4js-2.3.3/proj4.js"></script>
 	<link rel="stylesheet" href="openlayers-3.8.2/ol.css"/>
@@ -42,9 +43,7 @@
 		}
 		.topLeftText h1 { margin: 5px; padding: 0px; }
 		
-		#sidebar {
-			height: 50%;
-		}
+		#sidebar { height: 50%; }
 		#sidebarChild {
 			height: 100%;
 			width: 100%;
@@ -58,225 +57,41 @@
 			width: 100%;
 			overflow: hidden;
 		}
+		
+		<!-- results from anomaly query -->
+		#dailyAnomRes, #aggAnomRes { color: #ffa500; }
 
-		#dailyAnomRes, #aggAnomRes {
-			color: #ffa500;
-		}
-		
-		.tooltip {
-			position: relative;
-			display: inline-block;
-			border-bottom: 1px dotted black;
-		}
-		.tooltip .tooltiptext {
-			visibility: hidden;
-			width: 200px;
-			background-color: #555;
-			color: #fff;
-			text-align: center;
-			border-radius: 6px;
-			padding: 5px 0;
-			position: absolute;
-			z-index: 1;
-			bottom: 125%;
-			left: 50%;
-			margin-left: -100px;
-			opacity: 0.2;
-			transition: opacity 1s;
-		}
-		.tooltip .tooltiptext::after {
-			content: "";
-			position: absolute;
-			top: 100%;
-			left: 50%;
-			margin-left: -5px;
-			border-width: 5px;
-			border-style: solid;
-			border-color: #555 transparent transparent transparent;
-		}
-		.tooltip:hover .tooltiptext {
-			visibility: visible;
-			opacity: 1;
-		}
-		.ui-slider-label {
-			color: rgb(255, 255, 255);
-		}
-		
-		.myButton {
-			-moz-box-shadow:inset 0px 1px 0px 0px #bee2f9;
-			-webkit-box-shadow:inset 0px 1px 0px 0px #bee2f9;
-			box-shadow:inset 0px 1px 0px 0px #bee2f9;
-			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #63b8ee), color-stop(1, #468ccf));
-			background:-moz-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
-			background:-webkit-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
-			background:-o-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
-			background:-ms-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
-			background:linear-gradient(to bottom, #63b8ee 5%, #468ccf 100%);
-			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf',GradientType=0);
-			background-color:#63b8ee;
-			-moz-border-radius:6px;
-			-webkit-border-radius:6px;
-			border-radius:6px;
-			border:1px solid #3866a3;
-			display:inline-block;
-			cursor:pointer;
-			color:#ebf2fa;
-			font-family:Arial;
-			font-size:15px;
-			font-weight:bold;
-			padding:6px 24px;
-			text-decoration:none;
-			text-shadow:0px 1px 0px #7cacde;
-			margin: 5px;
-		}
-		.myButton:hover {
-			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #468ccf), color-stop(1, #63b8ee));
-			background:-moz-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
-			background:-webkit-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
-			background:-o-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
-			background:-ms-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
-			background:linear-gradient(to bottom, #468ccf 5%, #63b8ee 100%);
-			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee',GradientType=0);
-			background-color:#468ccf;
-		}
-		.myButton:active {
-			position:relative;
-			top:1px;
-		}
-		#highlight {
-			color: #00BFFF;
-		}
+		.ui-slider-label { color: rgb(255, 255, 255); }
+		#highlight { color: #00BFFF; }
 	</style>
-	
 </head>
 <body>
 <div class="background"></div>
 <div id="wrapper">
 
+	<!-- openlayers3 map container -->
 	<div id="content">
 		<div id="map"></div>
 	</div>
 
-	<div id="logo">
-		<img src="images/logoNSIDC.png" alt="logo" style="width:70px; height:70px;">
-		<img src="images/logoCU.png" alt="logo" style="width:70px; height:70px;">
-	</div>
-
+	<!-- title bar along top of page -->
 	<div class="topLeft">
 		<div class="topLeftText">
-			<h1>Condensate Database</h1>
+			<h1>Condensate Database - Anomaly Detection for Satellite Data</h1>
 		</div>
 	</div>
 	
+	<!-- CU and NSIDC logos on top right -->
+	<div id="logo">
+		<img src="images/logoNSIDC.png" alt="logo" style="width:60px; height:60px;">
+		<img src="images/logoCU.png" alt="logo" style="width:60px; height:60px;">
+	</div>
+
+	<!-- scrollbar on the left hand side of the page -->
 	<div id="sidebar" class="scroll">
 	<div id="sidebarChild">
-
-		<!--<div class="text">Anomaly Detection for Satellite Data</div>-->
-	
-	<!--
-		<div class="row">
-			<p id="mouse-position">coordinates</p>
-		</div>
-	-->
-
-<!--
-		<div>
-		<div class="container">
-
-			<div class="header"><span>Frequency</span></div>
-			<div class="content1">
-				<select multiple="multiple" name="sel" size="5">
-					<option value="1">91</option>
-					<option value="2">85</option>
-					<option value="3">37</option>
-					<option value="4">22</option>
-					<option value="5">19</option>
-				</select>
-			</div>
-
-			<div class="header"><span>Polarization</span></span></div>
-			<div class="content1">
-				<select multiple="multiple" name="sel" size="2">
-					<option value="1">vertical</option>
-					<option value="2">horizontal</option>
-				</select>
-			</div>
-
-			<div class="header"><span>Timeline Zoom</span></span></div>
-			<div class="content1">
-				<select name="sel" size="3">
-					<option>Days</option>
-					<option>Months</option>
-					<option>Years</option>
-				</select>
-				
-	
-				<div id="tile">
-					<form autocomplete="off">
-						<div class="mx-button">
-							<input type="radio" name="timelineZoom" id="day" checked>
-							<label for="day">day</label>
-						</div>
-						<div class="mx-button">
-							<input type="radio" name="timelineZoom" id="month">
-							<label for="month">month</label>
-						</div>
-						<div class="mx-button">
-							<input type="radio" name="timelineZoom" id="year">
-							<label for="year">year</label>
-						</div>
-						<p id="timelineZoomSelection"></p>
-					</form>
-				</div>
-
-				
-			</div>
-			
-			<div class="header"><span>Select Subregion</span></span></div>
-			<div class="content1">
-				<select multiple="multiple" name="sel" size="5">
-					<option value="1">draw rectangle</option>
-					<option value="2">clear rectangle</option>
-				</select>
-			</div>
-
-			<div class="header"><span>Query Data</span></span></div>
-			<div class="content1">
-				  <select multiple="multiple" name="sel" size="5">
-					<option value="1">Anomalies by period</option>
-					<option value="2">Anomalies Aggregated</option>
-				  </select>
-			</div>
-			
-			<div class="header"><span>Query Data</span></span></div>
-			<div class="content1">
-				  <select multiple="multiple" name="sel" size="5">
-					<option value="1">Anomalies by period</option>
-					<option value="2">Anomalies Aggregated</option>
-				  </select>
-			</div>
-			
-			<div class="header"><span>Upper - Color Palette</span></span></div>
-			<div class="content1">
-				<img src="images/colors.png" alt="logo" style="width:175px;height:100px;">
-			</div>
-
-			<div class="header"><span>Lower - Color Palette</span></span></div>
-			<div class="content1">
-				<img src="images/colors.png" alt="logo" style="width:175px;height:100px;">
-			</div>
-			
-			<div class="header"><span>Results Histogram</span></span></div>
-			<div class="content1">
-				<img src="images/hist.jpg" alt="logo" style="width:175px;height:100px;">
-			</div>
-
-		</div>	
-		</div>
--->
-
-<br>
-<hr>
+		<br>
+		<hr>
 		<div id="row">
 			<center>
 			<p id="highlight">Frequencies</p>
@@ -287,8 +102,8 @@
 			<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">91
 			</center>
 		</div>
-<br>
-<hr>
+		<br>
+		<hr>
 		<div id="row">
 			<center>
 			<div class="tooltip"><p id="highlight">Polarization</p><span class="tooltiptext">Polarization is the orientation in which the waves oscillate</span></div>
@@ -297,8 +112,8 @@
 			<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">Horizontal
 			</center>
 		</div>
-<br>
-<hr>	
+		<br>
+		<hr>	
 		<div id="row">
 			<center>
 			<div class="tooltip"><p id="highlight">Timeline Zoom</p><span class="tooltiptext">Changes the level of zoom that the data can be explorered</span></div>
@@ -308,9 +123,8 @@
 			<input id="chkYear" name="chkYear" type="checkbox" value="month" class="checkbox">Year
 			</center>
 		</div>
-<br>
-<hr>
-		
+		<br>
+		<hr>		
 		<div id="row">
 			<center>
 			<p id="highlight">Rectangle Selection - manual input</p>
@@ -323,15 +137,15 @@
 			</form>
 			</center>
 		</div>
-<br>
-<hr>
+		<br>
+		<hr>
 		<div id="row">
 			<center>
 			<p id="highlight">Query Threshold<br>[ specify upper & lower bound ]</p>
 			<div class="slide sliderThreshold"></div>
 			</center>
 		</div>
-<hr>
+		<hr>
 		<div id="row">
 			<center>
 			<p id="highlight">Rectangle Selection - draw box</p>
@@ -341,8 +155,7 @@
 			<a href="#" class="myButton" onclick="source.clear();">clear rectangle</a>
 			</center>
 		</div>
-<hr>
-		
+		<hr>
 		<div id="row">
 			<center>
 			<p id="highlight">Anomaly Search</p>
@@ -358,82 +171,50 @@
 			
 			</center>
 		</div>
-<br>
-<hr>
+		<br>
+		<hr>
 		<div class="row">
-				<center><p id="highlight">Start and End Years<br>[ moved to bottom of page ]</p></center>
-			
-			<!-- <div class="slide sliderYears"></div> -->
+			<center>
+				<p id="highlight">Start and End Years<br>[ moved to bottom of page ]</p>
+			</center>
 		</div>
-<br>
+		<br>
 		<div id="row">
+			<center>
+				<p id="highlight">Month Selection</p>
+				<div class="slide sliderPattern"></div>
+				<p><br>jan | feb | mar | apr | may | jun<br>
+				jul | aug | sep | oct | nov | dec</p>
+			</center>
+		</div>
+		<br>
+		<hr>
 		<center>
-			<p id="highlight">Month Selection</p>
-			<div class="slide sliderPattern"></div>
-			<p><br>jan | feb | mar | apr | may | jun<br>
-			jul | aug | sep | oct | nov | dec</p>
+			<div class="row"><p id="highlight">Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
+			<div class="row">
+				<div class="slide sliderLayerOpacity"></div>
+			</div>
 		</center>
-		</div>
-<br>
-<hr>
-<center>
-		<div class="row"><p id="highlight">Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
-		<div class="row">
-			<div class="slide sliderLayerOpacity"></div>
-		</div>
-</center>
-<br>
-<center>
-		<div class="row"><p id="highlight">Climatology Opacity</p><p id="markerOpacityText"></p></div>
-		<div class="row">
-			<div class="slide sliderMarkerOpacity"></div>
-		</div>
-</center>
-<br>
-<center>
-		<div class="row"><p id="highlight">Results Opacity</p><p id="markerOpacityText"></p></div>
-		<div class="row">
-			<div class="slide sliderAnomalyOpacity"></div>
-		</div>
-</center>
-<hr>
-<!--
-<br>
-		<div class="row">
-			<div id="outputResults"></div>
-		</div>
-<hr>
--->
-<br>
-
-<!--				
-		<p>Range of Years</p>
-		<div class="slide sliderYears"></div>
-
-
-		<p>Baseline Image Opacity</p>
-		<div class="slide sliderLayerOpacity"></div>
-		
-		<p>Climatology Opacity</p>
-		<div class="slide sliderMarkerOpacity"></div>
-		
-		<p>Results Opacity</p>
-		<div class="slide sliderAnomalyOpacity"></div>
-		
-		<button onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">clear results</button>
-
--->
+		<br>
+		<center>
+				<div class="row"><p id="highlight">Climatology Opacity</p><p id="markerOpacityText"></p></div>
+				<div class="row">
+					<div class="slide sliderMarkerOpacity"></div>
+				</div>
+		</center>
+		<br>
+		<center>
+				<div class="row"><p id="highlight">Results Opacity</p><p id="markerOpacityText"></p></div>
+				<div class="row">
+					<div class="slide sliderAnomalyOpacity"></div>
+				</div>
+		</center>
+		<hr>
+		<br>
 	</div>
-	</div><!-- end sidebar -->
+	</div><!-- end left scrolling sidebar -->
 
-<!--	
-	<div id="timelineBox">
-		<div class="timelineBoxInternal">
-			<div class="slide sliderTimeline"></div>
-		</div>
-	</div>
--->
-
+	<!-- mouse coordinates bottom right -->
 	<div class="bottomRight">
 		<div class="bottomRightText">
 			<center>
@@ -442,7 +223,7 @@
 		</div>
 	</div>
 
-	
+	<!-- timeline box along bottom of page -->
 	<div id="bottomCenter">
 		<div id="nameTimelineBox">
 			<div id="nameTimelineBoxText">
@@ -450,13 +231,10 @@
 			</div>
 		</div>
 		<div id="timelineBox">
-			<div>
-				<div class="row">
-					<div class="slide sliderYears"></div>
-					<!--<div class="slide sliderTimeline"></div>-->
-				</div>
+			<div class="row">
+				<div class="slide sliderYears"></div>
+				<!--<div class="slide sliderTimeline"></div>-->
 			</div>
-
 		</div>
 	</div><!-- end bottom -->
 

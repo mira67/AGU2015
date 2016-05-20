@@ -21,7 +21,7 @@ window.onload = function() {
 			projection: ol.proj.get("EPSG:3031"),
 			extent: [-4194304, -4194304, 4194304, 4194304],
 			center: [0, 0],
-			zoom: 0,
+			zoom: 3,
 			maxZoom: 11,
 		}),
 		target: "map",
@@ -259,9 +259,9 @@ window.onload = function() {
 	});
 	map.addLayer(vector);
 
-
-// for drawing anomalies
-	vectorSource = new ol.source.Vector(); //create empty vec
+	// for drawing anomalies
+	vectorSource = new ol.source.Vector(); // empty vector
+	
 	//create the style
 	iconStyle = new ol.style.Style({
 		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
@@ -271,6 +271,7 @@ window.onload = function() {
 			src: 'images/greenMarker.jpg'
 		}))
 	});
+	
 	//add the feature vector to the layer vector, and apply a style to whole layer
 	vectorLayer = new ol.layer.Vector({
 		opacity: 0.25,
@@ -278,7 +279,7 @@ window.onload = function() {
 		style: iconStyle
 	});
 
-// for drawing aggregate results	
+	// for drawing aggregate results	
 	redVectorSource = new ol.source.Vector();
 	blueVectorSource = new ol.source.Vector();
 	//create the style for hot and then cold
@@ -299,6 +300,7 @@ window.onload = function() {
 		}))
 	});
 	
+	// red vs blue - anomalies inside and outside specified interval ...should change the outside to clear or grey
 	redVectorLayer = new ol.layer.Vector({
 		opacity: 0.25,
 		source: redVectorSource,

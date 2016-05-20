@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"><!-- tell robots to go away! -->
+
+	<title>Antarctica</title>
+	<link rel="icon" type="image/png" href="images/antarctica.png">
+
+	<script src="js/jquery-2.1.4.min.js"></script>
+	<script src="js/jquery-ui.js"></script>
+
+
+	<!-- css style -->
+	<style>
+		
+	</style>
+</head>
+<!-- ////////////////////////////////////////////////////////////////////// -->
+<body>
+
+<div id="wrapper">
+	<!-- title bar along top of page ✚ -->
+
+	<a class="box-toggle fl active" href="#">menu</a>
+	
+	<br>
+	
+	<div id="box-content active">
+		test test test
+	</div>
+	
+	<a class="box-toggle fl active" href="#">A</a>
+
+	<div class="box-content active">
+	  Content or collapsing data goes here
+	</div>
+	
+	<script type="text/javascript">
+		$("a.box-toggle").on('click', function(){
+			console.log("clicked");
+			$('div.box-content').slideToggle(400).toggleClass('active');
+		});
+	</script>
+	
+</div><!-- end wrapper -->
+<!-- ////////////////////////////////////////////////////////////////////// -->
+
+<!-- core js ...loaded after map class -->
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

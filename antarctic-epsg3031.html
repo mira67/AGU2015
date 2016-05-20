@@ -15,9 +15,8 @@
 	<link rel="stylesheet" href="css/jquery-ui.css">
 
 	<script src="proj4js-2.3.3/proj4.js"></script>
-	<link rel="stylesheet" href="openlayers-3.8.2/ol.css"/>
-	<link rel="stylesheet" href="css/example.css"/>
-	<script src="openlayers-3.8.2/ol.js"></script>
+	<link rel="stylesheet" href="openlayers-3.15.1/ol.css"/>
+	<script src="openlayers-3.15.1/ol.js"></script>
 
 	<!-- Place these declarations last so they overwrite previous -->
 	<link rel="stylesheet" href="css/core.css"/>
@@ -65,7 +64,7 @@
 			background-color: rgba(0,0,0,0.5);
 			font-size: 1.2em;
 			width: 300px;
-			height: 500px;
+			height: 300px;
 			overflow: auto;
 		}
 /*
@@ -89,9 +88,9 @@
 			overflow: hidden;
 		}
 		
-		#row { color: #fff; margin-left: 10px; margin-right: 10px; }
-		.row input{ float: left; }
-		.slide { margin: 0 2% 0 2%; }
+		.row { color: #fff; margin-left: 10px; margin-right: 10px; }
+		.highlight { color: #00BFFF; }
+		.slide { margin: 0px 20px 0px 10px; }
 		
 		<!-- menu toggle -->
 		.widget-toggle {
@@ -112,8 +111,6 @@
 		#dailyAnomRes, #aggAnomRes { color: #ffa500; }
 
 		.ui-slider-label { color: rgb(255, 255, 255); }
-		
-		#highlight { color: #00BFFF; }
 		
 		#titleText { font-align: right; }
 	</style>
@@ -136,7 +133,7 @@
 				<a class="menu-toggle fl active" href="#">✚ menu</a>
 			</div>
 			<div id="two">
-				<a class="frequency-toggle fl active" href="#">✚ frequency</a>
+				<a id="expandSymbol" class="frequency-toggle fl active" href="#">✚ frequency</a>
 			</div>
 			<div id="three">
 				<a class="polarization-toggle fl active" href="#">✚ polarization</a>
@@ -150,127 +147,100 @@
 	<div class="menu-content active">
 		<div id="sidebar" class="scroll">
 			<div id="sidebarChild">
-				<div>
-					<div id="row">
-						<center>
-						<p id="highlight">Frequencies</p>
-						<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>19
-						<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">22
-						<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">37<br>
-						<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">85
-						<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">91
-						</center>
-					</div>
-					<br>
-					<hr>
-					<div id="row">
-						<center>
-						<div class="tooltip"><p id="highlight">Polarization</p><span class="tooltiptext">Polarization is the orientation in which the waves oscillate</span></div>
-						<br>
-						<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked>Vertical<br>
-						<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">Horizontal
-						</center>
-					</div>
-					<br>
-					<hr>	
-					<div id="row">
-						<center>
-						<div class="tooltip"><p id="highlight">Timeline Zoom</p><span class="tooltiptext">Changes the level of zoom that the data can be explorered</span></div>
-						<br>
-						<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox">Day
-						<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month
-						<input id="chkYear" name="chkYear" type="checkbox" value="month" class="checkbox">Year
-						</center>
-					</div>
-					<br>
-					<hr>		
-					<div id="row">
-						<center>
-						<p id="highlight">Rectangle Selection - manual input</p>
-						<form action="update_coordinates.asp">
-							north: <input type="text" name="northCoordinate" value="-60.00"><br>
-							west: <input type="text" name="westCoordinate" value="-90.00"><br>
-							east: <input type="text" name="eastCoordinate" value="+90.00"><br>
-							south: <input type="text" name="southCoordinate" value="-60.00"><br>
-							<input type="submit" value="Submit">
-						</form>
-						</center>
-					</div>
-					<br>
-					<hr>
-					<div id="row">
-						<center>
-						<p id="highlight">Query Threshold<br>[ specify upper & lower bound ]</p>
-						<div class="slide sliderThreshold"></div>
-						</center>
-					</div>
-					<hr>
-					<div id="row">
-						<center>
-						<p id="highlight">Rectangle Selection - draw box</p>
-						<!--<button onclick="buttonDrawRectangle();">draw rectangle</button>-->
-						<a href="#" class="myButton" onclick="buttonDrawRectangle();">draw rectangle</a>
-						<!--<button onclick="source.clear();">clear rectangle</button>--> <!-- should only appear when rectangle is present -->
-						<a href="#" class="myButton" onclick="source.clear();">clear rectangle</a>
-						</center>
-					</div>
-					<hr>
-					<div id="row">
-						<center>
-						<p id="highlight">Anomaly Search</p>
-						<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Find Daily Anomalies</a>
-						<p id="dailyAnomRes"></p>
-						<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Previous</a> | 
-						<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Next</a>
-						<hr>
-						<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 1);">View All Anomalies</a>
-						<p id="aggAnomRes"></p>
-						<hr><br>
-						<a href="#" class="myButton" onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">Clear Results from Map</a>
-						
-						</center>
-					</div>
-					<br>
-					<hr>
-					<div class="row">
-						<center>
-							<p id="highlight">Start and End Years<br>[ moved to bottom of page ]</p>
-						</center>
-					</div>
-					<br>
-					<div id="row">
-						<center>
-							<p id="highlight">Month Selection</p>
-							<div class="slide sliderPattern"></div>
-							<p><br>jan | feb | mar | apr | may | jun<br>
-							jul | aug | sep | oct | nov | dec</p>
-						</center>
-					</div>
-					<br>
-					<hr>
-					<center>
-						<div class="row"><p id="highlight">Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
-						<div class="row">
-							<div class="slide sliderLayerOpacity"></div>
-						</div>
-					</center>
-					<br>
-					<center>
-							<div class="row"><p id="highlight">Climatology Opacity</p><p id="markerOpacityText"></p></div>
-							<div class="row">
-								<div class="slide sliderMarkerOpacity"></div>
-							</div>
-					</center>
-					<br>
-					<center>
-							<div class="row"><p id="highlight">Results Opacity</p><p id="markerOpacityText"></p></div>
-							<div class="row">
-								<div class="slide sliderAnomalyOpacity"></div>
-							</div>
-					</center>
-					<hr>
-					<br>
+				<div class="row">
+					<p class="highlight">Frequencies</p>
+					<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>19
+					<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">22
+					<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">37<br>
+					<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">85
+					<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">91
 				</div>
+				<br>
+				<hr>
+				<div class="row">
+					<div class="tooltip"><p class="highlight">Polarization</p><span class="tooltiptext">Polarization is the orientation in which the waves oscillate</span></div>
+					<br>
+					<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked>Vertical<br>
+					<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">Horizontal
+				</div>
+				<br>
+				<hr>	
+				<div class="row">
+					<div class="tooltip"><p class="highlight">Timeline Zoom</p><span class="tooltiptext">Changes the level of zoom that the data can be explorered</span></div>
+					<br>
+					<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox">Day
+					<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month
+					<input id="chkYear" name="chkYear" type="checkbox" value="month" class="checkbox">Year
+				</div>
+				<br>
+				<hr>		
+				<div class="row">
+					<p class="highlight">Rectangle Selection - manual input</p>
+					<form action="update_coordinates.asp">
+						north: <input type="text" name="northCoordinate" value="-60.00"><br>
+						west: <input type="text" name="westCoordinate" value="-90.00"><br>
+						east: <input type="text" name="eastCoordinate" value="+90.00"><br>
+						south: <input type="text" name="southCoordinate" value="-60.00"><br>
+						<input type="submit" value="Submit">
+					</form>
+				</div>
+				<br>
+				<hr>
+				<div class="row">
+					<p class="highlight">Query Threshold<br>[ specify upper & lower bound ]</p>
+					<div class="slide sliderThreshold"></div>
+				</div>
+				<hr>
+				<div class="row">
+					<p class="highlight">Rectangle Selection - draw box</p>
+					<!--<button onclick="buttonDrawRectangle();">draw rectangle</button>-->
+					<a href="#" class="myButton" onclick="buttonDrawRectangle();">draw rectangle</a>
+					<!--<button onclick="source.clear();">clear rectangle</button>--> <!-- should only appear when rectangle is present -->
+					<a href="#" class="myButton" onclick="source.clear();">clear rectangle</a>
+				</div>
+				<hr>
+				<div class="row">
+					<p class="highlight">Anomaly Search</p>
+					<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Find Daily Anomalies</a>
+					<p id="dailyAnomRes"></p>
+					<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Previous</a> | 
+					<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Next</a>
+					<hr>
+					<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 1);">View All Anomalies</a>
+					<p id="aggAnomRes"></p>
+					<hr><br>
+					<a href="#" class="myButton" onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">Clear Results from Map</a>
+				</div>
+				<br>
+				<hr>
+				<div class="row">
+					<p class="highlight">Start and End Years<br>[ moved to bottom of page ]</p>
+				</div>
+				<br>
+				<div class="row">
+					<p class="highlight">Month Selection</p>
+					<div class="slide sliderPattern"></div>
+					<p><br>jan | feb | mar | apr | may | jun<br>
+					jul | aug | sep | oct | nov | dec</p>
+				</div>
+				<br>
+				<hr>
+				<div class="row"><p class="highlight">Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
+				<div class="row">
+					<div class="slide sliderLayerOpacity"></div>
+				</div>
+				<br>
+				<div class="row"><p class="highlight">Climatology Opacity</p></div>
+				<div class="row">
+					<div class="slide sliderMarkerOpacity"></div>
+				</div>
+				<br>
+				<div class="row"><p class="highlight">Results Opacity</p><p id="markerOpacityText"></p></div>
+				<div class="row">
+					<div class="slide sliderAnomalyOpacity"></div>
+				</div>
+				<hr>
+				<br>
 			</div>
 		</div>
 	</div>
@@ -278,6 +248,7 @@
 	<script type="text/javascript">
 		$("a.menu-toggle").on('click', function(){
 			$('div.menu-content').slideToggle(600).toggleClass('active');
+			
 		});
 	</script>
 
@@ -304,7 +275,7 @@
 			</div>
 		</div>
 		<div id="timelineBox">
-			<div class="row">
+			<div id="row">
 				<div class="slide sliderYears"></div>
 				<!--<div class="slide sliderTimeline"></div>-->
 			</div>

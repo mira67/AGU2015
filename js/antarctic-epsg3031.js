@@ -24,8 +24,8 @@ window.onload = function() {
 			zoom: 3,
 			maxZoom: 11,
 		}),
-		target: "map",
-		renderer: ["canvas","dom"],
+		target: "map"//,
+		//renderer: ["canvas","dom"],
 	});
 	
 	// create layer for binary layers of water, land, and permanent glacier
@@ -102,7 +102,7 @@ window.onload = function() {
 		})
 	});
 	layerCoastlines = new ol.layer.Tile({source: sourceCoastlines});
-	map.addLayer(layerCoastlines);
+	//map.addLayer(layerCoastlines);
 	
 ////////////////////////////////////
 /*
@@ -206,7 +206,7 @@ window.onload = function() {
 		})
 	});
 	layerGraticule = new ol.layer.Tile({source: sourceGraticule});
-	map.addLayer(layerGraticule);
+	//map.addLayer(layerGraticule);
 	
 /////////////////////////////////////
 	
@@ -257,7 +257,7 @@ window.onload = function() {
 			})
 		})
 	});
-	map.addLayer(vector);
+	//map.addLayer(vector);
 
 	// for drawing anomalies
 	vectorSource = new ol.source.Vector(); // empty vector

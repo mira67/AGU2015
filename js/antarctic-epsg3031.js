@@ -1,3 +1,5 @@
+// main data products: https://wiki.earthdata.nasa.gov/display/GIBS/GIBS+Available+Imagery+Products
+
 window.onload = function() {
 
 	// definitions
@@ -21,12 +23,15 @@ window.onload = function() {
 			projection: ol.proj.get("EPSG:3031"),
 			extent: [-4194304, -4194304, 4194304, 4194304],
 			center: [0, 0],
-			zoom: 3,
-			maxZoom: 11,
+			zoom: 1,
+			maxZoom: 5
 		}),
-		target: "map"//,
-		//renderer: ["canvas","dom"],
+		target: "map",
+		renderer: ["canvas","dom"]
 	});
+	
+//https://earthdata.nasa.gov/labs/gibs/examples/openlayers/antarctic-epsg3031.html
+// this service seems to be a higher resolution ...maybe import it when you can geotag the results that the user queries	
 	
 	// create layer for binary layers of water, land, and permanent glacier
 	sourceLandWater = new ol.source.WMTS({
@@ -102,7 +107,7 @@ window.onload = function() {
 		})
 	});
 	layerCoastlines = new ol.layer.Tile({source: sourceCoastlines});
-	//map.addLayer(layerCoastlines);
+	map.addLayer(layerCoastlines);
 	
 ////////////////////////////////////
 /*
@@ -206,7 +211,7 @@ window.onload = function() {
 		})
 	});
 	layerGraticule = new ol.layer.Tile({source: sourceGraticule});
-	//map.addLayer(layerGraticule);
+	map.addLayer(layerGraticule);
 	
 /////////////////////////////////////
 	

@@ -22,8 +22,6 @@
 	<link rel="stylesheet" href="css/core.css"/>
 	<script src="js/antarctic-epsg3031.js"></script>
 	
-	<link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-	
 	<!-- css style -->
 	<style>
 		a:link, a:visited { text-decoration: none; color: #00BFFF; }
@@ -64,7 +62,7 @@
 			background-color: rgba(0,0,0,0.5);
 			font-size: 1.2em;
 			width: 300px;
-			height: 300px;
+			height: 300px; /* need to figure out a way to resize this to 50% of the height ...not working with jquery toggle */
 			overflow: auto;
 		}
 /*
@@ -155,16 +153,14 @@
 					<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">85
 					<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">91
 				</div>
-				<br>
-				<hr>
+				<br><hr>
 				<div class="row">
 					<div class="tooltip"><p class="highlight">Polarization</p><span class="tooltiptext">Polarization is the orientation in which the waves oscillate</span></div>
 					<br>
 					<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked>Vertical<br>
 					<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">Horizontal
 				</div>
-				<br>
-				<hr>	
+				<br><hr>	
 				<div class="row">
 					<div class="tooltip"><p class="highlight">Timeline Zoom</p><span class="tooltiptext">Changes the level of zoom that the data can be explorered</span></div>
 					<br>
@@ -172,8 +168,7 @@
 					<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month
 					<input id="chkYear" name="chkYear" type="checkbox" value="month" class="checkbox">Year
 				</div>
-				<br>
-				<hr>		
+				<br><hr>		
 				<div class="row">
 					<p class="highlight">Rectangle Selection - manual input</p>
 					<form action="update_coordinates.asp">
@@ -184,8 +179,7 @@
 						<input type="submit" value="Submit">
 					</form>
 				</div>
-				<br>
-				<hr>
+				<br><hr>
 				<div class="row">
 					<p class="highlight">Query Threshold<br>[ specify upper & lower bound ]</p>
 					<div class="slide sliderThreshold"></div>
@@ -193,9 +187,8 @@
 				<hr>
 				<div class="row">
 					<p class="highlight">Rectangle Selection - draw box</p>
-					<!--<button onclick="buttonDrawRectangle();">draw rectangle</button>-->
 					<a href="#" class="myButton" onclick="buttonDrawRectangle();">draw rectangle</a>
-					<!--<button onclick="source.clear();">clear rectangle</button>--> <!-- should only appear when rectangle is present -->
+					<!-- should only appear when rectangle is present -->
 					<a href="#" class="myButton" onclick="source.clear();">clear rectangle</a>
 				</div>
 				<hr>
@@ -211,8 +204,7 @@
 					<hr><br>
 					<a href="#" class="myButton" onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">Clear Results from Map</a>
 				</div>
-				<br>
-				<hr>
+				<br><hr>
 				<div class="row">
 					<p class="highlight">Start and End Years<br>[ moved to bottom of page ]</p>
 				</div>
@@ -223,8 +215,7 @@
 					<p><br>jan | feb | mar | apr | may | jun<br>
 					jul | aug | sep | oct | nov | dec</p>
 				</div>
-				<br>
-				<hr>
+				<br><hr>
 				<div class="row"><p class="highlight">Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
 				<div class="row">
 					<div class="slide sliderLayerOpacity"></div>
@@ -239,19 +230,11 @@
 				<div class="row">
 					<div class="slide sliderAnomalyOpacity"></div>
 				</div>
-				<hr>
-				<br>
+				<hr><br>
 			</div>
 		</div>
 	</div>
 	
-	<script type="text/javascript">
-		$("a.menu-toggle").on('click', function(){
-			$('div.menu-content').slideToggle(600).toggleClass('active');
-			
-		});
-	</script>
-
 	<!-- CU and NSIDC logos on top right -->
 	<div id="logo">
 		<img src="images/logoNSIDC.png" alt="logo" style="width:60px; height:60px;">
@@ -261,18 +244,14 @@
 	<!-- mouse coordinates bottom right -->
 	<div class="bottomRight">
 		<div class="bottomRightText">
-			<center>
-			<span id="mouse-position">coordinates</span>
-			</center>
+			<p id="mouse-position">coordinates</p>
 		</div>
 	</div>
 
 	<!-- timeline box along bottom of page -->
 	<div id="bottomCenter">
 		<div id="nameTimelineBox">
-			<div id="nameTimelineBoxText">
-				<center>YEAR</center>
-			</div>
+			<div id="nameTimelineBoxText">YEAR</div>
 		</div>
 		<div id="timelineBox">
 			<div id="row">
@@ -290,6 +269,11 @@
 <script src="js/core.js"></script>
 	
 <script type="text/javascript">	
+
+	$("a.menu-toggle").on('click', function(){
+		$('div.menu-content').slideToggle(600).toggleClass('active');
+		
+	});
 	
 	updateResults(anomalyRequest);
 	
@@ -316,3 +300,10 @@
 <!-- ////////////////////////////////////////////////////////////////////// -->
 </body>
 </html>
+
+<!--
+For Validating the HTML
+
+https://validator.w3.org/nu/#file
+
+-->

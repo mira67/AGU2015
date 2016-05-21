@@ -127,6 +127,7 @@ function updateMapAggregate( ){
 
 //$(".sliderThreshold").slider("values")[1]*10
 			console.log("threshold: greater than " + $(".sliderThreshold").slider("values")[0] + ", and less than " + $(".sliderThreshold").slider("values")[1] );
+			
 			if( mean > $(".sliderThreshold").slider("values")[0]*10 && mean < $(".sliderThreshold").slider("values")[1]*10 ){
 				redVectorSource.addFeature(iconFeature);
 			} else {

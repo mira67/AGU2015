@@ -30,6 +30,11 @@ window.onload = function() {
 		renderer: ["canvas","dom"]
 	});
 	
+	// x-axis distance, <http://openlayers.org/en/v3.7.0/apidoc/ol.control.ScaleLine.html>
+	var scaleLineControl = new ol.control.ScaleLine();
+	map.addControl(scaleLineControl);
+	
+	
 //https://earthdata.nasa.gov/labs/gibs/examples/openlayers/antarctic-epsg3031.html
 // this service seems to be a higher resolution ...maybe import it when you can geotag the results that the user queries	
 	
@@ -217,6 +222,10 @@ window.onload = function() {
 	
 	// Create an image layer, <http://www.acuriousanimal.com/thebookofopenlayers3/chapter02_04_image_layer.html>
 	// add layer with the climatology
+//
+// ...this might help!?
+//ol.extent.getBottomLeft(projection.getExtent())
+
 	imageLayer = new ol.layer.Image({
 		opacity: 0.5,
 		source: new ol.source.ImageStatic({
@@ -286,21 +295,89 @@ window.onload = function() {
 
 	// for drawing aggregate results	
 	redVectorSource = new ol.source.Vector();
+	
+///////////////////////////////
+points = {
+	type: 'FeatureCollection',
+	features: []
+};
+gridSize = 100,
+    epsgCode = 'EPSG:3031',
+    projection = ol.proj.get(epsgCode),
+    projectionExtent = projection.getExtent(),
+    size = ol.extent.getWidth(projectionExtent) / 256,
+    resolutions = [],
+    matrixIds = [];
+longi = -2201000;
+lati = 2821000;
+//locations = ol.proj.transform([longi, lati], 'EPSG:3031', 'EPSG:4326')
+locations = [longi, lati];
+id = "test",
+	x = locations[0],
+	y = locations[1];
+
+size = ol.extent.getWidth(projectionExtent) / 256
+points.features.push({
+	type: 'Feature',
+	id: id,
+	properties: id,
+	geometry: {
+		type: 'Point',
+		coordinates: [x + size / 2, y + size / 2]
+	}
+});
+grid = new ol.source.Vector({
+	features: (new ol.format.GeoJSON()).readFeatures(points),
+	attributions: [new ol.Attribution({
+		html: '<a href="http://ssb.no/">SSB</a>'
+	})]
+});
+gridLayer = new ol.layer.Vector({
+	source: grid
+});
+map.addLayer(gridLayer);
+
+/*	
+geojson.features[0]
+Object { type: "Feature", id: "22536006661600", properties: Object, geometry: Object }
+geojson.features[0]['type']
+"Feature"
+geojson.features[0]['id']
+"22536006661600"
+geojson.features[0]['properties']
+Object { rute_100m: "22536006661600", sum: "9" }
+geojson.features[0]['geometry']
+Object { type: "Point", coordinates: Array[2] }
+geojson.features[0]['geometry']['type']
+"Point"
+geojson.features[0]['geometry']['coordinates']
+Array [ 253650, 6661650 ]
+*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	blueVectorSource = new ol.source.Vector();
+	
 	//create the style for hot and then cold
 	redIconStyle = new ol.style.Style({
 		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-			anchor: [1, 1],
+			/*anchor: [1, 1],
 			anchorXUnits: 'fraction',
-			anchorYUnits: 'fraction',
+			anchorYUnits: 'fraction',*/
 			src: 'images/redMarker.jpg'
 		}))
 	});
 	blueIconStyle = new ol.style.Style({
 		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-			anchor: [1, 1],//anchor: [.01, .1],
+			/*anchor: [1, 1],
 			anchorXUnits: 'fraction',
-			anchorYUnits: 'fraction',
+			anchorYUnits: 'fraction',*/
 			src: 'images/blueMarker.jpg'
 		}))
 	});

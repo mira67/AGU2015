@@ -301,22 +301,19 @@ points = {
 	type: 'FeatureCollection',
 	features: []
 };
-gridSize = 100,
+gridSize = 25000,
     epsgCode = 'EPSG:3031',
     projection = ol.proj.get(epsgCode),
     projectionExtent = projection.getExtent(),
-    size = ol.extent.getWidth(projectionExtent) / 256,
+    size = ol.extent.getWidth(projectionExtent) / 512,
     resolutions = [],
     matrixIds = [];
 longi = -2201000;
 lati = 2821000;
-//locations = ol.proj.transform([longi, lati], 'EPSG:3031', 'EPSG:4326')
 locations = [longi, lati];
 id = "test",
-	x = locations[0],
-	y = locations[1];
-
-size = ol.extent.getWidth(projectionExtent) / 256
+x = locations[0],
+y = locations[1];
 points.features.push({
 	type: 'Feature',
 	id: id,
@@ -332,34 +329,31 @@ grid = new ol.source.Vector({
 		html: '<a href="http://ssb.no/">SSB</a>'
 	})]
 });
+
+gridStyle = function( feature ){
+	var coordinate = feature.getGeometry().getCoordinates(),
+		x = coordinate[0] - gridSize / 2,
+		y = coordinate[1] - gridSize / 2;//,
+		//pop = parseInt(feature.getProperties().sum),
+		//rgb = d3.rgb(colorScale(pop)); //asdf = {r:"254";g:"178";b:"76"}
+
+	return [
+		new ol.style.Style({
+			fill: new ol.style.Fill({
+				color: [254, 178, 76, 0.6]//[rgb.r, rgb.g, rgb.b, 0.6]
+			}),
+			geometry: new ol.geom.Polygon([[
+				[x,y], [x, y + gridSize], [x + gridSize, y + gridSize], [x + gridSize, y]
+			]])
+		})
+	];
+};
+// Create layer form vector grid and style function
 gridLayer = new ol.layer.Vector({
-	source: grid
+	source: grid,
+	style: gridStyle
 });
 map.addLayer(gridLayer);
-
-/*	
-geojson.features[0]
-Object { type: "Feature", id: "22536006661600", properties: Object, geometry: Object }
-geojson.features[0]['type']
-"Feature"
-geojson.features[0]['id']
-"22536006661600"
-geojson.features[0]['properties']
-Object { rute_100m: "22536006661600", sum: "9" }
-geojson.features[0]['geometry']
-Object { type: "Point", coordinates: Array[2] }
-geojson.features[0]['geometry']['type']
-"Point"
-geojson.features[0]['geometry']['coordinates']
-Array [ 253650, 6661650 ]
-*/
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	blueVectorSource = new ol.source.Vector();

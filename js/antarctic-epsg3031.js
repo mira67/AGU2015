@@ -2,43 +2,46 @@
 
 window.onload = function() {
 
-	// definitions
+	// definitions for 3031 projection
 	proj4.defs("EPSG:3031", "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
 	ol.proj.get("EPSG:3031").setExtent([-4194304, -4194304, 4194304, 4194304]);
 	
 	// for outputting the mouse position
-	mousePositionControl = new ol.control.MousePosition({
-		coordinateFormat: ol.coordinate.createStringXY(2),
+	var mousePositionControl = new ol.control.MousePosition({
+		//coordinateFormat: ol.coordinate.createStringXY(2),
 		projection: 'EPSG:4326',
+		coordinateFormat: function(coordinate){
+			return ol.coordinate.format(coordinate, '{y}, {x}', 3);
+		},
 		className: 'custom-mouse-position',					// comment the following two lines to have the mouse position
 		target: document.getElementById('mouse-position'),	// be placed within the map.
-		undefinedHTML: '&nbsp;'
+		undefinedHTML: 'mouse coordinates' //&nbsp;'
 	});
 
 	// create the map
 	map = new ol.Map({
-		controls: ol.control.defaults().extend([mousePositionControl]),
+		controls: ol.control.defaults().extend([
+				mousePositionControl,
+				new ol.control.ScaleLine()
+			]),
 		view: new ol.View({
 			maxResolution: 8192.0,
 			projection: ol.proj.get("EPSG:3031"),
 			extent: [-4194304, -4194304, 4194304, 4194304],
-			center: [0, 0],
-			zoom: 1,
-			maxZoom: 5
+			center: [-1069056, 695296], // map.getView().getCenter()
+			zoom: 3, // map.getView().getZoom()
+			maxZoom: 4
 		}),
 		target: "map",
 		renderer: ["canvas","dom"]
 	});
 
+	// vars for computing pixelation size for data overlay
 	gridSize = 25000; // 25 kilometers for some satellites, 12.5 km for others
 	epsgCode = 'EPSG:3031';
 	projection = ol.proj.get(epsgCode);
 	projectionExtent = projection.getExtent();
 	size = ol.extent.getWidth(projectionExtent) / 512; // 512 is # of tiles
-	
-	// x-axis distance, <http://openlayers.org/en/v3.7.0/apidoc/ol.control.ScaleLine.html>
-	var scaleLineControl = new ol.control.ScaleLine();
-	map.addControl(scaleLineControl);
 	
 //https://earthdata.nasa.gov/labs/gibs/examples/openlayers/antarctic-epsg3031.html
 // this service seems to be a higher resolution ...maybe import it when you can geotag the results that the user queries	
@@ -283,9 +286,6 @@ window.onload = function() {
 		source: vectorSource,
 		style: iconStyle
 	});
-
-	// for drawing aggregate results
-	redVectorSource = new ol.source.Vector();
 	
 ///////////////////////////////
 
@@ -297,7 +297,9 @@ window.onload = function() {
 	
 ///////////////////////////////
 
-	blueVectorSource = new ol.source.Vector();
+	// for drawing aggregate results
+	redVectorSource = new ol.source.Vector();
+	greyVectorSource = new ol.source.Vector();
 	
 	//create the style for hot and then cold
 	redIconStyle = new ol.style.Style({
@@ -308,12 +310,12 @@ window.onload = function() {
 			src: 'images/redMarker.jpg'
 		}))
 	});
-	blueIconStyle = new ol.style.Style({
+	greyIconStyle = new ol.style.Style({
 		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
 			/*anchor: [1, 1],
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',*/
-			src: 'images/blueMarker.jpg'
+			src: 'images/greyMarker.jpg'
 		}))
 	});
 	
@@ -323,10 +325,10 @@ window.onload = function() {
 		source: redVectorSource,
 		style: redIconStyle
 	});
-	blueVectorLayer = new ol.layer.Vector({
+	greyVectorLayer = new ol.layer.Vector({
 		opacity: 0.25,
-		source: blueVectorSource,
-		style: blueIconStyle
+		source: greyVectorSource,
+		style: greyIconStyle
 	});
 
 };

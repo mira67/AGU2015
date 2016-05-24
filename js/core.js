@@ -1,11 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
 /*     most of the javascript for dealing with times, dates, and data selections      */
-////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
 var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-
 var dataSet = "SSMI";
 var frequency = "19";
 var polarization = "h";
@@ -111,7 +108,7 @@ function updateMapAggregate( ){
 			
 			if( k == 0 ){
 				redVectorSource.clear();
-				blueVectorSource.clear();
+				greyVectorSource.clear();
 			}
 			
 			foo = aggregateAnomalyResponse[k];
@@ -144,7 +141,7 @@ function updateMapAggregate( ){
 			if( mean > $(".sliderThreshold").slider("values")[0]*10 && mean < $(".sliderThreshold").slider("values")[1]*10 ){
 				redVectorSource.addFeature(iconFeature);
 			} else {
-				blueVectorSource.addFeature(iconFeature);
+				greyVectorSource.addFeature(iconFeature);
 			}
 		}
 		
@@ -188,7 +185,7 @@ function updateMapAggregate( ){
 
 		/////////////////////////////////
 		map.addLayer(redVectorLayer);
-		map.addLayer(blueVectorLayer);
+		map.addLayer(greyVectorLayer);
 
 		
 		requestReturned = 0; // reset for next time
@@ -235,8 +232,8 @@ function updateResults( anomalyRequest ){
 	
 	startYear = $(".sliderYears").slider("values")[0];
 	endYear = $(".sliderYears").slider("values")[1];
-	startMonth = $(".sliderPattern").slider("values")[0] + 1;
-	endMonth = $(".sliderPattern").slider("values")[1] + 1;
+	startMonth = 1; // $(".sliderPattern").slider("values")[0] + 1; // disable for now...
+	endMonth = 12; // $(".sliderPattern").slider("values")[1] + 1;
 	
 	startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
 	endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
@@ -253,13 +250,13 @@ function updateResults( anomalyRequest ){
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // variables that control the timelilne view -- start zoomed to years
-var minYear = 1987;
-var maxYear = 2014;
-var sliderTimelineMin = minYear;
-var sliderTimelineMax = maxYear;
-var sliderTimelineStep = 1;
-var sliderTimelineValue = 1;
-var timelineZoomLevel = "day";
+minYear = 1987;
+maxYear = 2014;
+sliderTimelineMin = minYear;
+sliderTimelineMax = maxYear;
+sliderTimelineStep = 1;
+sliderTimelineValue = 1;
+timelineZoomLevel = "day";
 
 // http://jsfiddle.net/3TssG/
 $('.mutual .checkbox').click( function( ){
@@ -326,34 +323,6 @@ $(".sliderMarkerOpacity")
 	$( updateResults( anomalyRequest ) );
 });
 
-// sliderHeatmapOpacity
-/*
-$(".sliderHeatmapOpacity")
-.slider({
-	min: 0,
-	max: 1,
-	step: 0.05,
-	value: 1,
-	slide: function( event, ui ){
-		//$("#markerOpacityText").text( ui.value );
-		$( heatmapLayer.setOpacity( ui.value ) );
-	},
-	change: function( event, ui ){
-		//$("#markerOpacityText").text( ui.value );
-		$( heatmapLayer.setOpacity( ui.value ) );
-	}
-})
-.slider("pips", {
-	rest: "label",
-	step: 5
-})
-.on("slidechange", function( event, ui ){
-	//$("#markerOpacityText").text( ui.value );
-	$( heatmapLayer.setOpacity( ui.value ) );
-	$( updateResults( anomalyRequest ) );
-});
-*/
-
 // slider hot and cold anomalies
 
 $(".sliderAnomalyOpacity")
@@ -365,13 +334,13 @@ $(".sliderAnomalyOpacity")
 	slide: function( event, ui ){
 		//$("#markerOpacityText").text( ui.value );
 		$( redVectorLayer.setOpacity( ui.value ) );
-		$( blueVectorLayer.setOpacity( ui.value ) );
+		$( greyVectorLayer.setOpacity( ui.value ) );
 		$( vectorLayer.setOpacity( ui.value ) );
 	},
 	change: function( event, ui ){
 		//$("#markerOpacityText").text( ui.value );
 		$( redVectorLayer.setOpacity( ui.value ) );
-		$( blueVectorLayer.setOpacity( ui.value ) );
+		$( greyVectorLayer.setOpacity( ui.value ) );
 		$( vectorLayer.setOpacity( ui.value ) );
 	}
 })
@@ -382,7 +351,7 @@ $(".sliderAnomalyOpacity")
 .on("slidechange", function( event, ui ){
 	//$("#markerOpacityText").text( ui.value );
 	$( redVectorLayer.setOpacity( ui.value ) );
-	$( blueVectorLayer.setOpacity( ui.value ) );
+	$( greyVectorLayer.setOpacity( ui.value ) );
 	$( vectorLayer.setOpacity( ui.value ) );
 	$( updateResults( anomalyRequest ) );
 });
@@ -438,6 +407,7 @@ $(".sliderYears")
 });
 
 // slider for patterns of date input
+/*
 $(".sliderPattern")
 	.slider({ 
 		min: 0, 
@@ -460,6 +430,7 @@ $(".sliderPattern")
 		//$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
 		$( updateResults( anomalyRequest ) );
 });
+*/
 
 // thresholds for the results to return
 $(".sliderThreshold")
@@ -518,8 +489,8 @@ function updateResults( anomalyRequest ){
 	
 	startYear = $(".sliderYears").slider("values")[0];
 	endYear = $(".sliderYears").slider("values")[1];
-	startMonth = $(".sliderPattern").slider("values")[0] + 1;
-	endMonth = $(".sliderPattern").slider("values")[1] + 1;
+	startMonth = 1; //$(".sliderPattern").slider("values")[0] + 1;
+	endMonth = 12; //$(".sliderPattern").slider("values")[1] + 1;
 	
 	startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
 	endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
@@ -547,8 +518,8 @@ function updateResults( anomalyRequest ){
 	anomalyRequest["eDate"] = endDate;
 	anomalyRequest["sYear"] = startYear;
 	anomalyRequest["eYear"] = endYear;
-	anomalyRequest["sMonth"] = $(".sliderPattern").slider("values")[0] + 1;
-	anomalyRequest["eMonth"] = $(".sliderPattern").slider("values")[1] + 1;
+	anomalyRequest["sMonth"] = 1; //$(".sliderPattern").slider("values")[0] + 1;
+	anomalyRequest["eMonth"] = 12; //$(".sliderPattern").slider("values")[1] + 1;
 	anomalyRequest["locations"] = loctnArray
 }
 

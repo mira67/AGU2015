@@ -2,7 +2,6 @@
 <html>
 <head>
 	<title>Antarctica</title>
-	
 	<meta charset="utf-8">
 	<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"><!-- tell robots to go away! -->
 	<link rel="icon" type="image/png" href="images/antarctica.png">
@@ -18,115 +17,60 @@
 	<link rel="stylesheet" href="openlayers-3.10.1/ol.css" type="text/css">
 	<script src="openlayers-3.10.1/ol.js"></script>
 
-	<script src="lib/d3.min.js"></script>
+	<script src="lib/d3.min.js"></script><!-- not using yet, need for colors -->
 
-	<!-- Place these declarations last so they overwrite previous -->
+	<!-- Place these declarations last so they overwrite previous! -->
 	<link rel="stylesheet" href="css/core.css"/>
 	<script src="js/antarctic-epsg3031.js"></script>
 	
-	<!-- css style -->
 	<style>
-		a:link, a:visited { text-decoration: none; color: #00BFFF; }
-		a:hover { color: white; }
-		a:active { color: pink; }
-		
-		.topLeft {
+		.titleBar {
 			z-index: 5;
 			position: absolute;
 			top: 0px;
 			left: 0px;
 			width: 100%;
 			height: 30px;
+			padding: 0px;
+			margin: 0px;
 			background-color: rgba(0,0,0,0.5);
 		}
-		.topLeftText {
-			float: left;
-			clear: both;
-			color: #00BFFF;
-			font-style: "HelveticaNeue", Helvetica, Arial, sans-serif;
-			margin: 5px;
-			padding: 0px;
-			/*border: 3px solid blue;*/
-		}
-		.topLeftText div {
-			float: left;
-			width: 310px;
-			/*border: 3px solid blue;*/
+		.left { height: 100%; width: auto; overflow: hidden; color: #00BFFF; }
+		.right { height: 100%; width: auto; float: right; direction: rtl; }
+		.left div { margin: 3px 0px 3px 0px; }
+		.right p {
+			margin: 0px 10px 0px 0px;
+			color: Pink;
+			font-size: 25px;
+			font-style: Impact, Charcoal, sans-serif;
 		}
 		#one { margin-left: 20px; }
-		
-		.menu-content{
-			position: absolute;
-			top: 50px;
-			left: 20px;
-		}
-		#sidebar {
+		#one, #two, #three { float: left; width: 310px; }
+		.menu1-content { position: absolute; top: 30px; left: 20px; }
+		.menu2-content { position: absolute; top: 30px; left: 330px; }
+		.menu3-content { position: absolute; top: 30px; left: 640px; }
+		.sidebar {
 			z-index: 3;
-			background-color: rgba(0,0,0,0.5);
+			background-color: rgba(128,128,0,0.7);
 			font-size: 1.2em;
 			width: 300px;
-			height: 300px; /* need to figure out a way to resize this to 50% of the height ...not working with jquery toggle */
+			max-height: 300px;
 			overflow: auto;
 		}
-/*
-#sidebarChild {
-	height: 100%;
-	width: 100%;
-	overflow: auto;
-	padding-right: 15px;
-	margin: 0;
-}
-*/
-		#sidebarChild .content1 {
-			height: 100%;
-			width: 100%;
-			overflow: hidden;
-		}
-		
-		div .scroll {
-			background-color: rgba(0,0,0,0.5);
-			width: 60px;
-			overflow: hidden;
-		}
-		
-		.row { color: #fff; margin-left: 10px; margin-right: 10px; }
-		.highlight { color: #00BFFF; }
-		.slide { margin: 0px 20px 0px 10px; }
-		
-		<!-- menu toggle -->
-		.widget-toggle {
-			display: block;
-			overflow: hidden;
-			text-indent: -9999px;
-			width: 18px;
-			height: 9px;
-			margin-top: 15px;
-			margin-left: 13px;
-			background: url(../img/sidebar-arrows.png) no-repeat 0 -18px;
-		}
-		.widget-toggle.active {
-			background: url(../imgsidebar-arrows.png) no-repeat 0 0;
-		}
-		
+		.sidebarChild .content1 { height: 100%; width: 100%; overflow: hidden; }
+		div .scroll { background-color: rgba(0,0,0,0.5); width: 60px; overflow: hidden; }
+		.highlight { color: #00BFFF; font-size: 0.8em; }
+		.row { color: #fff; margin-left: 10px; margin-right: 10px; font-size: 0.8em; }
 		<!-- results from anomaly query -->
 		#dailyAnomRes, #aggAnomRes { color: #ffa500; }
-
-		.ui-slider-label { color: rgb(255, 255, 255); }
-		
-		#titleText { font-align: right; }
-		
-		<!-- controls the position of the scale line -->
-		.ol-scale-line {
-			position: absolute;
-			right: 100px;
-			bottom: 100px;
-		}
+		.ui-slider-label { color: rgb(200, 200, 200); }
 	</style>
 </head>
 <!-- ////////////////////////////////////////////////////////////////////// -->
 <body>
 
 <div class="background"></div>
+
 <div id="wrapper">
 
 	<!-- openlayers3 map container -->
@@ -135,139 +79,147 @@
 	</div>
 
 	<!-- title bar along top of page -->
-	<div class="topLeft">
-		<div class="topLeftText">
+	<div class="titleBar">
+		<div class="right"><!-- title -->
+			<p>Condensate Database</p>
+		</div>
+		<div class="left"><!-- menu selections -->
 			<div id="one">
-				<a class="menu-toggle fl active" href="#">✚ menu</a>
+				<a class="menu1-toggle active" href="#">✚ menu</a>
 			</div>
 			<div id="two">
-				<a id="expandSymbol" class="frequency-toggle fl active" href="#">✚ frequency</a>
+				<a class="menu2-toggle active" href="#">✚ frequency</a>
 			</div>
 			<div id="three">
-				<a class="polarization-toggle fl active" href="#">✚ polarization</a>
+				<a class="menu3-toggle active" href="#">✚ polarization</a>
 			</div>
-			<span id="titleText">Condensate Database - Anomaly Detection for Satellite Data</span>
 		</div>
 	</div>
 	
 	<!-- scrollbar on the left hand side of the page -->
 	<!-- source: http://jsfiddle.net/P3pJ6/ -->
-	<div class="menu-content active">
-		<div id="sidebar" class="scroll">
-			<div id="sidebarChild">
+	<div class="menu1-content active">
+		<div class="sidebar" class="scroll">
+			<div class="sidebarChild">
+
 				<div class="row">
-					<p class="highlight">Frequencies</p>
-					<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>19
-					<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">22
-					<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">37<br>
-					<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">85
-					<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">91
-				</div>
-				<br><hr>
-				<div class="row">
-					<div class="tooltip"><p class="highlight">Polarization</p><span class="tooltiptext">Polarization is the orientation in which the waves oscillate</span></div>
-					<br>
-					<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked>Vertical<br>
-					<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">Horizontal
-				</div>
-				<br><hr>	
-				<div class="row">
-					<div class="tooltip"><p class="highlight">Timeline Zoom</p><span class="tooltiptext">Changes the level of zoom that the data can be explorered</span></div>
-					<br>
-					<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox">Day
-					<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month
-					<input id="chkYear" name="chkYear" type="checkbox" value="month" class="checkbox">Year
-				</div>
-				<br><hr>		
-				<div class="row">
-					<p class="highlight">Rectangle Selection - manual input</p>
+					<p class="highlight">area selection [manual input]</p>
 					<form action="update_coordinates.asp">
-						north: <input type="text" name="northCoordinate" value="-60.00"><br>
-						west: <input type="text" name="westCoordinate" value="-90.00"><br>
-						east: <input type="text" name="eastCoordinate" value="+90.00"><br>
-						south: <input type="text" name="southCoordinate" value="-60.00"><br>
+						<input type="text" name="latitudeCoordinate" value="-60.00"> latitude<br><br>
+						<input type="text" name="longitudeCoordinate" value="-90.00"> longitude<br><br>
 						<input type="submit" value="Submit">
 					</form>
 				</div>
 				<br><hr>
 				<div class="row">
-					<p class="highlight">Query Threshold<br>[ specify upper & lower bound ]</p>
+					<p class="highlight">query threshold<br>[specify upper & lower bound]</p>
 					<div class="slide sliderThreshold"></div>
 				</div>
-				<hr>
+				<br><hr>
 				<div class="row">
-					<p class="highlight">Rectangle Selection - draw box</p>
+					<p class="highlight">rectangle selection [draw box]</p>
 					<a href="#" class="myButton" onclick="buttonDrawRectangle();">draw rectangle</a>
 					<!-- should only appear when rectangle is present -->
 					<a href="#" class="myButton" onclick="source.clear();">clear rectangle</a>
 				</div>
 				<hr>
 				<div class="row">
-					<p class="highlight">Anomaly Search</p>
+					<p class="highlight">anomaly search</p>
 					<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Find Daily Anomalies</a>
-					<p id="dailyAnomRes"></p>
+<p id="dailyAnomRes"></p>
 					<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Previous</a> | 
 					<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Next</a>
 					<hr>
 					<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 1);">View All Anomalies</a>
-					<p id="aggAnomRes"></p>
+<p id="aggAnomRes"></p>
 					<hr><br>
-					<a href="#" class="myButton" onclick="redVectorSource.clear();blueVectorSource.clear();vectorSource.clear();">Clear Results from Map</a>
-				</div>
-				<br><hr>
-				<div class="row">
-					<p class="highlight">Start and End Years<br>[ moved to bottom of page ]</p>
-				</div>
-				<br>
-				<div class="row">
-					<p class="highlight">Month Selection</p>
-					<div class="slide sliderPattern"></div>
-					<p><br>jan | feb | mar | apr | may | jun<br>
-					jul | aug | sep | oct | nov | dec</p>
+					<a href="#" class="myButton" onclick="redVectorSource.clear();greyVectorSource.clear();vectorSource.clear();">Clear Results from Map</a>
 				</div>
 				<br><hr>
 				<div class="row"><p class="highlight">Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
 				<div class="row">
 					<div class="slide sliderLayerOpacity"></div>
 				</div>
-				<br>
+				<br><hr>
+
+				<!--
 				<div class="row"><p class="highlight">Climatology Opacity</p></div>
 				<div class="row">
 					<div class="slide sliderMarkerOpacity"></div>
 				</div>
-				<br>
+				-->
+
+				<!-- depends on if results are present -->
 				<div class="row"><p class="highlight">Results Opacity</p><p id="markerOpacityText"></p></div>
 				<div class="row">
 					<div class="slide sliderAnomalyOpacity"></div>
 				</div>
-				<hr><br>
+				<br><hr>
 			</div>
 		</div>
 	</div>
-	
+
+	<!-- menu for frequency -->
+	<div class="menu2-content active">
+		<div class="sidebar" class="scroll">
+			<div class="sidebarChild">
+				<div class="row">
+					<p class="highlight">frequencies</p>
+					<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>19 GHz<br>
+					<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">22 GHz<br>
+					<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">37 GHz<br>
+					<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">85 GHz<br>
+					<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">91 GHz<br>
+				</div>
+				<hr>
+			</div>
+		</div>
+	</div>
+
+	<!-- menu for polarization -->
+	<div class="menu3-content active">
+		<div class="sidebar" class="scroll">
+			<div class="sidebarChild">
+				<div class="row">
+					<p class="highlight">polarizations</p>
+					<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked> &darr; vertical<br>
+					<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">&harr; horizontal
+				</div>
+				<hr>
+			</div>
+		</div>
+	</div>
+
 	<!-- CU and NSIDC logos on top right -->
 	<div id="logo">
 		<img src="images/logoNSIDC.png" alt="logo" style="width:60px; height:60px;">
 		<img src="images/logoCU.png" alt="logo" style="width:60px; height:60px;">
 	</div>
 
+	<!-- scale-line bottom right -->
+	<div class="bottomLeft">
+		<div id="scale-line" class="scale-line"></div>
+	</div>
+
 	<!-- mouse coordinates bottom right -->
 	<div class="bottomRight">
 		<div class="bottomRightText">
-			<p id="mouse-position">coordinates</p>
+			<p id="mouse-position"></p>
 		</div>
 	</div>
 
 	<!-- timeline box along bottom of page -->
 	<div id="bottomCenter">
+		<!--
 		<div id="nameTimelineBox">
-			<div id="nameTimelineBoxText">YEAR</div>
+			<div id="nameTimelineBoxText">YEARS</div>
 		</div>
-		<div id="timelineBox">
-			<div id="row">
-				<div class="slide sliderYears"></div>
-				<!--<div class="slide sliderTimeline"></div>-->
-			</div>
+		-->
+		<div id="timelineYears">
+			<div class="slide sliderYears"></div>
+		</div>
+		<div id="timelineDays">
+			<div class="slide sliderTimeline"></div>
 		</div>
 	</div><!-- end bottom -->
 
@@ -278,30 +230,22 @@
 <!-- core js ...loaded after map class -->
 <script src="js/core.js"></script>
 	
-<script type="text/javascript">	
+<script type="text/javascript">
 
-	$("a.menu-toggle").on('click', function(){
-		$('div.menu-content').slideToggle(600).toggleClass('active');
-		
-	});
-	
 	updateResults(anomalyRequest);
-	
-	$(".header").click(function( ){
-		$header = $(this);
-		
-		//getting the next element
-		$content = $header.next();
-		
-		//open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
-		$content.slideToggle(500, function () {
-			//execute this after slideToggle is done
-			//change text of header based on visibility of content div
-			$header.text(function () {
-				//change text based on condition
-				// //return $content.is(":visible") ? "Collapse" : "Expand";
-			});
-		});
+
+	// toggle the state of the menu
+	$("a.menu1-toggle").on('click', function(){
+		$('div.menu1-content').slideToggle(300).toggleClass('active');
+		console.log("menu1");
+	});
+	$("a.menu2-toggle").on('click', function(){
+		$('div.menu2-content').slideToggle(300).toggleClass('active');
+		console.log("menu2");
+	});
+	$("a.menu3-toggle").on('click', function(){
+		$('div.menu3-content').slideToggle(300).toggleClass('active');
+		console.log("menu3");
 	});
 	
 </script>
@@ -309,11 +253,58 @@
 <!-- todo: add google analytics -->
 <!-- ////////////////////////////////////////////////////////////////////// -->
 </body>
+
 </html>
 
 <!--
 For Validating the HTML
 
 https://validator.w3.org/nu/#file
+
+
+
+
+$(".header").click(function( ){
+	$header = $(this);
+	
+	//getting the next element
+	$content = $header.next();
+	
+	//open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
+	$content.slideToggle(100, function () {
+		//execute this after slideToggle is done
+		//change text of header based on visibility of content div
+		$header.text(function () {
+			//change text based on condition
+			// //return $content.is(":visible") ? "Collapse" : "Expand";
+		});
+	});
+});
+
+
+.........to-do
+<div class="row">
+	<p class="highlight">Month Selection</p>
+	<div class="slide sliderPattern"></div>
+	<p><br>jan | feb | mar | apr | may | jun<br>
+	jul | aug | sep | oct | nov | dec</p>
+</div>
+<br>
+
+
+
+<div class="row">
+	<div class="tooltip"><p class="highlight">Timeline Zoom</p><span class="tooltiptext">Changes the level of zoom that the data can be explorered</span></div>
+	<br>
+	<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox">Day
+	<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month
+	<input id="chkYear" name="chkYear" type="checkbox" value="month" class="checkbox">Year
+</div>
+<br><hr>
+
+
+
+
+
 
 -->

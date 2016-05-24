@@ -3,7 +3,6 @@ body {
 	font-family: 'Roboto', 'Helvetica', 'Arial', 'Sans Serif';
 	max-width: 100%;
 	overflow-x: hidden;
-	/*background: url('../images/snow2.jpg') no-repeat center center fixed;*/
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -11,6 +10,9 @@ body {
 	margin: 0; padding: 0;
 	height:100%;
 }
+a:link, a:visited { text-decoration: none; color: #00BFFF; }
+a:hover { color: white; }
+a:active { color: pink; }
 .background {
 	position: fixed;
 	top: 0;
@@ -43,6 +45,7 @@ body {
 #logo { position: absolute; z-index: 6; top: 30px; right: 55px; }
 #logo img { margin: 10px 0px 0px 10px; }
 
+/*
 #nameTimelineBox {
 	position: absolute;
 	z-index: 4;
@@ -58,43 +61,66 @@ body {
 	top: 50%;
 	transform: translateY(-50%);
 	color: #00BFFF;
-	font-size: 1.5em;
+	font-size: 1.2em;
 	text-align: center;
 }
-#timelineBox {
+*/
+#timelineYears {
 	position: absolute;
 	z-index: 3;
 	bottom: 20px;
-	left: 120px;
-	right: 20px;
+	left: 20px;
+	width: 28%;
 	height: 60px;
 	background-color: rgba(0,0,0,0.5);
 	border: white 1px solid;
 }
+#timelineDays {
+	position: absolute;
+	z-index: 3;
+	bottom: 20px;
+	right: 20px;
+	width: 68%;
+	height: 60px;
+	background-color: rgba(0,0,0,0.5);
+	border: white 1px solid;
+}
+/*
+#timelineDays #previousDayButton, #timelineDays #nextDayButton {
+	height: 100%;
+	width: 20px;
+	border: white 1px solid;
+}
+*/
+.slide { margin: 10px 20px 10px 20px; }
+/*
 .timelineBoxInternal {
 	position: relative;
+	height: 60px;
 	top: 50%;
 	transform: translateY(-50%);
 }
-headsUp {
-	position: absolute;
-	left: auto;
-	right: 60px;
-	top: 20px;
-}
-p {	color: #fff; font-size: 0.7em; }
+*/
 /* output for coordinates on bottom right */
 .bottomRight {
 	z-index: 5;
 	position: absolute;
 	bottom: 90px;
 	right: 20px;
-	width: 200px;
-	height: 70px;
+	margin: 0px;
+	padding: 0px;
 	background-color: rgba(0,0,0,0.5);
-	font-size: 1.5em;
+	font-size: 1.2em;
 }
-.bottomRightText { display: block; color: #00BFFF; font-align: center; }
+#mouse-position{ color: #fff; font-align: center; font-size: 0.8em; margin: 5px; }
+
+/* output for scale-line on bottom left */
+.ol-scale-line {
+	background-color: rgba(0,0,0,0.5);
+	position: absolute;
+	bottom: 100px;
+	left: 17px;
+}
 
 .outputResultsBack {
 	background-color: "#00FF00";
@@ -104,7 +130,6 @@ p {	color: #fff; font-size: 0.7em; }
 	overflow: scroll;
 	font-size: 0.7em;
 }
-
 .text {
 	font-family: "Montserrat", "sans-serif";
 	color: #fff;
@@ -159,7 +184,6 @@ label { display: block; rgba(0,0,0,0.5): Window; margin: 0; padding: 0; width: 1
 	position:relative;
 	top:1px;
 }
-
 
 /* need to fix tooltips because they suck */
 .tooltip {

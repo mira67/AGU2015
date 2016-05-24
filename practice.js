@@ -10,6 +10,8 @@ function updateMapAggregate( ){
 		
 		source.clear();
 		
+
+		
 		for(var k = 0; k < aggregateAnomalyResponse.length; k++){
 			
 			if( k == 0 ){

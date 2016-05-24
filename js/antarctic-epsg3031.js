@@ -29,11 +29,16 @@ window.onload = function() {
 		target: "map",
 		renderer: ["canvas","dom"]
 	});
+
+	gridSize = 25000; // 25 kilometers for some satellites, 12.5 km for others
+	epsgCode = 'EPSG:3031';
+	projection = ol.proj.get(epsgCode);
+	projectionExtent = projection.getExtent();
+	size = ol.extent.getWidth(projectionExtent) / 512; // 512 is # of tiles
 	
 	// x-axis distance, <http://openlayers.org/en/v3.7.0/apidoc/ol.control.ScaleLine.html>
 	var scaleLineControl = new ol.control.ScaleLine();
 	map.addControl(scaleLineControl);
-	
 	
 //https://earthdata.nasa.gov/labs/gibs/examples/openlayers/antarctic-epsg3031.html
 // this service seems to be a higher resolution ...maybe import it when you can geotag the results that the user queries	
@@ -230,25 +235,11 @@ window.onload = function() {
 		opacity: 0.5,
 		source: new ol.source.ImageStatic({
 			url: 'images/climatology/oct.png',
-			//url: 'images/adjust2.png',
 			imageSize: [632, 664],
-			//imageSize: [1528, 1587],
-			// extent [minx, miny, maxx, maxy]
-			//imageExtent: [ -3938333, -3938333, 4175000, 4175000], <-- working okay with 1528 x 1590
 			imageExtent: [ -3950000, -3950000, 3700000, 4100000],
-			//projection: map.getView().getProjection()
 			projection: 'EPSG:4326'
-			
-			//imageExtent: [-3929786, -2929786, -2029786, 13523674]
-			//imageExtent: [-4194304, -4194304, -4194304, 4194304]//
-			
-			//imageExtent: [-3929786, -3929786, 4194304, 3923674] // not sure why last number is 43...
-			//imageExtent: [-4000000, -3700000, -3000000, 4100000]
-			// [1] [2] 40-moves right side right [3] [4]
-		})//,
-		//extent: [-4194304, -4194304, 4194304, 4194304]
+		})
 	});
-	//map.addLayer(imageLayer);
 	
 	// for drawing the selection box
 	source = new ol.source.Vector();
@@ -271,7 +262,7 @@ window.onload = function() {
 			})
 		})
 	});
-	//map.addLayer(vector);
+	map.addLayer(vector);
 
 	// for drawing anomalies
 	vectorSource = new ol.source.Vector(); // empty vector
@@ -293,69 +284,19 @@ window.onload = function() {
 		style: iconStyle
 	});
 
-	// for drawing aggregate results	
+	// for drawing aggregate results
 	redVectorSource = new ol.source.Vector();
 	
 ///////////////////////////////
-points = {
-	type: 'FeatureCollection',
-	features: []
-};
-gridSize = 25000,
-    epsgCode = 'EPSG:3031',
-    projection = ol.proj.get(epsgCode),
-    projectionExtent = projection.getExtent(),
-    size = ol.extent.getWidth(projectionExtent) / 512,
-    resolutions = [],
-    matrixIds = [];
-longi = -2201000;
-lati = 2821000;
-locations = [longi, lati];
-id = "test",
-x = locations[0],
-y = locations[1];
-points.features.push({
-	type: 'Feature',
-	id: id,
-	properties: id,
-	geometry: {
-		type: 'Point',
-		coordinates: [x + size / 2, y + size / 2]
-	}
-});
-grid = new ol.source.Vector({
-	features: (new ol.format.GeoJSON()).readFeatures(points),
-	attributions: [new ol.Attribution({
-		html: '<a href="http://ssb.no/">SSB</a>'
-	})]
-});
 
-gridStyle = function( feature ){
-	var coordinate = feature.getGeometry().getCoordinates(),
-		x = coordinate[0] - gridSize / 2,
-		y = coordinate[1] - gridSize / 2;//,
-		//pop = parseInt(feature.getProperties().sum),
-		//rgb = d3.rgb(colorScale(pop)); //asdf = {r:"254";g:"178";b:"76"}
+	// storage for the "pixels" to be drawn on map
+	points = {
+		type: 'FeatureCollection',
+		features: []
+	};
+	
+///////////////////////////////
 
-	return [
-		new ol.style.Style({
-			fill: new ol.style.Fill({
-				color: [254, 178, 76, 0.6]//[rgb.r, rgb.g, rgb.b, 0.6]
-			}),
-			geometry: new ol.geom.Polygon([[
-				[x,y], [x, y + gridSize], [x + gridSize, y + gridSize], [x + gridSize, y]
-			]])
-		})
-	];
-};
-// Create layer form vector grid and style function
-gridLayer = new ol.layer.Vector({
-	source: grid,
-	style: gridStyle
-});
-map.addLayer(gridLayer);
-	
-	
 	blueVectorSource = new ol.source.Vector();
 	
 	//create the style for hot and then cold

@@ -113,14 +113,27 @@ function updateMapAggregate( ){
 				redVectorSource.clear();
 				blueVectorSource.clear();
 			}
+			
 			foo = aggregateAnomalyResponse[k];
 			longi = foo["longi"];
 			lati = foo["lati"];
 			mean = foo["mean"];
 			frequency = foo["frequency"];
-
-			var locations = ol.proj.transform([longi, lati], 'EPSG:4326', 'EPSG:3031');
-
+			locations = ol.proj.transform([longi, lati], 'EPSG:4326', 'EPSG:3031');
+			id = "test";
+			
+			// for i in __
+			points.features.push({
+				type: 'Feature',
+				id: id,
+				properties: mean,
+				geometry: {
+					type: 'Point',
+					coordinates: [locations[0] + size / 2, locations[1] + size / 2]
+				}
+			});
+			
+			//////////////////////////////////
 			var iconFeature = new ol.Feature({
 				geometry: new ol.geom.Point(locations)
 			});
@@ -134,9 +147,50 @@ function updateMapAggregate( ){
 				blueVectorSource.addFeature(iconFeature);
 			}
 		}
-			
+		
+		//////////////////////////////////
+		// Create layer form vector grid and style function
+		grid = new ol.source.Vector({
+			features: (new ol.format.GeoJSON()).readFeatures(points),
+			attributions: [new ol.Attribution({ 						// delete this....
+				html: '<a href="http://ssb.no/">SSB</a>'
+			})]
+		});
+
+		/*
+		gridStyle = function( feature ){
+			var coordinate = feature.getGeometry().getCoordinates();
+			var x = coordinate[0] - gridSize / 2;
+			var y = coordinate[1] - gridSize / 2;//,
+				//pop = parseInt(feature.getProperties().sum);
+				//rgb = d3.rgb(colorScale(pop)); //asdf = {r:"254";g:"178";b:"76"}
+
+			return [
+				new ol.style.Style({
+					fill: new ol.style.Fill({
+						color: [254, 178, 22, 0.7]//[rgb.r, rgb.g, rgb.b, 0.6]
+					}),
+					geometry: new ol.geom.Polygon([[
+						[x,y], [x, y + gridSize], [x + gridSize, y + gridSize], [x + gridSize, y]
+					]])
+				})
+			];
+		};
+		*/
+		
+		gridLayer = new ol.layer.Vector({
+			source: grid//,
+			//style: gridStyle
+		});
+		map.addLayer(gridLayer);
+		
+
+
+		/////////////////////////////////
 		map.addLayer(redVectorLayer);
 		map.addLayer(blueVectorLayer);
+
+		
 		requestReturned = 0; // reset for next time
 		
 	} else { // if request returned is 1
@@ -363,7 +417,7 @@ $(".sliderYears")
 		min: minYear,
 		max: maxYear,
 		step: 1,
-		values: [1992, 1997],
+		values: [1995, 1997],
 		//this gets a live reading of the value and prints it on the page
 		slide: function( event, ui ){
 			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );

@@ -43,8 +43,6 @@ body {
 #logo { position: absolute; z-index: 6; top: 30px; right: 55px; }
 #logo img { margin: 10px 0px 0px 10px; }
 
-
-
 #nameTimelineBox {
 	position: absolute;
 	z-index: 4;
@@ -83,7 +81,6 @@ headsUp {
 	left: auto;
 	right: 60px;
 	top: 20px;
-
 }
 p {	color: #fff; font-size: 0.7em; }
 /* output for coordinates on bottom right */

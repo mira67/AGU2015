@@ -11,11 +11,11 @@ window.onload = function() {
 		//coordinateFormat: ol.coordinate.createStringXY(2),
 		projection: 'EPSG:4326',
 		coordinateFormat: function(coordinate){
-			return ol.coordinate.format(coordinate, '{y}, {x}', 3);
+			return "EPSG:3031 " + ol.coordinate.format(coordinate, '{y}, {x}', 3);
 		},
 		className: 'custom-mouse-position',					// comment the following two lines to have the mouse position
 		target: document.getElementById('mouse-position'),	// be placed within the map.
-		undefinedHTML: 'mouse coordinates' //&nbsp;'
+		undefinedHTML: 'EPSG: 3031' //&nbsp;'
 	});
 
 	// create the map
@@ -29,7 +29,7 @@ window.onload = function() {
 			projection: ol.proj.get("EPSG:3031"),
 			extent: [-4194304, -4194304, 4194304, 4194304],
 			center: [-1069056, 695296], // map.getView().getCenter()
-			zoom: 3, // map.getView().getZoom()
+			zoom: 2, // map.getView().getZoom()
 			maxZoom: 4
 		}),
 		target: "map",

@@ -15,12 +15,22 @@ loctnArray[0] = { "longitude": -39.3, "latitude": -42.5 };
 loctnArray[1] = { "longitude": -41.4, "latitude": 136 };
 boxCoordinates = loctnArray;
 
-var startYear = 1987; // set up as the same for the slider
-var endYear = 2014;
+var startYear = 1991; // set up as the same for the slider
+var endYear = 2010;
 var startMonth = 0;
 var endMonth = 11;
 
-// object for anomaly request
+// variables that control the timelilne view -- start zoomed to years
+minYear = startYear;
+maxYear = endYear;
+sliderTimelineMin = minYear;
+sliderTimelineMax = maxYear;
+sliderTimelineStep = 1;
+sliderTimelineValue = 1;
+timelineZoomLevel = "day";
+
+
+// main container for any requests to be made
 anomalyRequest = {
 	"dsName": dataSet,
 	"dsFreq": frequency,
@@ -34,7 +44,6 @@ anomalyRequest = {
 	"locations": loctnArray
 };
 
-////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // add anomalies to the map when querying "daily" anomalies
@@ -135,7 +144,6 @@ function updateMapAggregate( ){
 				geometry: new ol.geom.Point(locations)
 			});
 
-//$(".sliderThreshold").slider("values")[1]*10
 			console.log("threshold: greater than " + $(".sliderThreshold").slider("values")[0] + ", and less than " + $(".sliderThreshold").slider("values")[1] );
 			
 			if( mean > $(".sliderThreshold").slider("values")[0]*10 && mean < $(".sliderThreshold").slider("values")[1]*10 ){
@@ -154,7 +162,6 @@ function updateMapAggregate( ){
 			})]
 		});
 
-		/*
 		gridStyle = function( feature ){
 			var coordinate = feature.getGeometry().getCoordinates();
 			var x = coordinate[0] - gridSize / 2;
@@ -173,7 +180,6 @@ function updateMapAggregate( ){
 				})
 			];
 		};
-		*/
 		
 		gridLayer = new ol.layer.Vector({
 			source: grid//,
@@ -181,15 +187,10 @@ function updateMapAggregate( ){
 		});
 		map.addLayer(gridLayer);
 		
-
-
 		/////////////////////////////////
 		map.addLayer(redVectorLayer);
 		map.addLayer(greyVectorLayer);
-
-		
-		requestReturned = 0; // reset for next time
-		
+		requestReturned = 0; // reset for next time		
 	} else { // if request returned is 1
 		console.log("...waiting for the data or the length of aggregate anomaly request is zero?!");
 	}
@@ -198,9 +199,9 @@ function updateMapAggregate( ){
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-
-// need to work on this ...i just threw it in
+// need to work on this
 function updateResults( anomalyRequest ){	
+	
 	// determine frequency
 	if( $("#chk19").is(':checked') ){
 		frequency = "19";
@@ -220,16 +221,7 @@ function updateResults( anomalyRequest ){
 	} else if( $("#chkHorizontal").is(':checked') ){
 		polarization = "h";
 	}
-	
-	// determine timeline zoom
-	if( $("#chkDay").is(':checked') ){
-		timelineZoomLevel = "day";
-	} else if( $("#chkMonth").is(':checked') ){
-		timelineZoomLevel = "month";
-	} else if( $("#chkYear").is(':checked') ){
-		timelineZoomLevel = "year";
-	}
-	
+		
 	startYear = $(".sliderYears").slider("values")[0];
 	endYear = $(".sliderYears").slider("values")[1];
 	startMonth = 1; // $(".sliderPattern").slider("values")[0] + 1; // disable for now...
@@ -238,220 +230,7 @@ function updateResults( anomalyRequest ){
 	startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
 	endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
 
-	document.getElementById("outputResults").innerHTML =
-		"<p>" + dataSet + ", " + frequency + ", " + polarization + ", " + startDate + ", " + endDate + "<br>"
-		+ "dates: " + startDate + ", " + endDate + "<br>"
-		+ "coordinates top-left: " + boxCoordinates[0]["latitude"] + ",   " + boxCoordinates[0]["longitude"] + "<br>"
-		+ "coordinates bottom-right: " + boxCoordinates[1]["latitude"] + ",   " + boxCoordinates[1]["longitude"] + "<br>"
-		+ "</p>";
 }
-
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-
-// variables that control the timelilne view -- start zoomed to years
-minYear = 1987;
-maxYear = 2014;
-sliderTimelineMin = minYear;
-sliderTimelineMax = maxYear;
-sliderTimelineStep = 1;
-sliderTimelineValue = 1;
-timelineZoomLevel = "day";
-
-// http://jsfiddle.net/3TssG/
-$('.mutual .checkbox').click( function( ){
-	var checkedState = $(this).prop("checked")
-		$(this)
-			.parent('div')
-			.children('.checkbox:checked')
-			.prop("checked", false);
-	$(this).prop("checked", checkedState);
-	$( updateResults( anomalyRequest ) );
-	$( updateDateValues() );
-});	
-
-// change opacity of the layer
-$(".sliderLayerOpacity")
-.slider({
-	min: 0,
-	max: 1,
-	step: 0.05,
-	value: 1.0,
-	slide: function( event, ui ){
-		//$("#layerOpacityText").text( ui.value );
-		$( layerBaseMap.setOpacity( ui.value) );
-	},
-	change: function( event, ui ){
-		//$("#layerOpacityText").text( ui.value );
-		$( layerBaseMap.setOpacity( ui.value) );
-	}
-})
-.slider("pips", {
-	rest: "label",
-	step: 5
-})
-.on("slidechange", function( event, ui ){
-	//$("#layerOpacityText").text( ui.value );
-	$( layerBaseMap.setOpacity( ui.value) );
-	$( updateResults( anomalyRequest ) );
-});
-
-// change opacity of the markers
-$(".sliderMarkerOpacity")
-.slider({
-	min: 0,
-	max: 1,
-	step: 0.05,
-	value: 0.0,
-	slide: function( event, ui ){
-		//$("#markerOpacityText").text( ui.value );
-		$( imageLayer.setOpacity( ui.value ) );
-	},
-	change: function( event, ui ){
-		//$("#markerOpacityText").text( ui.value );
-		$( imageLayer.setOpacity( ui.value ) );
-		console.log("ui.value" + ui.value);
-	}
-})
-.slider("pips", {
-	rest: "label",
-	step: 5
-})
-.on("slidechange", function( event, ui ){
-	//$("#markerOpacityText").text( ui.value );
-	$( imageLayer.setOpacity( ui.value ) );
-	$( updateResults( anomalyRequest ) );
-});
-
-// slider hot and cold anomalies
-
-$(".sliderAnomalyOpacity")
-.slider({
-	min: 0,
-	max: 1,
-	step: 0.05,
-	value: 0.75,
-	slide: function( event, ui ){
-		//$("#markerOpacityText").text( ui.value );
-		$( redVectorLayer.setOpacity( ui.value ) );
-		$( greyVectorLayer.setOpacity( ui.value ) );
-		$( vectorLayer.setOpacity( ui.value ) );
-	},
-	change: function( event, ui ){
-		//$("#markerOpacityText").text( ui.value );
-		$( redVectorLayer.setOpacity( ui.value ) );
-		$( greyVectorLayer.setOpacity( ui.value ) );
-		$( vectorLayer.setOpacity( ui.value ) );
-	}
-})
-.slider("pips", {
-	rest: "label",
-	step: 5
-})
-.on("slidechange", function( event, ui ){
-	//$("#markerOpacityText").text( ui.value );
-	$( redVectorLayer.setOpacity( ui.value ) );
-	$( greyVectorLayer.setOpacity( ui.value ) );
-	$( vectorLayer.setOpacity( ui.value ) );
-	$( updateResults( anomalyRequest ) );
-});
-
-
-// slider for main timeline at bottom of page
-$(".sliderTimeline")
-	.slider({ 
-		min: sliderTimelineMin,
-		max: sliderTimelineMax,
-		step: sliderTimelineStep,
-		values: [sliderTimelineMin, sliderTimelineMax],
-		slide: function( event, ui ){
-			//$("#timelineText").text( ui.value );
-		},
-		change: function( event, ui ){
-			//$("#timelineText").text( ui.value );
-		}
-	})
-	.slider("pips", {
-		rest: "label",
-		step: 1
-	})
-	.on("slidechange", function( event ,ui ){
-		//$("#timelineText").text( ui.value );
-		$( updateResults( anomalyRequest ) );
-});
-
-// user input of the date
-$(".sliderYears")
-	.slider({
-		min: minYear,
-		max: maxYear,
-		step: 1,
-		values: [1995, 1997],
-		//this gets a live reading of the value and prints it on the page
-		slide: function( event, ui ){
-			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
-			$( updateResults( anomalyRequest ) );
-		},
-		change: function( event, ui ){
-			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
-			$( updateResults( anomalyRequest ) );
-		}
-	})
-	.slider("pips", {
-		rest: "label",
-		step: 1
-	})
-	.on("slidechange", function( event, ui ){
-		//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
-		$( updateResults( anomalyRequest ) );
-});
-
-// slider for patterns of date input
-/*
-$(".sliderPattern")
-	.slider({ 
-		min: 0, 
-		max: months.length-1,
-		range: true,
-		values: [0, 11],
-		slide: function( event, ui ){
-			//$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
-		},
-		change: function( event, ui ){
-			//$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
-		}
-
-	})
-	.slider("pips", {
-		rest: "label",
-		labels: months
-	})
-	.on("slidechange", function( event ,ui ){
-		//$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
-		$( updateResults( anomalyRequest ) );
-});
-*/
-
-// thresholds for the results to return
-$(".sliderThreshold")
-	.slider({
-		min: 50,
-		max: 350,
-		range: true,
-		values: [50, 350],
-		slide: function( event, ui ){
-			$( updateResults( anomalyRequest ) );
-		},
-		change: function( event, ui ){
-			$( updateResults( anomalyRequest ) );
-		}
-	})
-	.slider("pips", {
-		rest: false
-	})
-	.on("slidechange", function( event, ui ){
-		$( updateResults( anomalyRequest ) );
-});
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -490,26 +269,11 @@ function updateResults( anomalyRequest ){
 	startYear = $(".sliderYears").slider("values")[0];
 	endYear = $(".sliderYears").slider("values")[1];
 	startMonth = 1; //$(".sliderPattern").slider("values")[0] + 1;
-	endMonth = 12; //$(".sliderPattern").slider("values")[1] + 1;
+	endMonth = 12;
 	
 	startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
 	endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
 
-/*
-	document.getElementById("outputResults").innerHTML =
-		"<p>" + dataSet + ", " + frequency + ", " + polarization + ", " + startDate + ", " + endDate + "<br>"
-		//+ "timeline zoom: " + timelineZoomLevel + "</p>"
-		//+ "layer opacity: " + $(".sliderLayerOpacity").slider("value") + "</p>"
-		//+ "marker opacity: " + $(".sliderMarkerOpacity").slider("value") + "</p>"
-		+ "dates: " + startDate + ", " + endDate + "<br>"
-		//+ "location array: " + loctnArray[0] + ", " + loctnArray[1] + "</p>";
-		+ "coordinates top-left: " + boxCoordinates[0]["latitude"] + ",   " + boxCoordinates[0]["longitude"] + "<br>"
-		+ "coordinates bottom-right: " + boxCoordinates[1]["latitude"] + ",   " + boxCoordinates[1]["longitude"] + "<br>"
-		+ "slider years: " + startYear + ", " + endYear + "<br>"
-		+ "slider pattern: " + months[$(".sliderPattern").slider("values")[0]] + " to " + months[$(".sliderPattern").slider("values")[1]]
-		+ "</p>";
-*/
-	
 	// update anomaly request values
 	anomalyRequest["dsName"] = dataSet;
 	anomalyRequest["dsFreq"] = "s" + frequency + polarization;
@@ -778,5 +542,223 @@ function buttonDrawRectangle(){
 	addInteraction();
 };
 
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+// Resource for Sliders:
+// http://simeydotme.github.io/jQuery-ui-Slider-Pips/#styling
+
+$('.mutual .checkbox').click( function( ){
+	var checkedState = $(this).prop("checked")
+		$(this)
+			.parent('div')
+			.children('.checkbox:checked')
+			.prop("checked", false);
+	$(this).prop("checked", checkedState);
+	$( updateResults( anomalyRequest ) );
+	$( updateDateValues() );
+});
+////////////////////////////////////////////////////////////////////////////////////////
+
+// change opacity of the layer
+$(".sliderLayerOpacity")
+.slider({
+	min: 0,
+	max: 1,
+	step: 0.05,
+	value: 1.0,
+	slide: function( event, ui ){
+		//$("#layerOpacityText").text( ui.value );
+		$( layerBaseMap.setOpacity( ui.value) );
+	},
+	change: function( event, ui ){
+		//$("#layerOpacityText").text( ui.value );
+		$( layerBaseMap.setOpacity( ui.value) );
+	}
+})
+.slider("pips", {
+	rest: "label",
+	step: 5
+})
+.on("slidechange", function( event, ui ){
+	//$("#layerOpacityText").text( ui.value );
+	$( layerBaseMap.setOpacity( ui.value) );
+	$( updateResults( anomalyRequest ) );
+});
+////////////////////////////////////////////////////////////////////////////////////////
+
+// change opacity of the climatology
+$(".sliderMarkerOpacity")
+.slider({
+	min: 0,
+	max: 1,
+	step: 0.05,
+	value: 0.0,
+	slide: function( event, ui ){
+		//$("#markerOpacityText").text( ui.value );
+		$( imageLayer.setOpacity( ui.value ) );
+	},
+	change: function( event, ui ){
+		//$("#markerOpacityText").text( ui.value );
+		$( imageLayer.setOpacity( ui.value ) );
+		console.log("ui.value" + ui.value);
+	}
+})
+.slider("pips", {
+	rest: "label",
+	step: 5
+})
+.on("slidechange", function( event, ui ){
+	//$("#markerOpacityText").text( ui.value );
+	$( imageLayer.setOpacity( ui.value ) );
+	$( updateResults( anomalyRequest ) );
+});
+////////////////////////////////////////////////////////////////////////////////////////
+
+// partitioning of the brightness threshold
+$(".sliderAnomalyOpacity")
+.slider({
+	min: 0,
+	max: 1,
+	step: 0.05,
+	value: 0.75,
+	slide: function( event, ui ){
+		//$("#markerOpacityText").text( ui.value );
+		$( redVectorLayer.setOpacity( ui.value ) );
+		$( greyVectorLayer.setOpacity( ui.value ) );
+		$( vectorLayer.setOpacity( ui.value ) );
+	},
+	change: function( event, ui ){
+		//$("#markerOpacityText").text( ui.value );
+		$( redVectorLayer.setOpacity( ui.value ) );
+		$( greyVectorLayer.setOpacity( ui.value ) );
+		$( vectorLayer.setOpacity( ui.value ) );
+	}
+})
+.slider("pips", {
+	rest: "label",
+	step: 5
+})
+.on("slidechange", function( event, ui ){
+	//$("#markerOpacityText").text( ui.value );
+	$( redVectorLayer.setOpacity( ui.value ) );
+	$( greyVectorLayer.setOpacity( ui.value ) );
+	$( vectorLayer.setOpacity( ui.value ) );
+	$( updateResults( anomalyRequest ) );
+});
+////////////////////////////////////////////////////////////////////////////////////////
+
+// slider for main timeline at bottom of page
+hanzi = ["1 2", "2 2", "3 2", "3 2", "3 2", "3 2", "3 2", "3 2", "2", "2"];
+$(".sliderTimeline")
+	.slider({ 
+		min: 0,
+		max: hanzi.length,
+		value: 0,
+		slide: function( event, ui ){
+			//$("#timelineText").text( ui.value );
+		},
+		change: function( event, ui ){
+			//$("#timelineText").text( ui.value );
+		}
+	})
+	.slider("pips", {
+		rest: "label",
+		labels: hanzi
+	})
+	.slider("float", {
+        labels: hanzi
+    })
+	.on("slidechange", function( event ,ui ){
+		//$("#timelineText").text( ui.value );
+		$( updateResults( anomalyRequest ) );
+});
+////////////////////////////////////////////////////////////////////////////////////////
+
+// user input of the beginning/end years
+$(".sliderYears")
+	.slider({
+		min: minYear,
+		max: maxYear,
+		step: 1,
+		values: [1995, 1996],
+		slide: function( event, ui ){
+			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
+			$( updateResults( anomalyRequest ) );
+			startYear = $(".sliderYears").slider("values")[0];
+			endYear = $(".sliderYears").slider("values")[1];
+		},
+		change: function( event, ui ){
+			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
+			$( updateResults( anomalyRequest ) );
+			startYear = $(".sliderYears").slider("values")[0];
+			endYear = $(".sliderYears").slider("values")[1];
+		}
+	})
+	.slider("pips", {
+		step: 5
+	})
+	.slider("float")
+	.on("slidechange", function( event, ui ){
+		//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
+		$( updateResults( anomalyRequest ) );
+});
+////////////////////////////////////////////////////////////////////////////////////////
+
+// slider for patterns of date input
+/*
+$(".sliderPattern")
+	.slider({ 
+		min: 0, 
+		max: months.length-1,
+		range: true,
+		values: [0, 11],
+		slide: function( event, ui ){
+			//$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
+		},
+		change: function( event, ui ){
+			//$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
+		}
+
+	})
+	.slider("pips", {
+		rest: "label",
+		labels: months
+	})
+	.on("slidechange", function( event ,ui ){
+		//$("#patternText").text( months[ui.values[0]] + " to " + months[ui.values[1]] );
+		$( updateResults( anomalyRequest ) );
+});
+////////////////////////////////////////////////////////////////////////////////////////
+*/
+
+// thresholds for the results to return
+$(".sliderThreshold")
+	.slider({
+		min: 50,
+		max: 350,
+		range: true,
+		values: [50, 350],
+		slide: function( event, ui ){
+			$( updateResults( anomalyRequest ) );
+		},
+		change: function( event, ui ){
+			$( updateResults( anomalyRequest ) );
+		}
+	})
+	.slider("pips", {
+		rest: false
+	})
+	.on("slidechange", function( event, ui ){
+		$( updateResults( anomalyRequest ) );
+});
+////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////

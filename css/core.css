@@ -85,22 +85,8 @@ a:active { color: pink; }
 	background-color: rgba(0,0,0,0.5);
 	border: white 1px solid;
 }
-/*
-#timelineDays #previousDayButton, #timelineDays #nextDayButton {
-	height: 100%;
-	width: 20px;
-	border: white 1px solid;
-}
-*/
 .slide { margin: 10px 20px 10px 20px; }
-/*
-.timelineBoxInternal {
-	position: relative;
-	height: 60px;
-	top: 50%;
-	transform: translateY(-50%);
-}
-*/
+
 /* output for coordinates on bottom right */
 .bottomRight {
 	z-index: 5;
@@ -137,11 +123,6 @@ a:active { color: pink; }
 	line-height: 82.5px;
 	text-transform: uppercase;
 }
-.container .content1 { background-color: rgba(6,4,2,0.5); }
-.container .header { background-color: rgba(1,7,2,0.5); padding: 10px; cursor: pointer; font-weight: bold; }
-.container .content1 { display: none; padding: 0px; }
-label { display: block; rgba(0,0,0,0.5): Window; margin: 0; padding: 0; width: 100%; }
-.container { color: #fff; }
 
 .myButton {
 	-moz-box-shadow:inset 0px 1px 0px 0px #bee2f9;
@@ -183,41 +164,4 @@ label { display: block; rgba(0,0,0,0.5): Window; margin: 0; padding: 0; width: 1
 .myButton:active {
 	position:relative;
 	top:1px;
-}
-
-/* need to fix tooltips because they suck */
-.tooltip {
-	position: relative;
-	display: inline-block;
-	border-bottom: 1px dotted black;
-}
-.tooltip .tooltiptext {
-	visibility: hidden;
-	width: 200px;
-	background-color: #555;
-	color: #fff;
-	text-align: center;
-	border-radius: 6px;
-	padding: 5px 0;
-	position: absolute;
-	z-index: 1;
-	bottom: 125%;
-	left: 50%;
-	margin-left: -100px;
-	opacity: 0.2;
-	transition: opacity 1s;
-}
-.tooltip .tooltiptext::after {
-	content: "";
-	position: absolute;
-	top: 100%;
-	left: 50%;
-	margin-left: -5px;
-	border-width: 5px;
-	border-style: solid;
-	border-color: #555 transparent transparent transparent;
-}
-.tooltip:hover .tooltiptext {
-	visibility: visible;
-	opacity: 1;
 }

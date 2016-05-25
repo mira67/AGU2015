@@ -256,13 +256,13 @@ window.onload = function() {
 				color: 'rgba(255, 255, 255, 0.5)'
 			}),
 			stroke: new ol.style.Stroke({
-				color: '#ffffff',
+				color: '#00BFFF',
 				width: 2
 			}),
 			image: new ol.style.Circle({
 				radius: 7,
 				fill: new ol.style.Fill({
-					color: '#ffffff'
+					color: '#00BFFF'
 				})
 			})
 		})

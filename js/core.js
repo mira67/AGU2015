@@ -16,8 +16,8 @@ months = [	"jan", "feb", "mar", "apr",
 			"may", "jun", "jul", "aug",
 			"sep", "oct", "nov", "dec"	];
 
-startYear = 1991; // set up as the same for the slider
-endYear = 2010;
+startYear = 1987; // set up as the same for the slider
+endYear = 2014;
 startMonth = 1; // used for searching seasons (like "summer") ...for now this isn't being used
 endMonth = 12;
 
@@ -668,9 +668,11 @@ $(".sliderThreshold")
 		values: [50, 350],
 		slide: function( event, ui ){
 			$( updateResults( anomalyRequest ) );
+			$("#sliderThresholdText").text( $(".sliderThreshold").slider("values") );
 		},
 		change: function( event, ui ){
 			$( updateResults( anomalyRequest ) );
+			$("#sliderThresholdText").text( $(".sliderThreshold").slider("values") );
 		}
 	})
 	.slider("pips", {

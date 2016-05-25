@@ -59,12 +59,23 @@
 		}
 		.sidebarChild .content1 { height: 100%; width: 100%; overflow: hidden; }
 		div .scroll { background-color: rgba(0,0,0,0.5); width: 60px; overflow: hidden; }
-		.highlight { color: #000F00; font-size: 1.1em; }
-		.row { color: #fff; margin-left: 10px; margin-right: 10px; font-size: 0.8em; }
+		.highlight { color: #000F00; font-size: 1.3em; }
+		.row { color: #fff; margin-left: 10px; margin-right: 10px; font-size: 1em; }
 		<!-- results from anomaly query -->
 		#dailyAnomRes, #aggAnomRes { color: #ffa500; }
-		.ui-slider-label { color: rgb(200, 200, 200); }
+		.ui-slider-label { color: #000; }
+		#bottomCenter .ui-slider-label { color: #fff; }
 		.sliderTimeline { margin: 10px 50px 0px 30px; }
+		.sidebarChild { text-align: center; }
+		
+		.row a { font-size: 1.2em; }
+		.row a:link, .row a:visited { text-decoration: none; color: #fff; }
+		.row a:hover { color: #007299; }
+		.row a:active { color: pink; }
+
+		#dailyAnomRes { color: green; }
+		#aggAnomRes { color: orange; }
+		.ui-widget-header { background: red; }
 	</style>
 </head>
 <!-- ////////////////////////////////////////////////////////////////////// -->
@@ -102,41 +113,40 @@
 	<div class="menu1-content active">
 		<div class="sidebar" class="scroll">
 			<div class="sidebarChild">
-
 				<div class="row">
-					<p class="highlight">area selection [manual input]</p>
+					<p class="highlight">zoom to selection</p>
 					<form action="update_coordinates.asp">
 						<input type="text" name="latitudeCoordinate" value="-60.00"> latitude<br><br>
 						<input type="text" name="longitudeCoordinate" value="-90.00"> longitude<br><br>
-						<input type="submit" value="Submit">
+						<input type="submit" class="myButton" value="Submit">
 					</form>
 				</div>
 				<br><hr>
 				<div class="row">
-					<p class="highlight">query threshold<br>[specify upper & lower bound]</p>
+					<p class="highlight">query threshold [Kelvin]</p>
 					<div class="slide sliderThreshold"></div>
+<p id="sliderThresholdText"></p>
 				</div>
 				<br><hr>
 				<div class="row">
-					<p class="highlight">rectangle selection [draw box]</p>
-					<a href="#" class="FmyButton" onclick="buttonDrawRectangle();">draw rectangle</a>
-					<!-- should only appear when rectangle is present -->
-					<a href="#" class="FmyButton" onclick="source.clear();">clear rectangle</a>
+					<p class="highlight">rectangle selection</p>
+					<a href="#" class="FmyButton" onclick="buttonDrawRectangle();">draw</a> |
+					<a href="#" class="FmyButton" onclick="source.clear();"> clear</a>
 				</div>
 				<hr>
 				<div class="row">
 					<p class="highlight">anomaly search</p>
-					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 0);">Find Daily Anomalies</a>
+					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 0);"> Find Daily Anomalies</a><br>
+					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 0);">Previous</a> |
+					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 0);"> Next</a>
 <p id="dailyAnomRes"></p>
-					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 0);">Previous</a> | 
-					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 0);">Next</a>
 					<hr>
-					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 1);">View All Anomalies</a>
+					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 1);">Search All Anomalies</a>
 <p id="aggAnomRes"></p>
-					<hr><br>
+					<hr>
 					<a href="#" class="FmyButton" onclick="redVectorSource.clear();greyVectorSource.clear();vectorSource.clear();">Clear Results from Map</a>
 				</div>
-				<br><hr>
+				<hr>
 				<div class="row"><p class="highlight">Baseline Image Opacity</p><p id="layerOpacityText"></p></div>
 				<div class="row">
 					<div class="slide sliderLayerOpacity"></div>
@@ -249,6 +259,7 @@
 		console.log("menu3");
 	});
 	
+	updateDateValues(); // labels for the timeline 
 </script>
 
 <!-- todo: add google analytics -->

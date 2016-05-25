@@ -234,6 +234,7 @@ window.onload = function() {
 // ...this might help!?
 //ol.extent.getBottomLeft(projection.getExtent())
 
+/*
 	imageLayer = new ol.layer.Image({
 		opacity: 0.5,
 		source: new ol.source.ImageStatic({
@@ -243,7 +244,8 @@ window.onload = function() {
 			projection: 'EPSG:4326'
 		})
 	});
-	
+*/
+
 	// for drawing the selection box
 	source = new ol.source.Vector();
 	vector = new ol.layer.Vector({
@@ -266,8 +268,16 @@ window.onload = function() {
 		})
 	});
 	map.addLayer(vector);
+	
+	///////////////////////////////
+	// storage for the "pixels" to be drawn on map
+	points = {
+		type: 'FeatureCollection',
+		features: []
+	};
+	///////////////////////////////
 
-	// for drawing anomalies
+	// for drawing aggregate anomalies [this should be the same as the other red/grey layer ...need to fix]
 	vectorSource = new ol.source.Vector(); // empty vector
 	
 	//create the style
@@ -287,20 +297,8 @@ window.onload = function() {
 		style: iconStyle
 	});
 	
-///////////////////////////////
-
-	// storage for the "pixels" to be drawn on map
-	points = {
-		type: 'FeatureCollection',
-		features: []
-	};
-	
-///////////////////////////////
-
 	// for drawing aggregate results
 	redVectorSource = new ol.source.Vector();
-	greyVectorSource = new ol.source.Vector();
-	
 	//create the style for hot and then cold
 	redIconStyle = new ol.style.Style({
 		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
@@ -310,6 +308,14 @@ window.onload = function() {
 			src: 'images/redMarker.jpg'
 		}))
 	});
+	// red vs grey - anomalies inside and outside specified interval ...should change the outside to clear or grey
+	redVectorLayer = new ol.layer.Vector({
+		opacity: 0.25,
+		source: redVectorSource,
+		style: redIconStyle
+	});
+	
+	greyVectorSource = new ol.source.Vector();
 	greyIconStyle = new ol.style.Style({
 		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
 			/*anchor: [1, 1],
@@ -317,13 +323,6 @@ window.onload = function() {
 			anchorYUnits: 'fraction',*/
 			src: 'images/greyMarker.jpg'
 		}))
-	});
-	
-	// red vs blue - anomalies inside and outside specified interval ...should change the outside to clear or grey
-	redVectorLayer = new ol.layer.Vector({
-		opacity: 0.25,
-		source: redVectorSource,
-		style: redIconStyle
 	});
 	greyVectorLayer = new ol.layer.Vector({
 		opacity: 0.25,

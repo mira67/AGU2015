@@ -33,14 +33,14 @@
 			height: 30px;
 			padding: 0px;
 			margin: 0px;
-			background-color: rgba(0,0,0,0.5);
+			background-color: rgba(0,0,0,0.7);
 		}
-		.left { height: 100%; width: auto; overflow: hidden; color: #00BFFF; }
+		.left { height: 100%; width: auto; overflow: hidden; color: #00BFDD; }
 		.right { height: 100%; width: auto; float: right; direction: rtl; }
 		.left div { margin: 3px 0px 3px 0px; }
 		.right p {
 			margin: 0px 10px 0px 0px;
-			color: Pink;
+			color: #AEC6CF;
 			font-size: 25px;
 			font-style: Impact, Charcoal, sans-serif;
 		}
@@ -51,7 +51,7 @@
 		.menu3-content { position: absolute; top: 30px; left: 640px; }
 		.sidebar {
 			z-index: 3;
-			background-color: rgba(174,198,207,0.7); <!-- pastel blue -->
+			background-color: rgba(174,198,207,0.9); <!-- pastel blue -->
 			font-size: 1.2em;
 			width: 300px;
 			max-height: 300px;
@@ -59,11 +59,12 @@
 		}
 		.sidebarChild .content1 { height: 100%; width: 100%; overflow: hidden; }
 		div .scroll { background-color: rgba(0,0,0,0.5); width: 60px; overflow: hidden; }
-		.highlight { color: #00BFFF; font-size: 0.8em; }
+		.highlight { color: #000F00; font-size: 1.1em; }
 		.row { color: #fff; margin-left: 10px; margin-right: 10px; font-size: 0.8em; }
 		<!-- results from anomaly query -->
 		#dailyAnomRes, #aggAnomRes { color: #ffa500; }
 		.ui-slider-label { color: rgb(200, 200, 200); }
+		.sliderTimeline { margin: 10px 50px 0px 30px; }
 	</style>
 </head>
 <!-- ////////////////////////////////////////////////////////////////////// -->
@@ -118,22 +119,22 @@
 				<br><hr>
 				<div class="row">
 					<p class="highlight">rectangle selection [draw box]</p>
-					<a href="#" class="myButton" onclick="buttonDrawRectangle();">draw rectangle</a>
+					<a href="#" class="FmyButton" onclick="buttonDrawRectangle();">draw rectangle</a>
 					<!-- should only appear when rectangle is present -->
-					<a href="#" class="myButton" onclick="source.clear();">clear rectangle</a>
+					<a href="#" class="FmyButton" onclick="source.clear();">clear rectangle</a>
 				</div>
 				<hr>
 				<div class="row">
 					<p class="highlight">anomaly search</p>
-					<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Find Daily Anomalies</a>
+					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 0);">Find Daily Anomalies</a>
 <p id="dailyAnomRes"></p>
-					<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Previous</a> | 
-					<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 0);">Next</a>
+					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 0);">Previous</a> | 
+					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 0);">Next</a>
 					<hr>
-					<a href="#" class="myButton" onclick="sendRequest(anomalyRequest, 1);">View All Anomalies</a>
+					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 1);">View All Anomalies</a>
 <p id="aggAnomRes"></p>
 					<hr><br>
-					<a href="#" class="myButton" onclick="redVectorSource.clear();greyVectorSource.clear();vectorSource.clear();">Clear Results from Map</a>
+					<a href="#" class="FmyButton" onclick="redVectorSource.clear();greyVectorSource.clear();vectorSource.clear();">Clear Results from Map</a>
 				</div>
 				<br><hr>
 				<div class="row"><p class="highlight">Baseline Image Opacity</p><p id="layerOpacityText"></p></div>

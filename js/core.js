@@ -1,34 +1,32 @@
 ////////////////////////////////////////////////////////////////////////////////////////
-/*     most of the javascript for dealing with times, dates, and data selections      */
 ////////////////////////////////////////////////////////////////////////////////////////
 
-var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-var dataSet = "SSMI";
-var frequency = "19";
-var polarization = "h";
-var startDate = "2010-12-12";
-var endDate = "2010-12-20";
-
-// bounding box for anomaly request
-var loctnArray = Array();
+// Bounding box for anomaly request. The Java code figures out the nearest xy coordinate
+// within each image to figure out what points are within the bounding box.
+loctnArray = Array();
 loctnArray[0] = { "longitude": -39.3, "latitude": -42.5 };
 loctnArray[1] = { "longitude": -41.4, "latitude": 136 };
 boxCoordinates = loctnArray;
 
-var startYear = 1991; // set up as the same for the slider
-var endYear = 2010;
-var startMonth = 0;
-var endMonth = 11;
+dataSet = "SSMI"; // SSMI data set with 19 GHz horizontal polarization
+frequency = "19";
+polarization = "h";
 
-// variables that control the timelilne view -- start zoomed to years
+months = [	"jan", "feb", "mar", "apr",
+			"may", "jun", "jul", "aug",
+			"sep", "oct", "nov", "dec"	];
+
+startYear = 1991; // set up as the same for the slider
+endYear = 2010;
+startMonth = 1; // used for searching seasons (like "summer") ...for now this isn't being used
+endMonth = 12;
+
+startDate = startYear + "-01-01";
+endDate = endYear + "-01-01";
+
+// variables that control the timeline view
 minYear = startYear;
 maxYear = endYear;
-sliderTimelineMin = minYear;
-sliderTimelineMax = maxYear;
-sliderTimelineStep = 1;
-sliderTimelineValue = 1;
-timelineZoomLevel = "day";
-
 
 // main container for any requests to be made
 anomalyRequest = {
@@ -43,14 +41,12 @@ anomalyRequest = {
 	"eYear": endYear,
 	"locations": loctnArray
 };
-
 ////////////////////////////////////////////////////////////////////////////////////////
 
-// add anomalies to the map when querying "daily" anomalies
+// Add anomalies to the map when querying "daily" anomalies
 function updateMap( ){
 	
-	var k, j = 0; // loop vars
-	var foo = []; // each entry on list
+	var k, j = 0;
 
 	// wait for response
 	if( ( requestReturned == 1 ) && ( anomalyResponse.length !== 0 ) ){
@@ -59,31 +55,39 @@ function updateMap( ){
 
 		firstAnomaly = new Date(0);
 		firstAnomaly.setUTCSeconds( anomalyResponse[0]["date"] / 1000 );
-
-		secondAnomaly = new Date(0);
-		secondAnomaly.setUTCSeconds( anomalyResponse[anomalyResponse.length - 1]["date"] / 1000 );
+		lastAnomaly = new Date(0);
+		lastAnomaly.setUTCSeconds( anomalyResponse[anomalyResponse.length - 1]["date"] / 1000 );
 		
-		console.log("first anomaly: " + firstAnomaly);
-		console.log("last anomaly: " + secondAnomaly);
+		console.log("first anomaly: " + firstAnomaly + "\nlast anomaly: " + lastAnomaly);
 		console.log("...with " + anomalyResponse.length + " anomalies.")
 		
-		source.clear();
+		source.clear(); // clear the map
 		
-		 //create a bunch of icons and add to source vector
-		for(var k = 0; k < anomalyResponse.length; k++){
+		//create a bunch of icons and add to source vector
+		for( k = 0; k < anomalyResponse.length; k++ ){
 			
-			if(k == 0){ vectorSource.clear(); }
-			foo = anomalyResponse[k];
-			longi = foo["longi"];
-			lati = foo["lati"];
-
+			if( k == 0 ){ vectorSource.clear(); } // clear the selection rectangle
+			
+			var foo = anomalyResponse[k];
+			var longi = foo["longi"];
+			var lati = foo["lati"];
 			var locations = ol.proj.transform([longi, lati], 'EPSG:4326', 'EPSG:3031');
-
+//date?
+			var tempDate = new Date(0);
+			tempDate.setUTCSeconds( foo.date / 1000 );
+			if( tempDate ){ // is equal to the current day
+				
+				// add to the current map
+			} else {
+				// for next 10 days add to each day?!
+			}
+			
 			var iconFeature = new ol.Feature({
 				//geometry: new ol.geom.Point(ol.proj.transform([lati, longi],'EPSG:4326','EPSG:3031')),
 				geometry: new ol.geom.Point(locations)//,
 				//name: 'Null Island',
 				//population: 400,
+// add mean value
 				//rainfall: 500
 			});
 			vectorSource.addFeature(iconFeature);			
@@ -95,8 +99,7 @@ function updateMap( ){
 	} else { // if request returned is 1
 		console.log("...waiting for the data ____or___ the length of anomalyResponse is zero?!");
 	}
-} // end updateMap
-
+}
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -107,7 +110,6 @@ function updateMapAggregate( ){
 
 	// wait for response
 	if( ( requestReturned == 1 ) && ( aggregateAnomalyResponse.length !== 0 ) ){
-// need to reset request returned at some point
 		console.log("...with " + aggregateAnomalyResponse.length + " anomalies.")
 		document.getElementById("aggAnomRes").innerHTML = aggregateAnomalyResponse.length + " anomalies found!";
 		
@@ -139,11 +141,12 @@ function updateMapAggregate( ){
 				}
 			});
 			
-			//////////////////////////////////
-			var iconFeature = new ol.Feature({
+			//////////////////////////////////////////
+			iconFeature = new ol.Feature({
 				geometry: new ol.geom.Point(locations)
 			});
-
+			//////////////////////////////////////////
+			
 			console.log("threshold: greater than " + $(".sliderThreshold").slider("values")[0] + ", and less than " + $(".sliderThreshold").slider("values")[1] );
 			
 			if( mean > $(".sliderThreshold").slider("values")[0]*10 && mean < $(".sliderThreshold").slider("values")[1]*10 ){
@@ -152,7 +155,7 @@ function updateMapAggregate( ){
 				greyVectorSource.addFeature(iconFeature);
 			}
 		}
-		
+/*	
 		//////////////////////////////////
 		// Create layer form vector grid and style function
 		grid = new ol.source.Vector({
@@ -186,7 +189,7 @@ function updateMapAggregate( ){
 			//style: gridStyle
 		});
 		map.addLayer(gridLayer);
-		
+*/
 		/////////////////////////////////
 		map.addLayer(redVectorLayer);
 		map.addLayer(greyVectorLayer);
@@ -194,25 +197,24 @@ function updateMapAggregate( ){
 	} else { // if request returned is 1
 		console.log("...waiting for the data or the length of aggregate anomaly request is zero?!");
 	}
-} // end updateMapAggregate
-
+}
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // need to work on this
 function updateResults( anomalyRequest ){	
 	
-	// determine frequency
-	if( $("#chk19").is(':checked') ){
-		frequency = "19";
+	// determine frequency in GHz
+	if( $("#chk91").is(':checked') ){
+		frequency = "91";
 	} else if( $("#chk22").is(':checked') ){
 		frequency = "22";
 	} else if( $("#chk37").is(':checked') ){
 		frequency = "37";
 	} else if( $("#chk85").is(':checked') ){
 		frequency = "85";
-	} else if( $("#chk91").is(':checked') ){
-		frequency = "91";
+	} else {
+		frequency = "19";
 	}
 	
 	// determine polarization
@@ -224,53 +226,11 @@ function updateResults( anomalyRequest ){
 		
 	startYear = $(".sliderYears").slider("values")[0];
 	endYear = $(".sliderYears").slider("values")[1];
-	startMonth = 1; // $(".sliderPattern").slider("values")[0] + 1; // disable for now...
-	endMonth = 12; // $(".sliderPattern").slider("values")[1] + 1;
+	//startMonth = 1; //$(".sliderPattern").slider("values")[0] + 1;
+	//endMonth = 12;
 	
-	startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
-	endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
-
-}
-
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-
-// updates the variables that will be input into the query
-function updateResults( anomalyRequest ){	
-	// determine frequency
-	if( $("#chk19").is(':checked') ){
-		frequency = "19";
-	} else if( $("#chk22").is(':checked') ){
-		frequency = "22";
-	} else if( $("#chk37").is(':checked') ){
-		frequency = "37";
-	} else if( $("#chk85").is(':checked') ){
-		frequency = "85";
-	} else if( $("#chk91").is(':checked') ){
-		frequency = "91";
-	}
-	
-	// determine polarization
-	if( $("#chkVertical").is(':checked') ){
-		polarization = "v";
-	} else if( $("#chkHorizontal").is(':checked') ){
-		polarization = "h";
-	}
-	
-	// determine timeline zoom
-	if( $("#chkDay").is(':checked') ){
-		timelineZoomLevel = "day";
-	} else if( $("#chkMonth").is(':checked') ){
-		timelineZoomLevel = "month";
-	} else if( $("#chkYear").is(':checked') ){
-		timelineZoomLevel = "year";
-	}
-	
-	startYear = $(".sliderYears").slider("values")[0];
-	endYear = $(".sliderYears").slider("values")[1];
-	startMonth = 1; //$(".sliderPattern").slider("values")[0] + 1;
-	endMonth = 12;
-	
+	// String for date parsing ...Right now the java will return 10 days no matter the
+	// specified length of time. This is to reduce the amount of data passed to the page.
 	startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
 	endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
 
@@ -282,28 +242,24 @@ function updateResults( anomalyRequest ){
 	anomalyRequest["eDate"] = endDate;
 	anomalyRequest["sYear"] = startYear;
 	anomalyRequest["eYear"] = endYear;
-	anomalyRequest["sMonth"] = 1; //$(".sliderPattern").slider("values")[0] + 1;
-	anomalyRequest["eMonth"] = 12; //$(".sliderPattern").slider("values")[1] + 1;
-	anomalyRequest["locations"] = loctnArray
+	anomalyRequest["sMonth"] = 1;
+	anomalyRequest["eMonth"] = 12;
+	anomalyRequest["locations"] = loctnArray	
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-
-//...can delete this probably
-
-// http://jsfiddle.net/jfhartsock/cM3ZU/
+// Find offset for days from the current date - http://jsfiddle.net/jfhartsock/cM3ZU/
 Date.prototype.addDays = function ( days ){
-	var dat = new Date(this.valueOf())
-	dat.setDate(dat.getDate() + days);
-	return dat;
+	
+	var date = new Date(this.valueOf())
+	date.setDate(date.getDate() + days);
+	return date;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-
+// Generate an array of dates between the two input dates
 function getDates( startDate, stopDate ){
+	
 	var dateArray = new Array();
 	var currentDate = startDate;
 	while( currentDate <= stopDate ){
@@ -312,7 +268,6 @@ function getDates( startDate, stopDate ){
 	}
 	return dateArray;
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -320,64 +275,44 @@ function getDates( startDate, stopDate ){
 function updateDateValues( ){
 
 	// generate a list of all days between start and end of input
-	var beginningDate = new Date(startDate);
-	var endingDate = new Date(endDate);
-
-	dateArray = getDates(beginningDate, endingDate);
-
-// print out all the dates to the console		
-for( i = 0; i < dateArray.length; i++ ){
-//console.log( dateArray[i] );
-}
+	var beginningDate = new Date( new Date(startDate).getTime() + 420 * 60 * 1000 ); // accommodate the timezone offset
+	var endingDate = new Date( new Date(endDate).getTime() + 420 * 60 * 1000 );
+	var dateLabels = [];
+	var tempString;
 	
-	if( $("#chkMonth").is(':checked') ){
-		// months
-		$(".sliderTimeline")
-		.slider({
-			min: 0,
-			max: 11,
-			step: 1,
-			value: 5
-		}).slider("pips", {
-			rest: "label",
-			labels: months
-		});
-	} else if( $("#chkYear").is(':checked') ){
-		// years
-		$(".sliderTimeline")
-		.slider({
-			min: minYear,
-			max: maxYear,
-			step: 1,
-			value: 1
-		}).slider("pips", {
-			rest: "label",
-			step: 1
-		});
-	} else {
-		// days
-		$(".sliderTimeline")
-		.slider({
-			min: 0,
-			max: 31,
-			step: 1,
-			value: 0
-		}).slider("pips", {
-			rest: "label",
-			step: 1
-		});
+	var dateArray = getDates(beginningDate, endingDate);
+
+	// generate an array of strings for labels ...just need 10 labels
+	for( var j = 0; j < 10; j++ ){
+		tempString = months[dateArray[j].getMonth()] + "-" + dateArray[j].getDate()
+			+ "<br>" + dateArray[j].getFullYear();
+		dateLabels[j] = tempString;
 	}
+
+	// updating the day timeline
+	$(".sliderTimeline")
+	.slider({
+		min: 0,
+		max: 9,
+		step: 1,
+		value: 0
+	}).slider("pips", {
+		rest: "label",
+		labels: dateLabels
+	});
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-var requestReturned = 0;
-var anomalyResponse = [];
-var aggregateAnomalyResponse = [];
+requestReturned = 0;
+anomalyResponse = [];
+aggregateAnomalyResponse = [];
 
-// if mode is '0' parse daily results, if mode is '1' parse aggregate
+// if mode is '0' parse daily results, if mode is '1' parse aggregate results
 function sendRequest( anomalyRequest, mode ){
+	
+	updateDateValues();
+	
 	anomalyRequest["dsName"] = dataSet;
 	anomalyRequest["dsFreq"] = "s" + frequency + polarization;
 	anomalyRequest["dsPolar"] = polarization;
@@ -387,7 +322,6 @@ function sendRequest( anomalyRequest, mode ){
 
 	console.log("anomalyRequest" + anomalyRequest);
 	
-	updateDateValues();
 	if( mode == 0 ){
 		parseRequest();
 	} else if( mode == 1 ){
@@ -397,10 +331,10 @@ function sendRequest( anomalyRequest, mode ){
 	}
 
 };
-
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
+// Retrieve Daily Anomaly Results
 function parseRequest( e ){
 	console.log("making request....");
 
@@ -421,11 +355,10 @@ function parseRequest( e ){
 		}
 	});
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-// aggregate results
+// Retrieve Aggregate Anomaly Results
 function parseRequestAggregate( e ){
 	console.log("making aggregate request....");
 
@@ -445,14 +378,11 @@ function parseRequestAggregate( e ){
 			requestReturned = 1;
 			updateMapAggregate();
 		}
-	});
-	
+	});	
 	// [{"longi":168.17851, "lati":-55.5503, "mean":2061.5, "frequency":2},{"longi":153.50965, "lati":-51.8394, "mean":2002, "frequency":1}]
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
-
 
 // aggregate results
 function parseRequestAggregateMonthly( e ){
@@ -475,15 +405,12 @@ function parseRequestAggregateMonthly( e ){
 			updateMapAggregate();
 		}
 	});
-	
 	// [{"longi":168.17851, "lati":-55.5503, "mean":2061.5, "frequency":2},{"longi":153.50965, "lati":-51.8394, "mean":2002, "frequency":1}]
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
 var draw;
-
 function addInteraction( ){
 	var locationArray = Array();
 	locationArray[0] = { "longitude": -39.3, "latitude": -42.5 };
@@ -532,7 +459,6 @@ function addInteraction( ){
 	
 	map.addInteraction(draw);
 } // end addInteraction
-
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -543,8 +469,6 @@ function buttonDrawRectangle(){
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // Resource for Sliders:
@@ -562,7 +486,7 @@ $('.mutual .checkbox').click( function( ){
 });
 ////////////////////////////////////////////////////////////////////////////////////////
 
-// change opacity of the layer
+// change opacity of the base layer
 $(".sliderLayerOpacity")
 .slider({
 	min: 0,
@@ -651,11 +575,11 @@ $(".sliderAnomalyOpacity")
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // slider for main timeline at bottom of page
-hanzi = ["1 2", "2 2", "3 2", "3 2", "3 2", "3 2", "3 2", "3 2", "2", "2"];
+hanzi = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 $(".sliderTimeline")
 	.slider({ 
 		min: 0,
-		max: hanzi.length,
+		max: hanzi.length - 1,
 		value: 0,
 		slide: function( event, ui ){
 			//$("#timelineText").text( ui.value );
@@ -679,31 +603,32 @@ $(".sliderTimeline")
 
 // user input of the beginning/end years
 $(".sliderYears")
-	.slider({
-		min: minYear,
-		max: maxYear,
-		step: 1,
-		values: [1995, 1996],
-		slide: function( event, ui ){
-			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
-			$( updateResults( anomalyRequest ) );
-			startYear = $(".sliderYears").slider("values")[0];
-			endYear = $(".sliderYears").slider("values")[1];
-		},
-		change: function( event, ui ){
-			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
-			$( updateResults( anomalyRequest ) );
-			startYear = $(".sliderYears").slider("values")[0];
-			endYear = $(".sliderYears").slider("values")[1];
-		}
-	})
-	.slider("pips", {
-		step: 5
-	})
-	.slider("float")
-	.on("slidechange", function( event, ui ){
+.slider({
+	min: minYear,
+	max: maxYear,
+	step: 1,
+	values: [1995, 1996],
+	slide: function( event, ui ){
 		//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
 		$( updateResults( anomalyRequest ) );
+		startYear = $(".sliderYears").slider("values")[0];
+		endYear = $(".sliderYears").slider("values")[1];
+	},
+	change: function( event, ui ){
+		//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
+		$( updateResults( anomalyRequest ) );
+		startYear = $(".sliderYears").slider("values")[0];
+		endYear = $(".sliderYears").slider("values")[1];
+		updateDateValues();
+	}
+})
+.slider("pips", {
+	step: 5
+})
+.slider("float")
+.on("slidechange", function( event, ui ){
+	//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
+	$( updateResults( anomalyRequest ) );
 });
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -755,9 +680,6 @@ $(".sliderThreshold")
 		$( updateResults( anomalyRequest ) );
 });
 ////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////

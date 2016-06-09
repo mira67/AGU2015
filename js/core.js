@@ -75,13 +75,14 @@ function updateMap( ){
 //date?
 			var tempDate = new Date(0);
 			tempDate.setUTCSeconds( foo.date / 1000 );
+/*
 			if( tempDate ){ // is equal to the current day
 				
 				// add to the current map
 			} else {
 				// for next 10 days add to each day?!
 			}
-			
+*/	
 			var iconFeature = new ol.Feature({
 				//geometry: new ol.geom.Point(ol.proj.transform([lati, longi],'EPSG:4326','EPSG:3031')),
 				geometry: new ol.geom.Point(locations)//,
@@ -147,7 +148,7 @@ function updateMapAggregate( ){
 			});
 			//////////////////////////////////////////
 			
-			console.log("threshold: greater than " + $(".sliderThreshold").slider("values")[0] + ", and less than " + $(".sliderThreshold").slider("values")[1] );
+			//console.log("threshold: greater than " + $(".sliderThreshold").slider("values")[0] + ", and less than " + $(".sliderThreshold").slider("values")[1] );
 			
 			if( mean > $(".sliderThreshold").slider("values")[0]*10 && mean < $(".sliderThreshold").slider("values")[1]*10 ){
 				redVectorSource.addFeature(iconFeature);
@@ -231,8 +232,17 @@ function updateResults( anomalyRequest ){
 	
 	// String for date parsing ...Right now the java will return 10 days no matter the
 	// specified length of time. This is to reduce the amount of data passed to the page.
-	startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
+
+	console.log(startDate);
+	var beginningDate = new Date( new Date(startDate).getTime() + 420 * 60 * 1000 ); // accommodate the timezone offset
+	var beginningDateIncremented = new Date( new Date(beginningDate).getTime() + 24 * 60 * 60 * 1000 )	
+	startDate = startYear + "-" 
+		+ ("00" + beginningDateIncremented.getMonth()+1).slice(-2) + "-"
+		+ ("00" + beginningDateIncremented.getDate()).slice(-2);
+	console.log(startDate);
+	//startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
 	endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
+	document.getElementById("stringOfDates").innerHTML = startDate + " to " + endDate;
 
 	// update anomaly request values
 	anomalyRequest["dsName"] = dataSet;
@@ -271,11 +281,26 @@ function getDates( startDate, stopDate ){
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
+// +1 or -1 are the two ways to increment
+function changeStartDate( value ){
+	
+	var beginningDate = new Date( new Date(startDate).getTime() + 420 * 60 * 1000 ); // accommodate the timezone offset
+	var beginningDateIncremented = new Date( new Date(beginningDate).getTime() + value * 24 * 60 * 60 * 1000 )
+	
+	startDate = beginningDateIncremented.getFullYear() + "-" 
+		+ ("00" + beginningDateIncremented.getMonth()+1).slice(-2) + "-"
+		+ ("00" + beginningDateIncremented.getDate()).slice(-2);
+	console.log(startDate);
+	
+	//return beginningDateIncremented;
+}
+
 // update labels of timeline pips
 function updateDateValues( ){
 
 	// generate a list of all days between start and end of input
 	var beginningDate = new Date( new Date(startDate).getTime() + 420 * 60 * 1000 ); // accommodate the timezone offset
+	//var beginningDatePlusOne = new Date( new Date(beginningDate).getTime() + 24* 60 * 60 * 1000 )
 	var endingDate = new Date( new Date(endDate).getTime() + 420 * 60 * 1000 );
 	var dateLabels = [];
 	var tempString;
@@ -311,7 +336,7 @@ aggregateAnomalyResponse = [];
 // if mode is '0' parse daily results, if mode is '1' parse aggregate results
 function sendRequest( anomalyRequest, mode ){
 	
-	updateDateValues();
+	//updateDateValues();
 	
 	anomalyRequest["dsName"] = dataSet;
 	anomalyRequest["dsFreq"] = "s" + frequency + polarization;
@@ -348,7 +373,7 @@ function parseRequest( e ){
 		async : true,
 		success : function(response) {
 			console.log("ajax success!________________ajax success!");
-			console.log("respones: " + response);
+			//console.log("respones: " + response);
 			anomalyResponse = response;
 			requestReturned = 1;
 			updateMap();
@@ -373,7 +398,7 @@ function parseRequestAggregate( e ){
 		async : true,
 		success : function( response ){
 			console.log("ajax success! ajax success!");
-			console.log("respones: " + response);
+			//console.log("respones: " + response);
 			aggregateAnomalyResponse = response;
 			requestReturned = 1;
 			updateMapAggregate();
@@ -399,7 +424,7 @@ function parseRequestAggregateMonthly( e ){
 		async : true,
 		success : function( response ){
 			console.log("ajax success! ajax success!");
-			console.log("respones: " + response);
+			//console.log("respones: " + response);
 			aggregateAnomalyResponse = response;
 			requestReturned = 1;
 			updateMapAggregate();
@@ -436,7 +461,7 @@ function addInteraction( ){
 		
 		boxCoordinates = locationArray; // add coordinates to the var
 		loctnArray = locationArray;
-// use one variable to store coordinates?!
+		
 		updateResults( anomalyRequest );
 
 		return geometry;
@@ -458,7 +483,7 @@ function addInteraction( ){
 	});
 	
 	map.addInteraction(draw);
-} // end addInteraction
+}
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -521,11 +546,9 @@ $(".sliderMarkerOpacity")
 	step: 0.05,
 	value: 0.0,
 	slide: function( event, ui ){
-		//$("#markerOpacityText").text( ui.value );
 		$( imageLayer.setOpacity( ui.value ) );
 	},
 	change: function( event, ui ){
-		//$("#markerOpacityText").text( ui.value );
 		$( imageLayer.setOpacity( ui.value ) );
 		console.log("ui.value" + ui.value);
 	}
@@ -535,29 +558,22 @@ $(".sliderMarkerOpacity")
 	step: 5
 })
 .on("slidechange", function( event, ui ){
-	//$("#markerOpacityText").text( ui.value );
 	$( imageLayer.setOpacity( ui.value ) );
 	$( updateResults( anomalyRequest ) );
 });
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // partitioning of the brightness threshold
-$(".sliderAnomalyOpacity")
+$(".sliderDailyAnomalyOpacity")
 .slider({
 	min: 0,
 	max: 1,
 	step: 0.05,
 	value: 0.75,
 	slide: function( event, ui ){
-		//$("#markerOpacityText").text( ui.value );
-		$( redVectorLayer.setOpacity( ui.value ) );
-		$( greyVectorLayer.setOpacity( ui.value ) );
 		$( vectorLayer.setOpacity( ui.value ) );
 	},
 	change: function( event, ui ){
-		//$("#markerOpacityText").text( ui.value );
-		$( redVectorLayer.setOpacity( ui.value ) );
-		$( greyVectorLayer.setOpacity( ui.value ) );
 		$( vectorLayer.setOpacity( ui.value ) );
 	}
 })
@@ -566,12 +582,37 @@ $(".sliderAnomalyOpacity")
 	step: 5
 })
 .on("slidechange", function( event, ui ){
-	//$("#markerOpacityText").text( ui.value );
-	$( redVectorLayer.setOpacity( ui.value ) );
-	$( greyVectorLayer.setOpacity( ui.value ) );
 	$( vectorLayer.setOpacity( ui.value ) );
 	$( updateResults( anomalyRequest ) );
 });
+
+// partitioning of the brightness threshold
+$(".sliderAggAnomalyOpacity")
+.slider({
+	min: 0,
+	max: 1,
+	step: 0.05,
+	value: 0.75,
+	slide: function( event, ui ){
+		$( redVectorLayer.setOpacity( ui.value ) );
+		$( greyVectorLayer.setOpacity( ui.value ) );
+	},
+	change: function( event, ui ){
+		//$("#markerOpacityText").text( ui.value );
+		$( redVectorLayer.setOpacity( ui.value ) );
+		$( greyVectorLayer.setOpacity( ui.value ) );
+	}
+})
+.slider("pips", {
+	rest: "label",
+	step: 5
+})
+.on("slidechange", function( event, ui ){
+	$( redVectorLayer.setOpacity( ui.value ) );
+	$( greyVectorLayer.setOpacity( ui.value ) );
+	$( updateResults( anomalyRequest ) );
+});
+
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // slider for main timeline at bottom of page

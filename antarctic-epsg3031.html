@@ -74,7 +74,8 @@
 		.row a:active { color: pink; }
 
 		#dailyAnomRes { color: green; }
-		#aggAnomRes { color: orange; }
+		#aggAnomRes { color: brown; }
+		#stringOfDates { color: black; }
 		.ui-widget-header { background: red; }
 	</style>
 </head>
@@ -135,14 +136,15 @@
 				</div>
 				<hr>
 				<div class="row">
+					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 1);">Search All Anomalies</a>
+<p id="stringOfDates"></p>
+<p id="aggAnomRes"></p>
+					<hr>
 					<p class="highlight">anomaly search</p>
 					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 0);"> Find Daily Anomalies</a><br>
-					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 0);">Previous</a> |
-					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 0);"> Next</a>
+					<a href="#" class="FmyButton" onclick="vectorSource.clear();changeStartDate(-1);sendRequest(anomalyRequest, 0);">Previous</a> |
+					<a href="#" class="FmyButton" onclick="vectorSource.clear();changeStartDate(1);sendRequest(anomalyRequest, 0);"> Next</a>
 <p id="dailyAnomRes"></p>
-					<hr>
-					<a href="#" class="FmyButton" onclick="sendRequest(anomalyRequest, 1);">Search All Anomalies</a>
-<p id="aggAnomRes"></p>
 					<hr>
 					<a href="#" class="FmyButton" onclick="redVectorSource.clear();greyVectorSource.clear();vectorSource.clear();">Clear Results from Map</a>
 				</div>
@@ -161,9 +163,14 @@
 				-->
 
 				<!-- depends on if results are present -->
-				<div class="row"><p class="highlight">Results Opacity</p><p id="markerOpacityText"></p></div>
+				<div class="row"><p class="highlight">Aggregate Results Opacity</p></div>
 				<div class="row">
-					<div class="slide sliderAnomalyOpacity"></div>
+					<div class="slide sliderAggAnomalyOpacity"></div>
+				</div>
+				<hr>
+				<div class="row"><p class="highlight">Daily Results Opacity</p></div>
+				<div class="row">
+					<div class="slide sliderDailyAnomalyOpacity"></div>
 				</div>
 				<br><hr>
 			</div>

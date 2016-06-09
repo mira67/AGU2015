@@ -1,4 +1,8 @@
-// main data products: https://wiki.earthdata.nasa.gov/display/GIBS/GIBS+Available+Imagery+Products
+/*
+main data product:
+https://wiki.earthdata.nasa.gov/display/GIBS/GIBS+Available+Imagery+Products
+https://nsidc.org/data/docs/daac/nsidc0001_ssmi_tbs.gd.html
+*/
 
 window.onload = function() {
 
@@ -292,14 +296,13 @@ window.onload = function() {
 	
 	//add the feature vector to the layer vector, and apply a style to whole layer
 	vectorLayer = new ol.layer.Vector({
-		opacity: 0.25,
+		opacity: 0.75,
 		source: vectorSource,
 		style: iconStyle
 	});
 	
 	// for drawing aggregate results
 	redVectorSource = new ol.source.Vector();
-	//create the style for hot and then cold
 	redIconStyle = new ol.style.Style({
 		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
 			/*anchor: [1, 1],
@@ -308,9 +311,8 @@ window.onload = function() {
 			src: 'images/redMarker.jpg'
 		}))
 	});
-	// red vs grey - anomalies inside and outside specified interval ...should change the outside to clear or grey
 	redVectorLayer = new ol.layer.Vector({
-		opacity: 0.25,
+		opacity: 0.75,
 		source: redVectorSource,
 		style: redIconStyle
 	});
@@ -325,7 +327,7 @@ window.onload = function() {
 		}))
 	});
 	greyVectorLayer = new ol.layer.Vector({
-		opacity: 0.25,
+		opacity: 0.75,
 		source: greyVectorSource,
 		style: greyIconStyle
 	});

@@ -23,7 +23,12 @@
 	<link rel="stylesheet" href="css/core.css"/>
 	<script src="js/antarctic-epsg3031.js"></script>
 	
+	<!-- color scheme: http://www.colourco.de/complement/5/%2345a537 -->
+	<!-- [violet] #7d3587 #873693 #449f37 #46ab37 #48b837 [green] -->
+	
+	<!-- https://developer.mozilla.org/en-US/docs/Web/CSS/cursor -->
 	<style>
+		#map { cursor: crosshair; }
 		.titleBar {
 			z-index: 5;
 			position: absolute;
@@ -35,12 +40,12 @@
 			margin: 0px;
 			background-color: rgba(0,0,0,0.7);
 		}
-		.left { height: 100%; width: auto; overflow: hidden; color: #00BFDD; }
+		.left { height: 100%; width: auto; overflow: hidden; }
 		.right { height: 100%; width: auto; float: right; direction: rtl; }
 		.left div { margin: 3px 0px 3px 0px; }
 		.right p {
 			margin: 0px 10px 0px 0px;
-			color: #AEC6CF;
+			color: #48b837;
 			font-size: 25px;
 			font-style: Impact, Charcoal, sans-serif;
 		}
@@ -54,7 +59,7 @@
 			background-color: rgba(174,198,207,0.9); <!-- pastel blue -->
 			font-size: 1.2em;
 			width: 300px;
-			max-height: 300px;
+			max-height: 600px;
 			overflow: auto;
 		}
 		.sidebarChild .content1 { height: 100%; width: 100%; overflow: hidden; }
@@ -77,6 +82,8 @@
 		#aggAnomRes { color: brown; }
 		#stringOfDates { color: black; }
 		.ui-widget-header { background: red; }
+		
+		.menu1-content { display: none; }
 	</style>
 </head>
 <!-- ////////////////////////////////////////////////////////////////////// -->
@@ -98,22 +105,31 @@
 		</div>
 		<div class="left"><!-- menu selections -->
 			<div id="one">
-				<a class="menu1-toggle active" href="#">✚ menu</a>
-			</div>
-			<div id="two">
-				<a class="menu2-toggle active" href="#">✚ frequency</a>
-			</div>
-			<div id="three">
-				<a class="menu3-toggle active" href="#">✚ polarization</a>
+				<a class="menu1 menu1-toggle" href="#">✚ menu</a>
 			</div>
 		</div>
 	</div>
 	
 	<!-- scrollbar on the left hand side of the page -->
 	<!-- source: http://jsfiddle.net/P3pJ6/ -->
-	<div class="menu1-content active">
+	<div class="menu1 menu1-content"><!-- active -->
 		<div class="sidebar" class="scroll">
 			<div class="sidebarChild">
+				<div class="row">
+					<p class="highlight">frequencies</p>
+					<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>19 GHz<br>
+					<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">22 GHz<br>
+					<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">37 GHz<br>
+					<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">85 GHz<br>
+					<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">91 GHz<br>
+				</div>
+				<hr>
+				<div class="row">
+					<p class="highlight">polarizations</p>
+					<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked> ↕ vertical<br>
+					<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">↔ horizontal
+				</div>
+				<hr>
 				<div class="row">
 					<p class="highlight">zoom to selection</p>
 					<form action="update_coordinates.asp">
@@ -181,15 +197,6 @@
 	<div class="menu2-content active">
 		<div class="sidebar" class="scroll">
 			<div class="sidebarChild">
-				<div class="row">
-					<p class="highlight">frequencies</p>
-					<input id="chk19" name="chk19" type="checkbox" value="19" class="checkbox" checked>19 GHz<br>
-					<input id="chk22" name="chk22" type="checkbox" value="22" class="checkbox">22 GHz<br>
-					<input id="chk37" name="chk37" type="checkbox" value="37" class="checkbox">37 GHz<br>
-					<input id="chk85" name="chk85" type="checkbox" value="85" class="checkbox">85 GHz<br>
-					<input id="chk91" name="chk91" type="checkbox" value="91" class="checkbox">91 GHz<br>
-				</div>
-				<hr>
 			</div>
 		</div>
 	</div>
@@ -198,12 +205,6 @@
 	<div class="menu3-content active">
 		<div class="sidebar" class="scroll">
 			<div class="sidebarChild">
-				<div class="row">
-					<p class="highlight">polarizations</p>
-					<input id="chkVertical" name="chkVertical" type="checkbox" value="vertical" class="checkbox" checked> ↕ vertical<br>
-					<input id="chkHorizontal" name="chkHorizontal" type="checkbox" value="horizontal" class="checkbox">↔ horizontal
-				</div>
-				<hr>
 			</div>
 		</div>
 	</div>

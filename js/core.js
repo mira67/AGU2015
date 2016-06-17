@@ -82,7 +82,7 @@ function updateMap( ){
 			} else {
 				// for next 10 days add to each day?!
 			}
-*/	
+*/
 			var iconFeature = new ol.Feature({
 				//geometry: new ol.geom.Point(ol.proj.transform([lati, longi],'EPSG:4326','EPSG:3031')),
 				geometry: new ol.geom.Point(locations)//,
@@ -156,7 +156,7 @@ function updateMapAggregate( ){
 				greyVectorSource.addFeature(iconFeature);
 			}
 		}
-/*	
+
 		//////////////////////////////////
 		// Create layer form vector grid and style function
 		grid = new ol.source.Vector({
@@ -190,7 +190,7 @@ function updateMapAggregate( ){
 			//style: gridStyle
 		});
 		map.addLayer(gridLayer);
-*/
+
 		/////////////////////////////////
 		map.addLayer(redVectorLayer);
 		map.addLayer(greyVectorLayer);

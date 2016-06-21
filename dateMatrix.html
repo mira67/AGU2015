@@ -1,0 +1,438 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"><!-- tell robots to go away! -->
+
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script src="js/jquery-ui-slider-pips.js"></script>
+
+<link rel="stylesheet" href="css/jquery-ui-slider-pips.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
+
+<script type="text/javascript">
+	months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+	timelineZoom = "day"; <!-- day of year, 
+	minYear = 1987;
+	startYear = 1990;
+	maxYear = 2014;
+	endYear = 1992;
+	
+	dataSet = "SSMI";
+	frequency = "19";
+	polarization = "h";
+	
+	increment = 0; // cursor for which day to highlight
+
+	// given month, return all days within that month
+	function getDaysInMonth( month, year ){
+		var date = new Date(year, month, 1);
+		var days = [];
+		while( date.getMonth() === month ){
+			days.push(new Date(date));
+			date.setDate(date.getDate() + 1);
+		}
+		return days;
+	}
+	// given year, return all days within that year
+	function getDaysInYear( year ) {
+		var date = new Date(year, 0, 1);
+		var days = [];
+		while( date.getFullYear() === year ){
+			days.push( new Date(date) );
+			date.setDate( date.getDate() + 1 );
+		}
+		return days;
+	}
+</script>
+<!-- css style -->
+<style>
+	body { background-color: grey; }
+	#tile {
+		border: 1px solid black;
+		outline-color: blue;
+		margin: 10px;
+	}
+	.sliderYears { margin: 20px; }
+	
+	/* Center the loader */
+	#loader {
+	  position: absolute;
+	  left: 50%;
+	  top: 50%;
+	  z-index: 1;
+	  width: 150px;
+	  height: 150px;
+	  margin: -75px 0 0 -75px;
+	  border: 16px solid #f3f3f3;
+	  border-radius: 50%;
+	  border-top: 16px solid #3498db;
+	  width: 120px;
+	  height: 120px;
+	  -webkit-animation: spin 2s linear infinite;
+	  animation: spin 2s linear infinite;
+	}
+
+	@-webkit-keyframes spin {
+	  0% { -webkit-transform: rotate(0deg); }
+	  100% { -webkit-transform: rotate(360deg); }
+	}
+	@keyframes spin {
+	  0% { transform: rotate(0deg); }
+	  100% { transform: rotate(360deg); }
+	}
+	#searchImage {
+	  display: none;
+	  text-align: center;
+	}
+	#loader {
+		display: none;
+	}
+	.node { height: 40px; width: 3px; background-color: #00BFFF; margin-right: 1px; }
+	.nodeSpacer { height: 50px; width: 1px; background-color: black; margin-right: 1px; }
+	#block .node { float: left; }
+	//#block .nodeSpacer { float: left; }
+	#block { margin: 10px; overflow: auto;  }
+	#monthName { font-size: 0.9em; float: left; }
+	.node:hover { background-color: white; }
+	.node:active { background-color: pink; }
+	<!-- width: calc(100% - 300px); -->
+</style>
+	
+</head>
+<body>
+<div id="wrapper">
+<center>
+
+<div id="tile">
+	<div id="block"></div>
+</div>
+
+<script type="text/javascript">
+	function multiplyNodes( ){
+		// accommodates leap years to determine the number of days in year
+		arrayOfDays = getDaysInYear(startYear)
+		for( var i = 0; i < arrayOfDays.length; i++ ){
+			if( arrayOfDays[i].getDate() === 1 ){
+				//$("#block").append('<div class="nodeSpacer" id="node' + i + '"></div>');
+				$("#block").append('<p id="monthName">' + months[arrayOfDays[i].getMonth()] + '</p>' );
+			}
+			$("#block").append('<div class="node" id="node' + i + '"></div>');
+		}
+	}
+	multiplyNodes(); // outputs the timeline of days in a year partitioned by months
+</script>
+
+<div id="tile">
+	<div id="keyPressed">0</div>
+</div>
+
+<div id="tile">
+	<p>Timer</p>
+	<div id="currentTime"></div>
+	<button onclick="searchDatabase();">Search Database</button>
+	<div id="loader"></div>
+	<div id="searchImage"></div>
+</div>
+
+<!-- day month year -->
+<div id="tile">
+	<form autocomplete="off">
+		<p>Zoom of the Timeline</p>
+		<div class="mx-button">
+			<input type="radio" name="timelineZoom" id="day" checked>
+			<label for="day">day</label>
+		</div>
+		<div class="mx-button">
+			<input type="radio" name="timelineZoom" id="month">
+			<label for="month">month</label>
+		</div>
+		<div class="mx-button">
+			<input type="radio" name="timelineZoom" id="year">
+			<label for="year">year</label>
+		</div>
+		<p id="timelineZoomSelection"></p>
+	</form>
+</div>
+
+<!-- monthly pattern selection -->
+<div id="tile">
+	<form action="">
+		<p>Which months to parse during the length of dates</p>
+		<input type="checkbox" name="monthPattern" value="jan" checked>jan
+		<input type="checkbox" name="monthPattern" value="feb" checked>feb
+		<input type="checkbox" name="monthPattern" value="mar" checked>mar
+		<input type="checkbox" name="monthPattern" value="apr" checked>apr
+		<input type="checkbox" name="monthPattern" value="may" checked>may
+		<input type="checkbox" name="monthPattern" value="jun" checked>jun
+		<input type="checkbox" name="monthPattern" value="jul" checked>jul
+		<input type="checkbox" name="monthPattern" value="aug" checked>aug
+		<input type="checkbox" name="monthPattern" value="sep" checked>sep
+		<input type="checkbox" name="monthPattern" value="oct" checked>oct
+		<input type="checkbox" name="monthPattern" value="nov" checked>nov
+		<input type="checkbox" name="monthPattern" value="dec" checked>dec
+		<p id="monthlyPatternSelection"></p>
+	</form>
+</div>
+
+<div id="tile">
+	<div class="sliderYears"></div>
+	<br>
+	<p id="yearSelection"></p>
+</div>
+
+<div id="tile">
+	<p id="printDays"></p>
+</div>
+</center>
+
+<script type="text/javascript">
+
+	
+	startDate = startYear + "-01-01";
+	endDate = endYear + "-12-31";
+
+	
+	<!-- intial prints -->
+	document.getElementById("timelineZoomSelection").innerHTML = "current selection is: " + timelineZoom;
+	checkedBoxes = getCheckedBoxes("monthPattern");
+	document.getElementById("monthlyPatternSelection").innerHTML = "current selection is: " + checkedBoxes;
+	document.getElementById("yearSelection").innerHTML = "start: " + minYear + " end: " + maxYear;
+
+	$("input[name='timelineZoom']").change( function(){
+		timelineZoom = this.id;
+		document.getElementById("timelineZoomSelection").innerHTML = "current selection is: " + timelineZoom;
+		console.log("test: " + timelineZoom);
+	});
+
+	// Pass the checkbox name to the function
+	function getCheckedBoxes(chkboxName) {
+		var checkboxes = document.getElementsByName(chkboxName);
+		var checkboxesChecked = [];
+
+		for( var i = 0; i < checkboxes.length; i++ ){
+			if( checkboxes[i].checked ){
+				checkboxesChecked.push(checkboxes[i]["value"]);
+			}
+		}
+		// problem if null
+		return checkboxesChecked.length > 0 ? checkboxesChecked : null;
+	}
+	$("input[name='monthPattern']").change( function(){
+		checkedBoxes = getCheckedBoxes("monthPattern");
+		document.getElementById("monthlyPatternSelection").innerHTML = "current selection is: " + checkedBoxes;
+	});
+
+	
+	function updateResults( ){
+		
+		startYear = Math.min($(".sliderYears").slider("values")[0], $(".sliderYears").slider("values")[1]);
+		endYear = Math.max($(".sliderYears").slider("values")[0], $(".sliderYears").slider("values")[1]);
+		//
+		console.log("start: " + startYear);
+		console.log("start: " + startYear);
+		//startMonth = $(".sliderPattern").slider("values")[0] + 1;
+		//endMonth = $(".sliderPattern").slider("values")[1] + 1;
+		
+		startDate = startYear + "-" + ("00" + "0").slice(-2) + "-01";
+		endDate = endYear + "-" + ("00" + "12").slice(-2) + "-01";
+		
+		// update anomaly request values
+		/*
+		anomalyRequest["dsName"] = dataSet;
+		anomalyRequest["dsFreq"] = "s" + frequency + polarization;
+		anomalyRequest["dsPolar"] = polarization;
+		anomalyRequest["sDate"] = startDate;
+		anomalyRequest["eDate"] = endDate;
+		anomalyRequest["sYear"] = startYear;
+		anomalyRequest["eYear"] = endYear;
+		anomalyRequest["sMonth"] = $(".sliderPattern").slider("values")[0] + 1;
+		anomalyRequest["eMonth"] = $(".sliderPattern").slider("values")[1] + 1;
+		anomalyRequest["locations"] = loctnArray
+		*/
+	}
+
+	// user input of the date
+	$(".sliderYears")
+		.slider({
+			min: minYear,
+			max: maxYear,
+			step: 1,
+			values: [startYear, endYear],
+			slide: function( event, ui ){
+				$( startYear = Math.min(ui.values[0],ui.values[1]) );
+				$( endYear = Math.max(ui.values[0],ui.values[1]) );
+				$( updateDateList() );
+				$("#yearSelection").text( "start: " + Math.min(ui.values[0],ui.values[1]) + " end: " + Math.max(ui.values[0],ui.values[1])
+					+ ", days selected: " + listDays.length );
+			},
+			change: function( event, ui ){
+				$( startYear = Math.min(ui.values[0],ui.values[1]) );
+				$( endYear = Math.max(ui.values[0],ui.values[1]) );
+				$( updateDateList() );
+				$("#yearSelection").text( "start: " + Math.min(ui.values[0],ui.values[1]) + " end: " + Math.max(ui.values[0],ui.values[1])
+					+ ", days selected: " + listDays.length );
+				//$( console.log("start: " + ui.values[0] + " end: " + ui.values[1]) );
+			}
+		})
+		.slider("pips", {
+			rest: "label",
+			step: 1
+		});
+		/*
+		.on("slidechange", function( event, ui ){
+			//$("#yearsText").text( ui.values[0] + " to " + ui.values[1] );
+			$( updateResults( anomalyRequest ) );
+		});
+		*/
+
+	//////////////////////////////////////////
+	Date.prototype.addDays = function(days) {
+		   var dat = new Date(this.valueOf())
+		   dat.setDate(dat.getDate() + days);
+		   return dat;
+	   }
+
+	   function getDates(startDate, stopDate) {
+		  var dateArray = new Array();
+		  var currentDate = startDate;
+		  while (currentDate <= stopDate) {
+			dateArray.push(currentDate)
+			currentDate = currentDate.addDays(1);
+		  }
+		  return dateArray;
+		}
+	// new Date(year, month, day, hours, minutes, seconds, milliseconds)
+	function updateDateList(){
+		dateArray = getDates(new Date(startYear, 1, 1, 12, 0, 0), new Date(endYear, 1, 1, 12, 0, 0));
+		listDays = new Array();
+		for( i = 0; i < dateArray.length; i ++ ){
+			listDays.push(dateArray[i].getYear() + "-" + dateArray[i].getMonth() + "-" + dateArray[i].getDate());
+			if( i%20 == 0 ){
+				listDays.push("<br>");
+			}
+		}
+		document.getElementById("printDays").innerHTML = "current selection is:" + listDays;
+	}
+	updateDateList();
+	
+// bug - if the two pips overlap with one another --> span of zero days! (prevent this behavior)
+
+//////////////////////////////////////////////////////////////////	
+/*
+	arrDates = GetDates(startDate, 10);
+
+	function changeDateRange(num) {
+		var currentDate = new Date(slideDate.getDate());
+		currentDate.setDate;
+		slideDate.setDate(currentDate.getTime() + num);
+		arrDates = GetDates(slideDate, 10); // next 10 days
+		$(".slider").slider({
+			min : 0,
+			max : 9,
+			value : 0
+		}).slider("pips", {
+			rest : "label",
+			labels : arrDates
+		})
+	}
+	// find the next set of days
+	function GetDates(startDate, daysToAdd) {
+		var arrDates = [];
+		for (var i = 1; i <= daysToAdd; i++) {
+			var currentDate = new Date(startDate);
+			currentDate.setDate(startDate.getDate() + i);
+			arrDates.push(currentDate.getDate() + " "
+					+ months[currentDate.getMonth()] + " "
+					+ currentDate.getFullYear());
+		}
+		return arrDates;
+	}
+	
+timeSeconds = (slideDate.getTime()+sliderValue*24*60*60*1000);
+
+slDate = new Date(0);
+slDate.setUTCSeconds( (slideDate.getTime()+(sliderValue+1)*24*60*60*1000) / 1000 );
+aReq = new Date(0);
+aReq.setUTCSeconds(anomalyRequest[1]["date"]/1000);
+
+console.log("slideDate: " + slDate.getDate() + " "+ (slDate.getMonth()+1) + " " + slDate.getFullYear());
+console.log("requestDate: " + aReq.getDate() + " "+ (aReq.getMonth()+1) + " " + aReq.getFullYear());
+*/
+
+
+//////////////////////////////////////////////////////////////////				
+//////////////////////////////////////////////////////////////////				
+/* timer function */
+var searchImage = new Image();
+searchImage.src = "images/penguinSearch.gif";
+function searchDatabase(){
+	//document.getElementById("searchImage").appendChild(searchImage);
+	// sleep random
+	document.getElementById("loader").style.display = "block";
+	myVar = setTimeout(showImage, 2000);
+	document.getElementById("loader").style.display = "none";
+}
+
+function showPage() {
+  document.getElementById("loader").style.display = "none";
+  //document.getElementById("searchImage").style.display = "block";
+  document.getElementById("searchImage").appendChild(searchImage);
+}
+
+function startTimer() {
+    var current = new Date();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    m = checkTime(m);
+    s = checkTime(s);
+    document.getElementById('txt').innerHTML =
+    s + ":" + ms;
+    var t = setTimeout(startTime, 500);
+}
+function checkTime(i) {
+    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+}
+//////////////////////////////////////////////////////////////////					
+/// key binding to help traverse timeline
+
+$(document).keydown(function(e){
+	document.getElementsByClassName("node")[increment].style.backgroundColor = "blue"
+    if( e.which == 37 ){
+		//document.getElementById('keyPressed').innerHTML = "left";
+		increment = increment - 1;
+		if( increment < 0 ){
+			increment = 0;
+		}
+	} else if( e.which == 39 ){
+		//document.getElementById('keyPressed').innerHTML = "right";
+		increment = increment + 1;
+		if( increment > (document.getElementsByClassName("node").length - 1) ){
+			increment = (document.getElementsByClassName("node").length - 1);
+		}
+	}
+	document.getElementById('keyPressed').innerHTML = startYear + " "
+		+ months[getDaysInYear(startYear)[increment].getMonth()] + " "
+		+ getDaysInYear(startYear)[increment].getDate();
+	document.getElementsByClassName("node")[increment].style.backgroundColor = "pink"
+});
+
+$('body').keyup(function (event) {
+  //console.log(event.keyCode);
+});
+
+// to change the color using class
+// document.getElementsByClassName("node")[1].style.backgroundColor = "red";
+
+
+
+	
+</script>
+
+<!-- add google analytics -->
+<!-- ///////////////////////////////////////////////////////////////////////////////////// -->
+
+</body>
+</html>

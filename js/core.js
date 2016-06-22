@@ -46,7 +46,7 @@ maxYear = endYear;
 // main container for any requests to be made
 anomalyRequest = {
 	"dsName": dataSet,
-	"dsFreq": frequency,
+	"dsFreq": frequency, //  + frequency + polarization; // ???????????????????????????????
 	"dsPolar": polarization,
 	"sDate": startDatePrint(),
 	"eDate": endDatePrint(),
@@ -68,13 +68,11 @@ function updateMap( ){
 // need to reset request returned at some point
 		document.getElementById("dailyAnomRes").innerHTML = anomalyResponse.length + " anomalies found!";
 
-		firstAnomaly = new Date(0);
-		firstAnomaly.setUTCSeconds( anomalyResponse[0]["date"] / 1000 );
-		lastAnomaly = new Date(0);
-		lastAnomaly.setUTCSeconds( anomalyResponse[anomalyResponse.length - 1]["date"] / 1000 );
+		firstAnomaly = new Date(anomalyResponse[0].date);
+		lastAnomaly = new Date(anomalyResponse[anomalyResponse.length - 1].date);
 		
 		console.log("first anomaly: " + firstAnomaly + "\nlast anomaly: " + lastAnomaly);
-		console.log("...with " + anomalyResponse.length + " anomalies.")
+		console.log("...with " + anomalyResponse.length + " anomalies.");
 		
 		source.clear(); // clear the map
 		
@@ -86,10 +84,8 @@ function updateMap( ){
 			var foo = anomalyResponse[k];
 			var longi = foo["longi"];
 			var lati = foo["lati"];
-			var locations = ol.proj.transform([longi, lati], 'EPSG:4326', 'EPSG:3031');
-//date?
-			var tempDate = new Date(0);
-			tempDate.setUTCSeconds( foo.date / 1000 );
+			var locations = ol.proj.transform([longi, lati], 'EPSG:4326', 'EPSG:3031'); // convert to antarctic polarstereographic
+			var tempDate = new Date(anomalyResponse[k].date); // 788918400000
 /*
 			if( tempDate ){ // is equal to the current day
 				
@@ -108,7 +104,6 @@ function updateMap( ){
 			});
 			vectorSource.addFeature(iconFeature);			
 		}
-			
 		map.addLayer(vectorLayer);
 		requestReturned = 0; // reset for next time
 
@@ -126,10 +121,11 @@ function updateMapAggregate( ){
 
 	// wait for response
 	if( ( requestReturned == 1 ) && ( aggregateAnomalyResponse.length !== 0 ) ){
+		
 		console.log("...with " + aggregateAnomalyResponse.length + " anomalies.")
 		document.getElementById("aggAnomRes").innerHTML = aggregateAnomalyResponse.length + " anomalies found!";
 		
-		source.clear();
+		source.clear(); // clear the map
 		
 		for(var k = 0; k < aggregateAnomalyResponse.length; k++){
 			
@@ -251,27 +247,18 @@ function updateResults( anomalyRequest ){
 	var beginningDate = new Date( new Date(startDate).getTime() + 420 * 60 * 1000 ); // accommodate the timezone offset
 	var beginningDateIncremented = new Date( new Date(beginningDate).getTime() + 24 * 60 * 60 * 1000 )
 	
-	//
-	startDate = startYear + "-" 
-		+ ("00" + beginningDateIncremented.getMonth()+1).slice(-2) + "-"
-		+ ("00" + beginningDateIncremented.getDate()).slice(-2);
-	
-	console.log(startDate);
-	//startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
-	endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
+	startDate = new Date(Date.UTC(startYear, startMonth, startDay)); //startYear + "-01-01";
+	endDate = new Date(Date.UTC(endYear, endMonth, endDay)); //endYear + "-01-01";
 
-startDate = new Date(Date.UTC(startYear, startMonth, startDay)); //startYear + "-01-01";
-endDate = new Date(Date.UTC(endYear, endMonth, endDay)); //endYear + "-01-01";
-
-
-	document.getElementById("stringOfDates").innerHTML = startDate + " to " + endDate;
+	// fix this!
+	document.getElementById("stringOfDates").innerHTML = startDatePrint() + " to " + endDatePrint();
 
 	// update anomaly request values
 	anomalyRequest["dsName"] = dataSet;
 	anomalyRequest["dsFreq"] = "s" + frequency + polarization;
 	anomalyRequest["dsPolar"] = polarization;
-	anomalyRequest["sDate"] = startDate;
-	anomalyRequest["eDate"] = endDate;
+	anomalyRequest["sDate"] = startDatePrint();
+	anomalyRequest["eDate"] = endDatePrint();
 	anomalyRequest["sYear"] = startYear;
 	anomalyRequest["eYear"] = endYear;
 	anomalyRequest["sMonth"] = 1;
@@ -288,8 +275,7 @@ Date.prototype.addDays = function ( days ){
 	date.setDate(date.getDate() + days);
 	return date;
 }
-
-// Generate an array of dates between the two input dates
+// Generate an array of dates between the two input dates -- used for creating timeline
 function getDates( startDate, stopDate ){
 	
 	var dateArray = new Array();
@@ -303,37 +289,37 @@ function getDates( startDate, stopDate ){
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-// +1 or -1 are the two ways to increment
+// Increments/Decrements the date -- specify numeric +1 or -1 to change the range of dates
 function changeStartDate( value ){
 	
-	var beginningDate = new Date( new Date(startDate).getTime() + 420 * 60 * 1000 ); // accommodate the timezone offset
-	var beginningDateIncremented = new Date( new Date(beginningDate).getTime() + value * 24 * 60 * 60 * 1000 )
+	startDate = new Date(startDate.setDate(startDate.getDate() + value));
+	document.getElementById("stringOfDates").innerHTML = startDatePrint() + " to " + endDatePrint();
 	
-	startDate = beginningDateIncremented.getFullYear() + "-" 
-		+ ("00" + beginningDateIncremented.getMonth()+1).slice(-2) + "-"
-		+ ("00" + beginningDateIncremented.getDate()).slice(-2);
-	console.log(startDate);
-	
-	//return beginningDateIncremented;
+	startYear = startDate.getUTCFullYear();
+	endYear = endDate.getUTCFullYear();
+	startMonth = startDate.getUTCMonth();
+	endMonth = endDate.getUTCMonth();
+	startDay = startDate.getUTCDate();
+	endDay = endDate.getUTCDate();
 }
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
 
 // update labels of timeline pips
 //new Date(year, month[, day[, hour[, minutes[, seconds[, milliseconds]]]]]);
 function updateDateValues( ){
 
 	// generate a list of all days between start and end of input
-	var beginningDate = new Date( new Date(startDate).getTime() + 420 * 60 * 1000 ); // accommodate the timezone offset
-	//var beginningDatePlusOne = new Date( new Date(beginningDate).getTime() + 24* 60 * 60 * 1000 )
-	var endingDate = new Date( new Date(endDate).getTime() + 420 * 60 * 1000 );
+	var beginningDate = new Date(startDate.setDate( startDate.getDate() ));
+	var endingDate = new Date(endDate.setDate( endDate.getDate() ));
 	var dateLabels = [];
 	var tempString;
 	
 	var dateArray = getDates(beginningDate, endingDate);
 
-	// generate an array of strings for labels ...just need 10 labels
+	// generate an array of strings for labels ...just need 10 dates (remember to use UTC)
 	for( var j = 0; j < 10; j++ ){
-		tempString = months[dateArray[j].getMonth()] + "-" + dateArray[j].getDate()
-			+ "<br>" + dateArray[j].getFullYear();
+		tempString = months[dateArray[j].getUTCMonth()] + "-" + dateArray[j].getUTCDate() + "<br>" + dateArray[j].getUTCFullYear();
 		dateLabels[j] = tempString;
 	}
 
@@ -352,7 +338,7 @@ function updateDateValues( ){
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-requestReturned = 0;
+requestReturned = 0; // flag for when anomaly request is made
 anomalyResponse = [];
 aggregateAnomalyResponse = [];
 
@@ -370,9 +356,9 @@ function sendRequest( anomalyRequest, mode ){
 	console.log("anomalyRequest" + anomalyRequest);
 	
 	if( mode == 0 ){
-		parseRequest();
+		parseRequest(); // daily
 	} else if( mode == 1 ){
-		parseRequestAggregate();
+		parseRequestAggregate(); // aggregate
 	} else {
 		console.log("error with request...");
 	}
@@ -382,19 +368,17 @@ function sendRequest( anomalyRequest, mode ){
 
 // Retrieve Daily Anomaly Results
 function parseRequest( e ){
-	console.log("making request....");
+	console.log("making daily request:");
 
 	ajaxHandle = $.ajax({
 		type : "POST",
 		contentType : "application/json; charset=utf-8",
 		url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvAnomaly.do",
-		//data : localStorage["userQuery"], // don't need localstorage anymore
 		data : JSON.stringify(anomalyRequest),
 		dataType : 'json',
 		async : true,
 		success : function(response) {
 			console.log("ajax success!________________ajax success!");
-			//console.log("respones: " + response);
 			anomalyResponse = response;
 			requestReturned = 1;
 			updateMap();
@@ -406,26 +390,22 @@ function parseRequest( e ){
 
 // Retrieve Aggregate Anomaly Results
 function parseRequestAggregate( e ){
-	console.log("making aggregate request....");
+	console.log("making aggregate request:");
 
 	ajaxHandle = $.ajax({
 		type : "POST",
 		contentType : "application/json; charset=utf-8",
 		url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvYearlyAggAnomaly.do",
-		// to query monthly, just change the string 
-		//url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvYearlyAggAnomaly.do",
 		data : JSON.stringify(anomalyRequest),
 		dataType : 'json',
 		async : true,
 		success : function( response ){
 			console.log("ajax success! ajax success!");
-			//console.log("respones: " + response);
 			aggregateAnomalyResponse = response;
 			requestReturned = 1;
 			updateMapAggregate();
 		}
 	});	
-	// [{"longi":168.17851, "lati":-55.5503, "mean":2061.5, "frequency":2},{"longi":153.50965, "lati":-51.8394, "mean":2002, "frequency":1}]
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -438,14 +418,11 @@ function parseRequestAggregateMonthly( e ){
 		type : "POST",
 		contentType : "application/json; charset=utf-8",
 		url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvMonthlyAggAnomaly.do",
-		// to query monthly, just change the string 
-		//url : "http://localhost:8080/condensate-web/anomaly/ajaxRetrvYearlyAggAnomaly.do",
 		data : JSON.stringify(anomalyRequest),
 		dataType : 'json',
 		async : true,
 		success : function( response ){
 			console.log("ajax success! ajax success!");
-			//console.log("respones: " + response);
 			aggregateAnomalyResponse = response;
 			requestReturned = 1;
 			updateMapAggregate();
@@ -456,6 +433,7 @@ function parseRequestAggregateMonthly( e ){
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
+// for drawing the rectangle on the openlayers map
 var draw;
 function addInteraction( ){
 	var locationArray = Array();
@@ -497,9 +475,6 @@ function addInteraction( ){
 	
 	// return cursor to user after finishing drawing
 	draw.on("drawend", function(){
-		//var a = draw.getGeometry().getCoordinates();
-		//$('#tempOutput').text(a);
-		//console.log("coor:" + draw.getGeometry().getcoordinates());
 		map.removeInteraction(draw);
 	});
 	
@@ -513,7 +488,6 @@ function buttonDrawRectangle(){
 	map.removeInteraction(draw);
 	addInteraction();
 };
-
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 

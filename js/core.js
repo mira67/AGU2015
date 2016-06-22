@@ -1,4 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////
+// Example for Larson ice shelf fracturing:
+// http://earthobservatory.nasa.gov/Features/WorldOfChange/larsenb.php
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // Bounding box for anomaly request. The Java code figures out the nearest xy coordinate
@@ -18,13 +20,26 @@ months = [	"jan", "feb", "mar", "apr",
 
 startYear = 1987; // set up as the same for the slider
 endYear = 2014;
-startMonth = 1; // used for searching seasons (like "summer") ...for now this isn't being used
-endMonth = 12;
+startMonth = 0; // used for searching seasons (like "summer") ...for now this isn't being used
+endMonth = 0;
+startDay = 1;
+endDay = 1;
 
-startDate = startYear + "-01-01";
-endDate = endYear + "-01-01";
+startDate = new Date(Date.UTC(startYear, startMonth, startDay)); //startYear + "-01-01";
+endDate = new Date(Date.UTC(endYear, endMonth, endDay)); //endYear + "-01-01";
 
-// variables that control the timeline view
+startDatePrint = function(){
+	 return startDate.getUTCFullYear() + "-"
+		+ ("00"+(startDate.getUTCMonth()+1)).slice(-2) + "-"
+		+ ("00"+startDate.getUTCDate()).slice(-2);
+}
+endDatePrint = function(){
+	return endDate.getUTCFullYear() + "-"
+		+ ("00"+(endDate.getUTCMonth()+1)).slice(-2) + "-"
+		+ ("00"+endDate.getUTCDate()).slice(-2);
+}
+
+// variables that control the timeline slider
 minYear = startYear;
 maxYear = endYear;
 
@@ -33,8 +48,8 @@ anomalyRequest = {
 	"dsName": dataSet,
 	"dsFreq": frequency,
 	"dsPolar": polarization,
-	"sDate": startDate,
-	"eDate": endDate,
+	"sDate": startDatePrint(),
+	"eDate": endDatePrint(),
 	"sMonth": 1,
 	"eMonth": 12,
 	"sYear": startYear,
@@ -226,22 +241,29 @@ function updateResults( anomalyRequest ){
 	}
 		
 	startYear = $(".sliderYears").slider("values")[0];
-	endYear = $(".sliderYears").slider("values")[1];
+	endYear = $(".sliderYears").slider("values")[1]; // need to validate these values
+	
 	//startMonth = 1; //$(".sliderPattern").slider("values")[0] + 1;
 	//endMonth = 12;
-	
 	// String for date parsing ...Right now the java will return 10 days no matter the
 	// specified length of time. This is to reduce the amount of data passed to the page.
-
-	console.log(startDate);
+	
 	var beginningDate = new Date( new Date(startDate).getTime() + 420 * 60 * 1000 ); // accommodate the timezone offset
-	var beginningDateIncremented = new Date( new Date(beginningDate).getTime() + 24 * 60 * 60 * 1000 )	
+	var beginningDateIncremented = new Date( new Date(beginningDate).getTime() + 24 * 60 * 60 * 1000 )
+	
+	//
 	startDate = startYear + "-" 
 		+ ("00" + beginningDateIncremented.getMonth()+1).slice(-2) + "-"
 		+ ("00" + beginningDateIncremented.getDate()).slice(-2);
+	
 	console.log(startDate);
 	//startDate = startYear + "-" + ("00" + startMonth).slice(-2) + "-01";
 	endDate = endYear + "-" + ("00" + startMonth).slice(-2) + "-01";
+
+startDate = new Date(Date.UTC(startYear, startMonth, startDay)); //startYear + "-01-01";
+endDate = new Date(Date.UTC(endYear, endMonth, endDay)); //endYear + "-01-01";
+
+
 	document.getElementById("stringOfDates").innerHTML = startDate + " to " + endDate;
 
 	// update anomaly request values
@@ -296,6 +318,7 @@ function changeStartDate( value ){
 }
 
 // update labels of timeline pips
+//new Date(year, month[, day[, hour[, minutes[, seconds[, milliseconds]]]]]);
 function updateDateValues( ){
 
 	// generate a list of all days between start and end of input
@@ -337,14 +360,13 @@ aggregateAnomalyResponse = [];
 function sendRequest( anomalyRequest, mode ){
 	
 	//updateDateValues();
-	
 	anomalyRequest["dsName"] = dataSet;
 	anomalyRequest["dsFreq"] = "s" + frequency + polarization;
 	anomalyRequest["dsPolar"] = polarization;
-	anomalyRequest["sDate"] = startDate;
-	anomalyRequest["eDate"] = endDate;
+	anomalyRequest["sDate"] = startDatePrint();
+	anomalyRequest["eDate"] = endDatePrint();
 	anomalyRequest["locations"] = loctnArray
-
+	
 	console.log("anomalyRequest" + anomalyRequest);
 	
 	if( mode == 0 ){
@@ -354,7 +376,6 @@ function sendRequest( anomalyRequest, mode ){
 	} else {
 		console.log("error with request...");
 	}
-
 };
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////

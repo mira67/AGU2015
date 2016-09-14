@@ -2,7 +2,7 @@
 // Example for Larson ice shelf fracturing:
 // http://earthobservatory.nasa.gov/Features/WorldOfChange/larsenb.php
 ////////////////////////////////////////////////////////////////////////////////////////
-
+// https://www.reddit.com/r/dataisbeautiful/comments/4znxz2/wind_map_of_the_world/
 // Bounding box for anomaly request. The Java code figures out the nearest xy coordinate
 // within each image to figure out what points are within the bounding box.
 loctnArray = Array();
@@ -38,6 +38,11 @@ endDatePrint = function(){
 		+ ("00"+(endDate.getUTCMonth()+1)).slice(-2) + "-"
 		+ ("00"+endDate.getUTCDate()).slice(-2);
 }
+
+// for binning colors
+var colorScale = d3.scale.threshold()
+    .domain([20, 50, 100, 200, 300, 400, 500]) // max = 617
+    .range(['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026']);
 
 // variables that control the timeline slider
 minYear = startYear;
@@ -76,6 +81,7 @@ function updateMap( ){
 		
 		source.clear(); // clear the map
 		
+		var binDateCount = 0;
 		//create a bunch of icons and add to source vector
 		for( k = 0; k < anomalyResponse.length; k++ ){
 			
@@ -86,14 +92,11 @@ function updateMap( ){
 			var lati = foo["lati"];
 			var locations = ol.proj.transform([longi, lati], 'EPSG:4326', 'EPSG:3031'); // convert to antarctic polarstereographic
 			var tempDate = new Date(anomalyResponse[k].date); // 788918400000
-/*
+
 			if( tempDate ){ // is equal to the current day
-				
-				// add to the current map
-			} else {
-				// for next 10 days add to each day?!
+				binDateCount = binDateCount + 1;
 			}
-*/
+			
 			var iconFeature = new ol.Feature({
 				//geometry: new ol.geom.Point(ol.proj.transform([lati, longi],'EPSG:4326','EPSG:3031')),
 				geometry: new ol.geom.Point(locations)//,
@@ -104,6 +107,7 @@ function updateMap( ){
 			});
 			vectorSource.addFeature(iconFeature);			
 		}
+		console.log("bin: " + binDateCount);
 		map.addLayer(vectorLayer);
 		requestReturned = 0; // reset for next time
 
@@ -319,7 +323,16 @@ function updateDateValues( ){
 
 	// generate an array of strings for labels ...just need 10 dates (remember to use UTC)
 	for( var j = 0; j < 10; j++ ){
-		tempString = months[dateArray[j].getUTCMonth()] + "-" + dateArray[j].getUTCDate() + "<br>" + dateArray[j].getUTCFullYear();
+		if(j == 0){
+			anomalyLabel = "anomalyLabel";
+		}
+		tempString = months[dateArray[j].getUTCMonth()] + '-' +
+			dateArray[j].getUTCDate() +
+			'<br>' +
+			dateArray[j].getUTCFullYear() +
+			'<br><span style="color:pink;">' +
+			 Math.floor((Math.random() * 100) + 1) + // change from random result to the actual number of pixels returned
+			'</span>';
 		dateLabels[j] = tempString;
 	}
 

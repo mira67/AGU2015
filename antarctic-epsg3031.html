@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"><!-- tell robots to go away! -->
 	<link rel="icon" type="image/png" href="images/antarctica.png">
+	<script type="text/javascript" language="javascript" src="data/test.json"></script> 
 
 	<script src="js/jquery-2.1.4.min.js"></script>
 	<script src="js/jquery-ui.js"></script>
@@ -21,7 +22,7 @@
 
 	<!-- Place these declarations last so they overwrite previous! -->
 	<link rel="stylesheet" href="css/core.css"/>
-	<script src="js/antarctic-epsg3031.js"></script>
+	
 	
 	<!-- color scheme: http://www.colourco.de/complement/5/%2345a537 -->
 	<!-- [violet] #7d3587 #873693 #449f37 #46ab37 #48b837 [green] -->
@@ -45,7 +46,7 @@
 		.left div { margin: 3px 0px 3px 0px; }
 		.right p {
 			margin: 0px 10px 0px 0px;
-			color: #48b837;
+			color: pink;
 			font-size: 25px;
 			font-style: Impact, Charcoal, sans-serif;
 		}
@@ -81,7 +82,7 @@
 		#dailyAnomRes { color: green; }
 		#aggAnomRes { color: brown; }
 		#stringOfDates { color: black; }
-		.ui-widget-header { background: red; }
+		.ui-widget-header { background: pink; }
 		
 		.menu1-content { display: none; }
 	</style>
@@ -269,9 +270,9 @@
 	
 	updateDateValues(); // labels for the timeline 
 </script>
-
 <!-- todo: add google analytics -->
 <!-- ////////////////////////////////////////////////////////////////////// -->
+<script src="js/antarctic-epsg3031.js"></script>
 </body>
 
 </html>

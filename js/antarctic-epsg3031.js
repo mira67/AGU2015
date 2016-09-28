@@ -447,5 +447,6 @@ gridLayer = new ol.layer.Vector({
 	style: gridStyle
 });
 
+console.log("adding grid layer")
 // Add grid layer to map
 map.addLayer(gridLayer);

@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<title>Antarctica</title>
+	<title>Arctic</title>
 	<meta charset="utf-8">
 	<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"><!-- tell robots to go away! -->
 	<link rel="icon" type="image/png" href="images/antarctica.png">
@@ -102,7 +102,7 @@
 	<!-- title bar along top of page -->
 	<div class="titleBar">
 		<div class="right"><!-- title -->
-			<p>Antarctica EPSG:3031</p>
+			<p>Arctic EPSG:3413</p>
 		</div>
 		<div class="left"><!-- menu selections -->
 			<div id="one">
@@ -272,73 +272,8 @@
 </script>
 <!-- todo: add google analytics -->
 <!-- ////////////////////////////////////////////////////////////////////// -->
-<script src="js/antarctic-epsg3031.js"></script>
+<script src="js/arctic-epsg3413.js"></script>
 </body>
 
 </html>
 
-<!--
-For Validating the HTML
-
-https://validator.w3.org/nu/#file
-
-
-
-
-$(".header").click(function( ){
-	$header = $(this);
-	
-	//getting the next element
-	$content = $header.next();
-	
-	//open up the content needed - toggle the slide- if visible, slide up, if not slidedown.
-	$content.slideToggle(100, function () {
-		//execute this after slideToggle is done
-		//change text of header based on visibility of content div
-		$header.text(function () {
-			//change text based on condition
-			// //return $content.is(":visible") ? "Collapse" : "Expand";
-		});
-	});
-});
-
-
-.........to-do
-<div class="row">
-	<p class="highlight">Month Selection</p>
-	<div class="slide sliderPattern"></div>
-	<p><br>jan | feb | mar | apr | may | jun<br>
-	jul | aug | sep | oct | nov | dec</p>
-</div>
-<br>
-
-
-
-<div class="row">
-	<div class="tooltip"><p class="highlight">Timeline Zoom</p><span class="tooltiptext">Changes the level of zoom that the data can be explorered</span></div>
-	<br>
-	<input id="chkDay" name="chkDay" type="checkbox" value="day" class="checkbox">Day
-	<input id="chkMonth" name="chkMonth" type="checkbox" value="month" class="checkbox">Month
-	<input id="chkYear" name="chkYear" type="checkbox" value="month" class="checkbox">Year
-</div>
-<br><hr>
-
-
-
-
-http://www.samuelwbennett.com/sex-income-and-happiness/
-
-color: rgb(18, 18, 18);
-display: inline;
-font-family: "proxima-nova";
-font-size: 72px;
-font-style: normal;
-font-weight: 700;
-letter-spacing: 10px;
-line-height: 72px;
-text-align: center;
-text-transform: uppercase;
-
-
-
--->

@@ -239,3 +239,114 @@ greyVectorLayer = new ol.layer.Vector({
 /////////////////////////////////////////////////////////////////////////	
 // end onload
 
+// Column separator used in dataset from SSB
+csv = d3.dsv(' ', 'text/plain');
+psv = d3.dsv(" ", "text/plain");
+
+// Convert SSBgrid data to GeoJSON
+function ssbgrid2geojson( size ){
+	points = {
+		type: 'FeatureCollection',
+		features: []
+	};
+	
+	$.ajaxSetup({
+		async: false
+	});
+	foo = (function( ){
+		var result;
+		$.getJSON('data/testArctic.json', {}, function(data){
+		  result = data;
+		});
+		return result;
+	})();
+	$.ajaxSetup({
+		async: true
+	});
+	
+	var lll = 0;
+	for( lll = 0; lll < foo.length; lll++ ){
+		var id = foo[lll].sum;
+		var x = foo[lll].long; // use better var names
+		var y = foo[lll].lat;
+		loc = ol.proj.transform([x, y], 'EPSG:4326', 'EPSG:3413'); 
+
+		points.features.push({
+			type: 'Feature',
+			id: id,
+			properties: foo[lll],
+			geometry: {
+				type: 'Point',
+				coordinates: [loc[0]+ size / 2, loc[1] + size / 2]
+			}
+		});
+	}
+	return points;
+}
+
+// Convert to GeoJSON
+geojson = ssbgrid2geojson(gridSize);
+
+// Create vector grid from GeoJSON
+grid = new ol.source.Vector({
+	features: (new ol.format.GeoJSON()).readFeatures(geojson),
+	attributions: [new ol.Attribution({
+		html: '<a href="http://ssb.no/">SSB</a>'
+	})]
+});
+
+console.log("grid: " + grid);
+
+// Create grid style function
+gridStyle = function( feature ){
+	var coordinate = feature.getGeometry().getCoordinates(),
+		x = coordinate[0] - gridSize / 2,
+		y = coordinate[1] - gridSize / 2,
+		pop = parseInt(feature.getProperties().sum),
+		rgb = d3.rgb(colorScale(240)); //(Math.random()*(500 - 20)+20)); // refreshes each time i interact?
+		
+	return [
+		new ol.style.Style({
+			fill: new ol.style.Fill({
+				color: [rgb.r, rgb.g, rgb.b, 0.6] // color: [0, 255, 0, 0.4] // color: [rgb.r, rgb.g, rgb.b, 0.6]
+			}),
+			geometry: new ol.geom.Polygon([[
+				[x,y], [x, y + gridSize], [x + gridSize, y + gridSize], [x + gridSize, y]
+			]])
+		})
+	];
+};
+
+// Create grid selection style
+gridSelectStyle = function( feature, resolution ){
+	var coordinate = feature.getGeometry().getCoordinates(),
+		x = coordinate[0] - gridSize / 2,
+		y = coordinate[1] - gridSize / 2,
+		pop = parseInt(feature.getProperties().sum),
+		rgb = d3.rgb(colorScale(70));
+
+	return [
+		new ol.style.Style({
+			stroke: new ol.style.Stroke({
+				color: '#333',
+				width: 10 / resolution
+			}),
+			fill: new ol.style.Fill({
+				color: [0, 0, 240, 0.3] // Math.random() * (max - min) + min;
+			}),
+			geometry: new ol.geom.Polygon([[
+				[x,y], [x, y + gridSize], [x + gridSize, y + gridSize], [x + gridSize, y]
+			]])
+		})
+	];
+};
+
+// Create layer form vector grid and style function
+gridLayer = new ol.layer.Vector({
+	source: grid,
+	style: gridStyle
+});
+
+console.log("adding grid layer")
+// Add grid layer to map
+map.addLayer(gridLayer);

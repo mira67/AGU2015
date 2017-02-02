@@ -10,7 +10,6 @@ colorScale = d3.scale.threshold()
     .domain([20, 50, 100, 200, 300, 400, 500]) // max = 617
     .range(['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026']);
 
-
 // definitions for 3031 projection
 proj4.defs("EPSG:3031", "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
 ol.proj.get("EPSG:3031").setExtent([-4194304, -4194304, 4194304, 4194304]);
@@ -39,7 +38,7 @@ map = new ol.Map({
 		extent: [-4194304, -4194304, 4194304, 4194304],
 		center: [-1069056, 695296], // map.getView().getCenter()
 		zoom: 2, // map.getView().getZoom()
-		maxZoom: 4
+		maxZoom: 6
 	}),
 	target: "map",
 	renderer: ["canvas","dom"]
@@ -383,7 +382,6 @@ function ssbgrid2geojson( size ){
 	return points;
 }
 
-
 // Convert to GeoJSON
 geojson = ssbgrid2geojson(gridSize);
 
@@ -403,12 +401,12 @@ gridStyle = function (feature) {
 		x = coordinate[0] - gridSize / 2,
 		y = coordinate[1] - gridSize / 2,
 		pop = parseInt(feature.getProperties().sum),
-		rgb = d3.rgb(colorScale(pop));
+		rgb = d3.rgb(colorScale(Math.random()*(500 - 20)+20)); // refreshes each time i interact?
 		
 	return [
 		new ol.style.Style({
 			fill: new ol.style.Fill({
-				color: [rgb.r, rgb.g, rgb.b, 0.6]
+				color: [rgb.r, rgb.g, rgb.b, 0.6] // color: [0, 255, 0, 0.4] // color: [rgb.r, rgb.g, rgb.b, 0.6]
 			}),
 			geometry: new ol.geom.Polygon([[
 				[x,y], [x, y + gridSize], [x + gridSize, y + gridSize], [x + gridSize, y]
@@ -423,7 +421,7 @@ gridSelectStyle = function (feature, resolution) {
 		x = coordinate[0] - gridSize / 2,
 		y = coordinate[1] - gridSize / 2,
 		pop = parseInt(feature.getProperties().sum),
-		rgb = d3.rgb(colorScale(pop));
+		rgb = d3.rgb(colorScale(70));
 
 	return [
 		new ol.style.Style({
@@ -432,7 +430,7 @@ gridSelectStyle = function (feature, resolution) {
 				width: 10 / resolution
 			}),
 			fill: new ol.style.Fill({
-				color: [rgb.r, rgb.g, rgb.b, 0.6]
+				color: [0, 0, 200, 0.3] // Math.random() * (max - min) + min;
 			}),
 			geometry: new ol.geom.Polygon([[
 				[x,y], [x, y + gridSize], [x + gridSize, y + gridSize], [x + gridSize, y]

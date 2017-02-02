@@ -10,7 +10,7 @@ body {
 	margin: 0; padding: 0;
 	height:100%;
 }
-a:link, a:visited { text-decoration: none; color: #873693; } /*#00BFFF; }*/
+a:link, a:visited { text-decoration: none; color: pink; } /*#873693; } #00BFFF; }*/
 a:hover { color: white; }
 a:active { color: pink; }
 .background {
